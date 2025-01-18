@@ -246,6 +246,7 @@
 <script>
 import { useRoute } from 'vue-router';
 import { useSuppliersStore } from '../store/SuppliersStore';
+import {UseInventoryStore} from '../store/InventoryStore'
 import {computed, onMounted, ref} from 'vue';
 
 export default {
@@ -253,6 +254,8 @@ export default {
     const router = useRoute();
     const suppliersstore = useSuppliersStore();
     const isModalOpen = ref(false); 
+    const inventorystore  = UseInventoryStore();
+
     const supplierdata  = computed(()=>suppliersstore.filterSuppliers);
 
    const   pochilaiashara = ref();
@@ -351,6 +354,7 @@ export default {
      const supplierSearch = (e) => {
       suppliersstore.setSearchSupplier(e.target.value);
     }; 
+
 
 
 

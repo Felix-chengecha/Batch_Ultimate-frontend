@@ -5,58 +5,19 @@
       <!-- section one contain titles -->
    <section class="px-2">
         <h3 class="text-lg font-semibold">Supplier Information</h3>
-<SPAN>{{ LoadedSupplier }}</SPAN>
+    <div v-for="(supplier, supplierIndex) in filteredsupplier" :key="supplierIndex" class="mb-6">
         <div class="grid grid-cols-3 gap-4 mt-2 border border-gray-200 p-2 rounded-md bg-white">
-            <!-- Supplier section -->
-            <div class="flex flex-col space-y-1 w-full p-3">
-               <label class="block text-sm">Supplier Name</label>
-               <div class="p-2 w-full border border-gray-400 rounded-md">
-                  <span class="text-md ml-1">{{ supName }}</span>
-               </div>
-            </div>
-
-            <!-- Supplier Type section -->
-            <div class="flex flex-col space-y-1 w-full p-3">
-               <label class="block text-sm">Supplier ID</label>
-               <div class="p-2 w-full border border-gray-400 rounded-md">
-                  <span class="text-md ml-1">{{ supID }}</span>
-               </div>
-            </div>
-
-            <!-- Another Supplier Type section -->
-            <div class="flex flex-col space-y-1 w-full p-3">
-               <label class="block text-sm">Supplier phone no</label>
-               <div class="p-2 w-full border border-gray-400 rounded-md">  
-                  <span class="text-md ml-1">{{ supPhone }}</span>
-               </div>
-            </div>
-
-
-               <!-- Another Supplier Type section -->
-               <div class="flex flex-col space-y-1 w-full p-3">
-               <label class="block text-sm">Supplier Type</label>
-               <div class="p-2 w-full border border-gray-400 rounded-md">  
-                  <span class="text-md ml-1">{{ supType }}</span>
-               </div>
-            </div>
-
-
-               <!-- Another Supplier Type section -->
-               <div class="flex flex-col space-y-1 w-full p-3">
-               <label class="block text-sm">License Number</label>
-               <div class="p-2 w-full border border-gray-400 rounded-md">  
-                  <span class="text-md ml-1">{{ supLicense }}</span>
-               </div>
-            </div>
-
-               <!-- Another Supplier Type section -->
-               <div class="flex flex-col space-y-1 w-full p-3">
-               <label class="block text-sm">Supplier Status</label>
-               <div class="p-2 w-full border border-gray-400 rounded-md">  
-                  <span class="text-md ml-1">{{ supStatus }}</span>
-               </div>
-            </div>
-
+          <div v-for="({ key, value }, index) in supplier" :key="index">
+            <label class="block text-sm font-medium text-gray-700">
+              {{ key }}
+            </label>
+            <input
+              type="text"
+              :value="value"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none
+               focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"  readonly />
+          </div>
+        </div>
       </div>
    </section>
 
@@ -72,7 +33,7 @@
          <button @click="OpenExcel" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-1 px-2 rounded text-sm">
             Add Excel
          </button>  
-         <button @click="openSupplies" class="bg-purple-500 hover:bg-purple-500 text-white font-semibold py-1 px-2 rounded text-sm">
+         <button @click="openSupplies"   class="bg-purple-500 hover:bg-purple-500 text-white font-semibold py-1 px-2 rounded text-sm">
             Supplies list
          </button>
          <button @click="openTransactions" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-2 rounded text-sm">
@@ -150,7 +111,7 @@
       </thead>
 
       <tbody class="divide-y divide-gray-200">
-         <tr v-for="(item, index) in filtereddata" :key="index">
+         <tr v-for="(item, index) in filteredSupplierSupplies" :key="index">
             <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ item .id}}</td>
             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.name}}</td>
             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cost }}</td>
@@ -231,7 +192,7 @@
             </div>
 
             <div class="text-center mt-6"> 
-            <a @click="addinventory" class="inline-block bg-blue-500 rounded-md px-4 py-3 text-sm font-bold uppercase tracking-widest text-white">Add product</a>
+            <a @click="AddnewProduct" class="inline-block bg-blue-500 rounded-md px-4 py-3 text-sm font-bold uppercase tracking-widest text-white">Add product</a>
 
             </div>
          </div>
@@ -264,10 +225,12 @@
 <script>
    import { useRoute } from 'vue-router';
    import Swal from 'sweetalert2';
-   import {computed, onMounted, ref} from 'vue';
+   import {computed, onMounted, watch, ref} from 'vue';
    import { useSuppliesStore } from '../store/SuppliesStore';
    import {UseInventoryStore} from '../store/InventoryStore'
    import { useSuppliersStore } from '../store/SuppliersStore';
+   import {useCategoryStore} from '../store/categoryStore'
+
 
 
    //  
@@ -275,14 +238,22 @@
      setup() {
       const route = useRoute(); // Get current route
       const supplierid = route.params.supplierId;
+
       const supplieStore = useSuppliesStore();
       const supplierstore = useSuppliersStore();
+      const CategoryStore  = useCategoryStore();
+      const inventorystore  = UseInventoryStore();
+
+
+      const categ = computed(() => CategoryStore.getData);
+      const filteredSupplierSupplies = computed(() => inventorystore.filterSupplierSupplies);
 
       const isModalOpen = ref(false);
       const ismodaltransactions= ref(false);
       const ismodalsupplies = ref(false); 
       const isEXCELOpen   = ref(false);
       const title = ref(''); 
+      const filteredsupplier = ref([]);
       const productsfile = ref(null);
 
       //inuts with supplier info
@@ -306,66 +277,29 @@
       const pcost  = ref('');
       const pbuyingprice  = ref('');
 
-      const inventorystore  = UseInventoryStore();
-
-  // 'felix'
-
-// Then you can access individual fields of the first supplier
-// console.log(firstSupplier.supplierId);  // 'Sup_12214920'
-// console.log(firstSupplier.supplierType); 
-
 
       onMounted(()=> {
        supplieStore.getSupllier();
-      //  supplierstore.getallSupliers();
        supplieStore.setSearchSupplier(supplierid);
-       bindDetails();
-       const firstSupplier = LoadedSupplier[0]; // Access the first element in the array
-
-console.log(firstSupplier); 
-     // supplies = supplieStore.getSupplies(supplierid);
-      // transactions = supplieStore.getSupplierTransactions(supplierid);
+       CategoryStore.fetchCategories();
+       console.log(categ.value);
        });
+    const LoadedSupplier = computed(() => supplieStore.filtersuppliers);
 
-           
-      //  const LoadedSupplier = computed(() => supplieStore.filtersuppliers);
-       const LoadedSupplier = computed(() => supplieStore.filtersuppliers);
+    const allowedKeys = ["supplierId" ,"supplierName" ,"supplierType", "phone", "businessLicenseNumber", "supplierStatus", "email", "locationName"];
 
-// Access the value of the computed property
-
-
-       const businessLicenseNumber = computed(() => LoadedSupplier?.businessLicenseNumber ?? 0);
-    const supplierType = computed(() => LoadedSupplier?.supplierType ?? 0);
-    const phone = computed(() => LoadedSupplier?.phone ?? 0);
-    const  supplierName = computed(() => LoadedSupplier?.supplierName ?? 0);
-    const  status = computed(() => LoadedSupplier?.status ?? 0); 
-
-
-    const supplierdd = computed(() => rawData.value[0]);
-
-    console.log(supplierdd);
-    console.log(LoadedSupplier);
-
-   const bindDetails = () => {
-           
-
-   
-   //  console.log(businessLicenseNumber);
-   //       console.log(supplierType);
-   //       console.log(phone);
-   //       console.log(supplierName);
-       
-
-         supStatus.value = status;
-         supLicense.value = businessLicenseNumber;
-         supType.value = supplierType;
-         supPhone.value =phone;
-         supID.value = supplierid;//LoadedSupplier.supplierId;
-         supName.value = supplierName;
+   watch(LoadedSupplier, (newVal) => {
+      const tempResult = [];
+      newVal.forEach((supplier) => {
+        const filteredKeyValuePairs = Object.entries(supplier)
+          .filter(([key]) => allowedKeys.includes(key)) // Only include allowed keys
+          .map(([key, value]) => ({ key, value }));
+        tempResult.push(filteredKeyValuePairs);
+      });
+      filteredsupplier.value = tempResult; // Update the reactive variable
+    });
 
 
-
-       }
 
    const submitExceldata = (event) => {
          productsfile.value = event.target.files[0]
@@ -381,7 +315,6 @@ console.log(firstSupplier);
       formData.append('file', productsfile.value);
 
       try { 
-
       inventorystore.UploadProductsFile(formData,supID);
       DisplayMessage("success", inventorystore.successmsg)
       } catch (error) {
@@ -404,16 +337,6 @@ console.log(firstSupplier);
           const postdata = {
 
             product : [{
-                  // pbuyingdate.value,
-                  // pdescription.value,
-                  // pname.value,
-                  // pcategory .value,
-                  // PNoItems.value, 
-                  // punit .value,
-                  // Pvat .value,
-                  // pcost .value,
-                  // pbuyingprice.value, 
-
                 productID:"PR_"+part1+part2+"000"+pcategory.value,
                 productName: pname.value,
                 productDescription: pdescription.value,
@@ -430,7 +353,7 @@ console.log(firstSupplier);
             }]
           } 
 
-          inventorystore.AddnewProduct(postData);
+          inventorystore.AddnewProduct(postdata);
                 setTimeout(() => {
                   DisplayMessage("success", inventorystore.successmsg)
                }, 2000); 
@@ -442,15 +365,6 @@ console.log(firstSupplier);
 
       const DisplayMessage=(icon,message) => {
              closeModal();
-          inventorystore.getallproducts();
-               pname.value= "";
-               pdescription.value= "";
-               punit.value= "";
-               pcategory.value= "";
-               pbuyingprice.value= "";
-               pcost.value= "";
-               PNoItems.value= "";
-
         Swal.fire({
             position: "top-end",
             icon: icon,
@@ -487,7 +401,11 @@ console.log(firstSupplier);
         // }
 
         }
-       
+
+
+   // const supplierSupplies = (e) => {
+   //    inventorystore.setSearchSupplierSupplies(e.target.value);
+   //  }; 
    
    const openModal = () => {
      isModalOpen.value = true;
@@ -510,6 +428,8 @@ console.log(firstSupplier);
       title.value = "All supplies"
       ismodalsupplies.value =true;
       ismodaltransactions.value = false; 
+      inventorystore.setSearchSupplierSupplies(supplierid);
+
    } 
 
       //open excel upload modal 
@@ -538,16 +458,26 @@ console.log(firstSupplier);
          title,
          transactions,
          supplies,
-         submitExceldata,
+         // submitExceldata,
+         filteredsupplier,
+         // extractData,
 
-          
+        pname,
+        pcost,
+        pbuyingprice,
+        pbuyingdate,
+        pdescription,
+        PNoItems,
+        pcategory,
+        filteredSupplierSupplies,
+
+         categ,
          supStatus,
          supLicense,
          supType,
          supPhone,
          supID,
          supName,
-         bindDetails,
          LoadedSupplier,
          supplierid
     

@@ -25,16 +25,15 @@ getters: {
 
 
 
-
+        //filter one specific supplier
     filtersuppliers: (state) => {
     
-      // return state.supplier;
-        
       return state.supplier.filter(item =>
         item.supplierId.toLowerCase().includes(state.searchSUP.toLowerCase()) 
       );
     },
 
+   
 
 
 

@@ -41,9 +41,18 @@ state: () => ({
       }
 
       return state.data.filter(item =>
-        item.categoryID === parseInt(state.searchCateg) // Compare both as integers
+        item.categoryID === parseInt(state.searchCateg) // Compare both as integers 
       ); },
   },
+
+  filterSupplierSupplies: (state) =>{
+      
+    return state.data.filter(item =>
+      item.data.toLowerCase().includes(state.searchSUP.toLowerCase()) 
+    );
+  },
+
+
 
     actions: {  
 //fetch all inventory recods
@@ -71,7 +80,11 @@ state: () => ({
           this.searchCateg = term;
           // console.log(term);
         },
-
+ 
+        setSearchSupplierSupplies(term) {
+          this.searchSUP = term;
+        },
+    
 
 
         AddnewProduct(postData){

@@ -63,7 +63,6 @@
           <p class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center">ADD NEW PRODUCT</p>
           <button @click="closeModal" class="absolute right-0 bg-black text-white px-1 rounded">x</button>
         </div>
-
       <div class="grid grid-cols-2 gap-4 mt-2">
         <div>
           <label for="pname" class="text-sm text-black">Product name</label>
