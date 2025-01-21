@@ -148,13 +148,13 @@
    
    
        <ul class="space-y-2 mt-2">
-         <li class="border rounded-md p-4" v-for="(cont, index) in contactGroup" :key="index">
-           <div @click="UseContactGroup(cont.name, cont.description)">  
+         <li class="border rounded-md p-4" v-for="(cont, index) in contacts" :key="index">
+           <div @click="UseContactGroup(cont.username, cont.phoneNumber)">  
              <div>
                <span class="text-2xl">{{ index + 1 }}.</span>
-               <span class="text-2xl"> {{ cont.name }} </span> 
+               <span class="text-2xl"> {{ cont.username }} </span> 
              </div>
-             <span>{{ cont.description }}</span> 
+             <span>{{ cont.phoneNumber }}</span> 
            </div>  
          </li>
        </ul>
@@ -221,17 +221,20 @@
          closeModalTemplate();
        }
    
-       const UseContactGroup = (name,description) =>{
-   
-         contactgrouselected.value = true;
-         hideonecontact.value = false;
-         filteredNumbers.value = contList.value
-         .filter(item => item[2].includes(name)) // Filter items based on name
-         .map(item => ({
-           phoneNumber: item[0],
-           name: item[1],
-           isChecked: true
-         }));
+       const UseContactGroup = (name,phone) =>{
+     
+        filteredNumbers.value = phone;
+        //  contactgrouselected.value = true;
+        //  hideonecontact.value = false;
+        //  filteredNumbers.value = contacts.value
+        //  .filter(item => item[1].includes(name)) // Filter items based on name
+        //  .map(item => ({
+        //    phoneNumber: item[0],
+        //    name: item[1],
+        //    isChecked: true
+        //  })); 
+
+
    
          isModalPickContactsOpen.value = true;
          isModalContactsOpen.value = false;
@@ -266,7 +269,7 @@
 
        const smspayload = {
             username: 'sandbox',
-            to: phonenumber.value,
+            to: filteredNumbers.value,  //phonenumber.value,
             header: textheader.value, 
             message: textmessage.value,
             date: senddate.value,
@@ -332,6 +335,7 @@
          senddate,
          phonenumber,
          SendSms,
+         contacts,
          // senderids,
       
          Usetemplate,

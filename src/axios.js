@@ -456,7 +456,7 @@ return apiClient.delete(`/deletecategory/${id}`, {
 //**************************************************
  
 getcontacts() {
-  return apiClient.get('/getinventory',  {
+  return apiClient.get('/Notification/GetContacts',  {
   //   headers: {
   //     Authorization: `Bearer ${token}`,
   //   },
@@ -469,7 +469,7 @@ getcontacts() {
 SendSms(postData) { 
   // console.log(postData);
 
-  return apiClient.post('/Products/AddProducts', postData, {
+  return apiClient.post('/Notification/Sendsms', postData, {
     // headers: {
     //   Authorization: `Bearer ${token}`,
     // },
@@ -483,7 +483,7 @@ SendSms(postData) {
 addcontact(postData) { 
   // console.log(postData);
 
-  return apiClient.post('/Products/AddProducts', postData, {
+  return apiClient.post('/Notification/AddContact', postData, {
     // headers: {
     //   Authorization: `Bearer ${token}`,
     // },

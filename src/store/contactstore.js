@@ -43,9 +43,10 @@ export const usecontactstore = defineStore('contactstore', {
   actions: {
     fetchContacts() {
 
-      axios.getcontacts(this.Token)
-        .then(response => {
-          this.data = response.data; // Store the API data in state
+      axios.getcontacts()
+        .then(response => { 
+          console.log(response);
+          this.data = response; // Store the API data in state
         })
         .catch(error => {
           this.error = error.response?.data?.message || 'An error occurred while fetching data';

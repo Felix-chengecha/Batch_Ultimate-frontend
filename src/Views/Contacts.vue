@@ -21,7 +21,6 @@
 
 
 
-
  
      <div>
    
@@ -29,7 +28,7 @@
  
      <!-- <table class="min-w-full table-auto rounded mt-3">
        <thead class="justify-between"> -->
-         <div class="overflow-x-auto mt-3">
+         <div class="W-2/3 mt-3">
            <table class="min-w-full table-auto rounded">
              <thead class="justify-between">
          <tr class="bg-gray-400 text-gray-900">
@@ -37,24 +36,23 @@
            <th class="px-3"><span class="text-sm">NAME</span></th>
            <th class="px-2"><span class="text-sm">EMAIL</span></th>
            <th class="px-4"><span class="text-sm">PHONE NO</span></th>
-           <th class="px-2"><span class="text-sm">CONTACT-GROUP</span></th>
-           <th class="px-3"><span class="text-sm">STATUS</span></th>
+           <!-- <th class="px-2"><span class="text-sm">CONTACT-GROUP</span></th> -->
+           <th class="px-3"><span class="text-sm">CREATED-BY</span></th>
            <th class="px-2"><span class="text-sm">CREATED-AT</span></th>
            <th class="px-1"><span class="text-sm">Action</span></th>
          </tr>
        </thead>
  
        <tbody class="bg-gray-200">
-         <tr class="bg-white border-4 border-gray-200" v-for="(contact, index) in paginatedContacts" :key="contact.id"
+         <tr class="bg-white border-4 border-gray-200" v-for="(contact, index) in filteredItems" :key="contact.id"
                                             @click="openModalEdit('editmode', contact.name, contact.email, contact.phoneno,contact.status, contact.group)"  
                                             :class="{'bg-blue-100': selectedRow === index, 'hover:bg-gray-200': selectedRow !== index}"  >
            <td class="py-2">{{ index + 1 }}.</td>
-           <td class="px-2">{{ contact.name }}</td>
+           <td class="px-2">{{ contact.username }}</td>
            <td class="px-2">{{ contact.email }}</td>
-           <td class="px-4">{{ contact.mobile }}</td>
-           <td class="px-2">{{ contact.groupName }}</td>
-           <td class="px-2">{{ contact.status }}</td>
-           <td class="px-3">{{ contact.createdon }}</td>
+           <td class="px-4">{{ contact.phoneNumber }}</td>
+           <td class="px-2">{{ contact.createdBy }}</td>
+           <td class="px-3">{{ contact.createdOn }}</td>
            <td class="px-2">
              <span class="text-green-500">..</span>
            </td>
@@ -64,11 +62,11 @@
      </div>
 
        <!-- Pagination Controls -->
-    <div class="flex justify-between mt-4">
+    <!-- <div class="flex justify-between mt-4">
      <button @click="prevPage" class="px-4 py-2 bg-gray-300 rounded" :disabled="currentPage === 1">Previous</button>
      <span>Page {{ currentPage }} of {{ totalPages }}</span>
      <button @click="nextPage" class="px-4 py-2 bg-gray-300 rounded" :disabled="currentPage === totalPages">Next</button>
-   </div>
+   </div> -->
    
    
      <!-- excel upload modal -->
@@ -185,7 +183,7 @@
      const contactsStr = computed(() => contactStore.getData);
      const filteredItems = computed(() => contactStore.filteredContacts);
      const Tresponse = computed(()=>contactStore. getsucces);
-     const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
+     //const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
 
 
 
@@ -203,13 +201,13 @@
    });
 
 
-     const nextPage = () => { 
-       if (currentPage.value < totalPages.value) currentPage.value++;
-     };
+    //  const nextPage = () => { 
+    //    if (currentPage.value < totalPages.value) currentPage.value++;
+    //  };
 
-     const prevPage = () => {
-       if (currentPage.value > 1) currentPage.value--;
-     };
+    //  const prevPage = () => {
+    //    if (currentPage.value > 1) currentPage.value--;
+    //  };
 
      
        // Watch the Tresponse and trigger SweetAlert when the response changes
@@ -459,10 +457,10 @@
        submitExceldata,
        ContactsExcel,
        paginatedContacts,
-     currentPage,
-     totalPages,
-     nextPage,
-     prevPage,
+    //  currentPage,
+    //  totalPages,
+    //  nextPage,
+    //  prevPage,
 
 
      };
