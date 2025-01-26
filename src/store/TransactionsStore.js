@@ -42,9 +42,10 @@ getters: {
       fetchTransactions(){     
           this.loading = true;
           this.error = null;   
-              axios.getsales()
+              axios.getTransactions()
                 .then(response => {
                     // this.data.push(response.products.data.data); 
+                    console.log(this.data);
                     this.data = response.data;
                     this.loading = false;
                 })

@@ -31,17 +31,19 @@
           </thead>
     
           <tbody class="divide-y divide-gray-200">
-            <!-- <tr v-for="(item, index) in filtereddata" :key="index">
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ item .id}}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.name}}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cost }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.buyingprice }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.buyingdate }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.expiredate }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.status }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.supplier }}</td>
-            </tr> -->
-  
+            <tr v-for="(item, index) in filteredTransactions" :key="index">
+              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ item.transactionID}}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.quantity}}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.amountRecieved }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cashChange }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalCost }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalDiscount }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdBy }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                <span @click="openproducts(item.transactionID)">...</span></td>
+           
+            </tr>
           </tbody>
         </table>
     
@@ -49,30 +51,34 @@
            <!-- Modal backdrop  to add a new template-->
     
     
-        <div v-if="isModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+        <div v-if="isModalProductsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
         <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-          <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">ADD NEW CONTACT GROUP</p>
-    
-    
-           <div class="p-4 text-center sm:p-6 md:col-span-2 lg:p-8">
-                <label for="email" class="w-full text-sm text-black">Group Name*</label>
-                <div class="relative">
-                <input type="text" class="w-full rounded-lg p-2 text-sm shadow-sm  border-gray-700" placeholder="Text Header" /> <!-- Changed border color to black -->
-                </div>
-             </div>
+          <button @click="closeModal" class="bg-black text-white px-1 mt-3 rounded">x</button>
+          <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">{{ TRXID }}: PRODUCTS</p>
     
     
       <div class="p-4 text-center sm:p-6 md:col-span-2 lg:p-8">
-       <div>
-          <label for="message" class="w-full text-sm text-black">Enter Description</label>
-          <textarea id="message" rows="3"
-          class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-black focus:ring-black border border-gray-700"
-          placeholder="Type your message here maximum 2000 characters"></textarea>    
-            </div>
-    
-         <a class="mt-8 inline-block w-full bg-blue-500 rounded-md py-4 text-sm font-bold uppercase tracking-widest text-white" href="#">SUBMIT</a>
+     
+    <!-- Display all products from filtered transactions in an unordered list -->
+
+  
+          <div class="max-w-4xl mx-auto px-4">
+    <!-- Container for the list with border and padding -->
+    <ul class="space-y-4">
+      <li v-for="(product, pIndex) in allParsedProducts" :key="pIndex" class="border p-4 rounded-lg shadow-md hover:bg-gray-50 transition-colors">
+        <!-- Product info with proper spacing -->
+        <div class="flex justify-between items-center">
+          <strong class="text-md font-semibold">{{ product.ProductName }}</strong>
+          <span class="text-gray-600">Price: ksh.{{ product.Price }}</span>
+        </div>
+        <div class="flex justify-between items-center text-sm text-gray-500">
+          <span>Quantity: {{ product.Quantity }}</span>
+          <span>Discount: {{ product.Discount }}%</span>
+        </div>
+      </li>
+    </ul>
+  </div>
        
-         <button @click="closeModal" class="bg-black text-white px-1 mt-3 rounded">x</button>
     
       </div>
       </div>
@@ -88,32 +94,53 @@
     
     
     <script>
-    // import { usecontactstore } from '../store/contactstore';
-    import {ref} from 'vue';
+    import { useSaleStore } from '../store/SaleStore';
+    import { useTransactionStore } from '../store/TransactionsStore';
+    import { ref, onMounted, computed } from 'vue';
+
     
     export default {
       setup() {
-        // const contactStore = usecontactstore();
-        const isModalOpen = ref(false); 
+        const transactionStore = useTransactionStore();
+        const saleStore = useSaleStore();
+        const isModalProductsOpen = ref(false); 
+        const TRXID = ref('');
+
+        onMounted(() => {
+          transactionStore.fetchTransactions();
+        });
+
+        const filteredTransactions = computed(() => transactionStore.filterTransactions);
     
-    const openModal = () => {
-      isModalOpen.value = true;
+    const openproducts = (transactionID) => {
+      isModalProductsOpen.value = true;
+      TRXID.value= transactionID;
     };
     
     const closeModal = () => {
-      isModalOpen.value = false;
+      isModalProductsOpen.value = false;
     };
+
+     // Function to parse transactionproducts from JSON string to an array
+     const allParsedProducts = computed(() => {
+      // Flatten all the transactionproducts from all filtered transactions
+      return filteredTransactions.value
+        .flatMap(transaction => JSON.parse(transaction.transactionproducts));
+    });
        
     
        
         
         return {
-        //   data: contactStore.getData,
-        //   isLoading: contactStore.isLoading,
-        //   error: contactStore.getError,
-          openModal,
+
+        openproducts,
           closeModal,
-          isModalOpen,
+          isModalProductsOpen,
+          filteredTransactions,
+          saleStore,
+          transactionStore,
+          TRXID,
+          allParsedProducts
         //   fetchData: contactStore.fetchData
         };
       }

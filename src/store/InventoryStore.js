@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import axios from '../axios'
-// import { getInventory } from '../axios'
 
 export const UseInventoryStore = defineStore('InventoryStore', {
 
@@ -21,7 +20,6 @@ state: () => ({
     // Filter based on the search Term in the store for multiple rows
     filterProducts: (state) => {
       if (!state.searchquery) { 
-      // console.log("data is:",state.data);
         return state.data;
       }
 
@@ -36,7 +34,7 @@ state: () => ({
   
     //filter product on category selected
     filterProductCategory: (state) => {
-      if (!state.searchCateg) {
+      if (!state.searchCateg) { 
         return state.data;
       }
 
@@ -55,12 +53,12 @@ state: () => ({
 
 
     actions: {  
-//fetch all inventory recods
+//fetch all inventory records
       getallproducts(){     
-     
             axios.getproduct()
               .then(response => {
                   this.data = response.data;
+                  // console.log("prods", this.data);
                   this.loading = false;
               })
               .catch(error => {
@@ -70,23 +68,25 @@ state: () => ({
               });
           },
          
-   
+      //search product from the inventory
         setSearchProduct(term) {
           this.searchprod = term;
           // console.log(term);
         },
 
+    //search products of a certain category    
         setSearchCategory(term) {
           this.searchCateg = term;
           // console.log(term);
         },
  
+    //search products from a certain supplier term    
         setSearchSupplierSupplies(term) {
           this.searchSUP = term;
         },
     
 
-
+     //add new product to the inventory
         AddnewProduct(postData){
           axios.addproduct( postData)
             .then(response => {
@@ -100,9 +100,5 @@ state: () => ({
         },
     
 
-
-
     },
-
-
 });

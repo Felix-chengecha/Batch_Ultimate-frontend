@@ -5,6 +5,7 @@
      <!-- Section one consist of all items bought -->
     <div class="flex flex-col mx-3 mt-2 lg:flex-row h-200">      
 
+
      <!-- Section one consist of all items bought -->
         <div class="w-full lg:w-4/7 m-1 bg-white shadow-lg text-lg rounded-md border border-gray-200">
             <div class="overflow-x-auto rounded-lg p-1 h-full flex flex-col">    
@@ -233,15 +234,6 @@
         </div>
         </div>
 
-        <!--<div>
-            <!-- Dynamically Rendered Receipt 
-            <ReceiptComponent
-            v-if="showReceipt"
-            :transaction="transactionData"
-            ref="receiptRef"
-            />
-  </div>-->
-
         <!-- credit payment input -->
         <div v-if="isCreditOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
             <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
@@ -310,6 +302,7 @@
     
         const showReceipt = ref(false);
         const transactionData = ref(null);
+        const paymentMethod = ref(null);
     
         let previousTotal = 0;
         let ExistCount = 0;
@@ -410,11 +403,15 @@
     
         //   let PaymentID = PAY_${month}${hour}${minute}${day}${second};
         //   let TrxId = TRX_${month}${second}${minute}${hour};
-        let PaymentID =  Pname.value.substring(0, 3) + "_" + month.value + hour.value + minute.value + day.value + second.value + "Y"; 
-        let TrxId = "Trx"+"_"+ month.value + second.value + minute.value + hour.value ;
+        //let PaymentID =  Pname.value.substring(0, 3) + "_" + month.value + hour.value + minute.value + day.value + second.value + "Y"; 
+        
+        let PaymentID = "Ult" + "_" + month + hour + minute + day + second + "Y"; 
+        
+        //let TrxId = "Trx"+"_"+ month.value + second.value + minute.value + hour.value ;
+        let TrxId = "Trx"+"_"+ month + second + minute + hour ;
     
           const postData = {
-            transactions: [
+            transaction: [
               {
                 transactionID: TrxId,
                 userID: 1,
@@ -432,9 +429,9 @@
                 paymentDetails: [
                   {
                     paymentID: PaymentID,
-                    paymentMethod: paymentrefference.value,
+                    paymentMethod: paymentMethod.value, //paymentrefference.value,
                     paymentStatus: 1,
-                    paymentReference: 'sold in cash',
+                    paymentReference: paymentrefference.value,
                     amount: totalSellingPrice,
                     transactionID: TrxId,
                     paymentDate: new Date().toISOString(),
@@ -444,8 +441,9 @@
             ],
           };
     
-          try {
-            await saleStore.AddTransaction(postData);
+          try { 
+            saleStore.Addtransaction(postData);
+            // saleStore.AddTransaction(postData);
     
             if (saleStore.success) {
               transactionData.value = {
@@ -500,6 +498,8 @@
         };
     
         const cashchanged = computed(() => parseInt(receivedcash.value) - parseInt(totalcost.value));
+
+
         const filterCashChange = () => {
           if (parseInt(receivedcash.value) >= parseInt(totalcost.value)) {
             cashchange.value = cashchanged.value;
@@ -508,7 +508,20 @@
             cashchange.value = 0;
             insufficient.value = true;
           }
-        };
+        }; 
+
+        const PayViaMpesa = () => {
+           isMpesaOpen.value = false;
+           paymentMethod.value = "MPESA";
+           submitpayment();
+         }
+    
+          const PayViaCash = () =>{
+              isCashOpen.value = false;
+              paymentMethod.value = "CASH";
+              paymentrefference.value = "paid in cash";
+              submitpayment();
+          }
     
         const OpenMpesa = () => {
           if (totalcost.value > 0) {
@@ -574,7 +587,9 @@
           removeItem,
           calculatecost,
           filterPhoneNo,
+          receivedcash,
           cashchanged,
+          cashchange,
           filterCashChange,
           OpenMpesa,
           OpenCash,
@@ -584,6 +599,12 @@
           CloseCredit,
           DisplayMessage,
           printReceipt,
+          filteredProducts,
+          filteredCategory,
+          PayViaMpesa,
+          PayViaCash,
+          paymentMethod,
+          paymentrefference
         };
       },
     };

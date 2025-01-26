@@ -115,7 +115,8 @@ getRecentSalesData(token) {
         //   Authorization: `Bearer ${token}`,
         // },
       })
-      .then(response => {
+      .then(response => { 
+        console.log(response);
         return response;
       });
     },
@@ -278,14 +279,15 @@ addtransaction(postData) {
 },
 
 // get one Transaction
-getTransaction(token) {
-  return apiClient.get('/getTransaction',  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+getTransactions() {
+  return apiClient.post('/Transactions/GetTransactions',  {
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
-    return response.data;
+    console.log(response);
+    return response;
   });
 },
 

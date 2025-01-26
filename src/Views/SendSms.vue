@@ -33,11 +33,7 @@
              </div> -->
            </div>  
    
-           <div class="mt-3">
-             <label for="message" class="text-sm ml-3">WRITE MESSAGE</label>
-             <textarea v-model="textmessage" rows="5" class="w-full rounded-lg border border-gray-200 p-2 text-sm shadow-sm" placeholder="Type your message here maximum 2000 characters"></textarea>
-           </div> 
-   
+      
            <div class="flex flex-col sm:flex-row space-x-0 sm:space-x-4 mt-1">
              <div class="flex-1">
                <label for="date" class="text-sm text-center w-full">SCHEDULE DATE</label>
@@ -56,7 +52,16 @@
              <input type="number" v-model="phonenumber" class="w-full rounded-lg p-3 border border-gray-200 text-sm shadow-sm focus:border-black focus:ring-black text-black bg-white" />
            </div>
    
-  
+           <div class="mt-3">
+             <label for="message" class="text-sm ml-3">WRITE MESSAGE</label>
+       
+               
+               <QuillEditor v-model="textmessage"   id="richEditor"   
+               class="w-full h-164 bg-white border border-gray-300 rounded-lg shadow-sm"   
+               :options="editorOptions"
+               @input="handleInput"   />
+            </div> 
+   
    
    
            <div class="mt-5 mb-4 text-center">
@@ -76,41 +81,7 @@
    
    
        <!--Choose contacts dialog start-->
-       <div v-if="isModalPickContactsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center overflow-y-auto">
-     <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full max-h-screen h-screen overflow-y-auto">
-       <div class="relative flex items-center justify-center">
-             <p class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center">PICK CONTACTS </p>
-             <button @click="closeModalPickContact" class="absolute right-0 bg-black text-white px-1 rounded">x</button>
-           </div>
    
-             <table class="w-full ml-1 table-auto rounded mt-2 bg-gray-400">
-               <thead class="justify-between">
-                 <tr class="bg-gray-100 text-gray-900">
-                   <th class="py-2 "><span class="text-sm">#</span></th>
-                   <th class="px-3">
-                     <input type="checkbox" id="checkbox" v-model="selectAllpeople" @change="toggleSelectAll"  class="w-3 h-3 ml-1 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />  
-                   </th>
-                   <th class="px-2"><span class="text-sm">NAME</span></th>
-                   <th class="px-2"><span class="text-sm">PHONE NUMBER</span></th>
-                 </tr>
-               </thead>
-   
-               <!-- filteredItems -->
-               <tbody class="bg-gray-200">
-                 <tr class="bg-white border-4 border-gray-200" v-for="(filteredusers, index) in filteredNumbers" :key="filteredusers.id"  >
-                   <td class="py-1">{{ index + 1 }}.</td>
-                  <td class="px-3"> 
-                   <input type="checkbox" id="checkbox" v-model="filteredusers.isChecked" @change="checkSelectAllState"  class="w-3 h-3 ml-1 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-                  </td> 
-   
-                   <td class="px-2">{{ filteredusers.name }}</td>
-                   <td class="px-1">{{ filteredusers.phoneNumber }}</td>
-                 </tr>
-               </tbody>
-             </table>  
-             <button @click="SubmitContacts" class="bg-primary text-white px-2 py-2 mt-3 rounded">Submit</button>
-     </div>
-   </div>
      <!-- Choose contacts  dialog end -->
    
      
@@ -174,10 +145,19 @@
    import { useMessageStore } from  '../store/MessageStore';
    import Swal from 'sweetalert2';
    import { computed ,watch, onMounted,ref } from 'vue';
-   import axios from '../axios'
-   //fetchContacts
-   export default { 
+   import axios from '../axios';
+   import { QuillEditor } from '@vueup/vue-quill';
+   import '@vueup/vue-quill/dist/vue-quill.snow.css';
+  //  import { Vue3Quill } from 'vue3-quill';
+  //  import Quill from 'quill'; 
+   //fetchContacts  <QuillEditor v-model="content" :options="editorOptions" />
+
+
    
+   export default { 
+    components: {
+    QuillEditor,
+  },
      setup() { 
    
    
@@ -195,7 +175,7 @@
        const contactlist = ref([]);
        const sendmsg = ref([]);
        const filteredNumbers = ref([]);
-       const isModalPickContactsOpen = ref(false);
+      //  const isModalPickContactsOpen = ref(false);
 
        const contactstore = usecontactstore();
        const messageStore = useMessageStore();
@@ -224,6 +204,9 @@
        const UseContactGroup = (name,phone) =>{
      
         filteredNumbers.value = phone;
+
+        phonenumber.value = phone;
+
         //  contactgrouselected.value = true;
         //  hideonecontact.value = false;
         //  filteredNumbers.value = contacts.value
@@ -236,7 +219,7 @@
 
 
    
-         isModalPickContactsOpen.value = true;
+        //  isModalPickContactsOpen.value = true;
          isModalContactsOpen.value = false;
      }
               
@@ -298,15 +281,15 @@
          });
        };
    
-       const closeModalPickContact =() =>{
-         isModalPickContactsOpen.value = false;
-       };
+      //  const closeModalPickContact =() =>{
+      //    isModalPickContactsOpen.value = false;
+      //  };
    
-       const SubmitContacts =()=>{
-         isModalPickContactsOpen.value = false;
+      //  const SubmitContacts =()=>{
+      //    isModalPickContactsOpen.value = false;
    
    
-       }
+      //  }
    
       // Function to toggle all checkboxes
      const toggleSelectAll = () => { 
@@ -321,6 +304,32 @@
        const checkSelectAllState = () => {
          selectAll.value = items.value.every(item => item.isChecked);
        };
+
+       const handleInput = (value) => {
+        textmessage.value = value.explicitOriginalTarget.innerText;
+      };
+
+       const editorOptions = ref({ 
+
+        theme: 'snow',
+        // placeholder: 'Write something amazing...',
+        modules: {
+          toolbar: [
+            // Toolbar rows
+            [{ font: [] }], // Font family dropdown
+            [{ size: ['small', false, 'large', 'huge'] }], // Font size dropdown
+            ['bold', 'italic', 'underline', 'strike'], // Text styles
+            [{ color: [] }, { background: [] }], // Text and background colors
+            [{ script: 'sub' }, { script: 'super' }], // Subscript/Superscript
+            [{ header: 1 }, { header: 2 }], // Header styles
+            [{ list: 'ordered' }, { list: 'bullet' }], // Lists
+            [{ align: [] }], // Text alignment
+            ['link', 'image', 'video'], // Links, images, videos
+            ['blockquote', 'code-block'], // Blockquote and code block
+            ['clean'], // Clear formatting
+          ],
+        },
+      });
    
     
    
@@ -347,42 +356,20 @@
          selectAllpeople,
          checkSelectAllState,
          hideonecontact,
-         isModalPickContactsOpen,
-         closeModalPickContact,
+        //  isModalPickContactsOpen,
+        //  closeModalPickContact,
          UseContactGroup, 
-         SubmitContacts
+        //  SubmitContacts
+        editorOptions,
+        handleInput
        };
      }
    }
    </script>
    
+   <style>
+    @import "quill/dist/quill.snow.css";
+   </style>
    
-   // axios.sendsms(Token.value,{
-      //     username: 'sandbox',
-      //     to: phoneNumbersObject,
-      //     header: textheader.value, 
-      //     message: textmessage.value,
-      //     date: senddate.value,
-      //     time: sendtime.value,
-      // })
-      //  .then((response) =>{
-      //     Swal.fire({
-      //       position: 'top-end',
-      //       icon: 'success',
-      //       title: 'Message sent successfully',
-      //       showConfirmButton: false,
-      //       timer: 2500,
-      //     });
-      // })
-      // .catch((error)=>{
-      //   //  console.log(error);
-      //   Swal.fire({
-      //       position: 'top-end',
-      //       icon: 'error',
-      //       title: 'Failed to send message',
-      //       showConfirmButton: false,
-      //       timer: 2500,
-      //     });
-      // })
-   
+  
    

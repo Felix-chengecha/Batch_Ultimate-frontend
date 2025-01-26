@@ -56,6 +56,35 @@ export const usecontactstore = defineStore('contactstore', {
         });
     }, 
 
+   fetchTemplates() { 
+    axios.getTemplates()
+    .then(response => { 
+      console.log(response);
+      this.data = response; // Store the API data in state
+    })
+    .catch(error => {
+      this.error = error.response?.data?.message || 'An error occurred while fetching data';
+    })
+    .finally(() => {
+      this.loading = false;
+    });
+}, 
+
+     //add new template
+     AddNewTemplate(postData) {
+      axios.addsmsTemplate(postData)
+      .then((response) => { 
+        console.log(response);
+        console.log(response.status);
+        if(response.status == '200'){
+          this.success = response.data;
+          }
+          this.success =  response.data;
+      })
+      .catch((error) => {
+        this.success = error;   
+      });
+     },
     
     
 
