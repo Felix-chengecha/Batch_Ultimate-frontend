@@ -1,96 +1,86 @@
-<template>
-       <main>
-              <div class="overflow-x-auto rounded-t-lg py-1 px-1 ">
-              <div class="relative flex flex-col sm:flex-row items-start w-full">
-              <div class="flex flex-wrap items-center w-3/4 sm:mb-0">
-              <h2 class="text-3xl block font-bold sm:text-2xl text-center justify-center text-gray-700 px-2 ml-10">Transactions</h2>
-              </div>
-              <label for="Search" class="sr-only">Search</label>
-              <input type="text"  id="Search" @input="productSearch" placeholder="Search for...anything" class="w-1/3 sm:w-1/3 rounded-md border-gray-200 py-2 pe-10 shadow-sm  lg:absolute right-1  sm:text-sm"/> 
-              </div> 
-              </div>
 
-             <table class="min-w-full divide-y-2 divide-gray-200  mt-4 text-sm rounded px-2 bg-gray-50">
-              <thead class="ltr:text-left rtl:text-right border border-gray-300">
-
-  
-            <tr>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ID</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">BatchID</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Item</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Code</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Cost</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Selling Price</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
-    
-    
-    
-            </tr>
-          </thead>
-    
-          <tbody class="divide-y divide-gray-200">
-            <tr v-for="(item, index) in filteredTransactions" :key="index">
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ item.transactionID}}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.quantity}}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.amountRecieved }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cashChange }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalCost }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalDiscount }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdBy }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                <span @click="openproducts(item.transactionID)">...</span></td>
-           
-            </tr>
-          </tbody>
-        </table>
-    
-    
-           <!-- Modal backdrop  to add a new template-->
-    
-    
-        <div v-if="isModalProductsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-        <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-          <button @click="closeModal" class="bg-black text-white px-1 mt-3 rounded">x</button>
-          <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">{{ TRXID }}: PRODUCTS</p>
-    
-    
-      <div class="p-4 text-center sm:p-6 md:col-span-2 lg:p-8">
-     
-    <!-- Display all products from filtered transactions in an unordered list -->
-
-  
-          <div class="max-w-4xl mx-auto px-4">
-    <!-- Container for the list with border and padding -->
-    <ul class="space-y-4">
-      <li v-for="(product, pIndex) in allParsedProducts" :key="pIndex" class="border p-4 rounded-lg shadow-md hover:bg-gray-50 transition-colors">
-        <!-- Product info with proper spacing -->
-        <div class="flex justify-between items-center">
-          <strong class="text-md font-semibold">{{ product.ProductName }}</strong>
-          <span class="text-gray-600">Price: ksh.{{ product.Price }}</span>
-        </div>
-        <div class="flex justify-between items-center text-sm text-gray-500">
-          <span>Quantity: {{ product.Quantity }}</span>
-          <span>Discount: {{ product.Discount }}%</span>
-        </div>
-      </li>
-    </ul>
-  </div>
-       
-    
-      </div>
-      </div>
-      </div>
-    
-    
-       </main>
-       
-  </template>  
-       
       
-    
+    <template>
+  <main class="p-2">
+    <!-- Header and Search Bar -->
+    <div class="overflow-x-auto rounded-t-lg py-1 px-1">
+      <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-2">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 text-center sm:text-left">
+          Transactions
+        </h2>
+        <input
+          type="text"
+          id="Search"
+          @input="productSearch"
+          placeholder="Search for...anything"
+          class="w-full sm:w-1/3 rounded-md border-gray-300 py-2 px-4 shadow-sm sm:text-sm"
+        />
+      </div>
+    </div>
+
+    <!-- Responsive Table Container -->
+    <div class="overflow-x-auto mt-4">
+      <table class="min-w-full divide-y divide-gray-200 text-sm bg-gray-50 rounded">
+        <thead class="text-gray-900 border border-gray-300 bg-white">
+          <tr>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">ID</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">BatchID</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Item</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Code</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Description</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Cost</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Selling Price</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Status</th>
+            <th class="px-4 py-2 whitespace-nowrap font-medium">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr v-for="(item, index) in filteredTransactions" :key="index">
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.transactionID }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.quantity }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.amountRecieved }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.cashChange }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.totalCost }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.totalDiscount }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.createdOn }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">{{ item.createdBy }}</td>
+            <td class="px-4 py-2 whitespace-nowrap">
+              <span @click="openproducts(item.transactionID)" class="cursor-pointer">...</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal for Products -->
+    <div v-if="isModalProductsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 px-4">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+        <button @click="closeModal" class="bg-black text-white rounded px-2 py-1 mt-2 ml-2">x</button>
+        <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center mt-2">{{ TRXID }}: PRODUCTS</p>
+
+        <div class="p-4 sm:p-6">
+          <ul class="space-y-4">
+            <li
+              v-for="(product, pIndex) in allParsedProducts"
+              :key="pIndex"
+              class="border p-4 rounded-lg shadow-sm hover:bg-gray-50 transition"
+            >
+              <div class="flex justify-between items-center">
+                <strong class="text-md font-semibold">{{ product.ProductName }}</strong>
+                <span class="text-gray-600 text-sm">Price: ksh.{{ product.Price }}</span>
+              </div>
+              <div class="flex justify-between items-center text-sm text-gray-500">
+                <span>Quantity: {{ product.Quantity }}</span>
+                <span>Discount: {{ product.Discount }}%</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
     
     
     <script>

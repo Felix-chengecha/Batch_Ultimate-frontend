@@ -1,109 +1,130 @@
-<template>
 
-   <div class="rounded-lg border border-gray-200  bg-gray-300 h-full">
-     <div class="overflow-x-auto rounded-t-lg py-1 px-1 ">
+   <template>
+  <div class="rounded-lg border border-gray-200 bg-gray-300 min-h-screen p-4">
+    <!-- Header -->
+    <div class="overflow-x-auto rounded-t-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 relative">
+        <h2 class="text-xl sm:text-3xl font-bold text-gray-700 text-center sm:text-left">
+          Product Categories
+        </h2>
+        <a
+          @click="openModal"
+          class="mt-2 sm:mt-0 inline-block rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring focus:ring-yellow-400 sm:absolute sm:right-0"
+        >
+          Add new Category
+        </a>
+      </div>
 
+      <!-- Search bar placeholder -->
+      <div class="relative mb-2">
+        <label for="Search" class="sr-only"> Search </label>
+        <!-- Optional search input could go here -->
+      </div>
 
-       <div class="flex items-center justify-center w-full relative ">
- <h2 class="text-3xl font-bold sm:text-2xl text-gray-700 ">Product Categories</h2>
- <a @click="openModal" class="inline-block rounded bg-blue-600 px-2 py-2 mt-4 mr-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring focus:ring-yellow-400 absolute right-0">
-   Add new Category
- </a>
-</div>
-   
-   
-   <div class="relative">
-     <label for="Search" class="sr-only"> Search </label>
-   </div>
-   
-   
-   
-       <table class="min-w-full divide-y-2 divide-gray-200 bg-gray-100 mt-4 text-sm rounded">
-         <thead class="ltr:text-left rtl:text-right">
-           <tr>
-             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category Name</th>
-             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Code</th>
-             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No of Items</th>
-             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
-             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Created on </th>
-             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
-           </tr>
-         </thead>
-   
-         <tbody class="divide-y divide-gray-200">
-            <tr class="bg-white border-4 border-gray-200" v-for="(item, index) in data" :key="item.categoryID">
-             <!-- <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ item .categoryID}}</td> -->
-             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryName}}</td>
-             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryCode }}</td>
-             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.noOfItems }}</td>
-             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.status }}</td>
-             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
-              <!-- <p>felo</p> -->
-              <td>..</td>
-           </tr>
+      <!-- Table Wrapper -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y-2 divide-gray-200 bg-gray-100 text-sm rounded">
+          <thead class="text-left">
+            <tr>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category Name</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Code</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No of Items</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Created on</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr
+              class="bg-white border-4 border-gray-200"
+              v-for="(item, index) in data"
+              :key="item.categoryID"
+            >
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryName }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryCode }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.noOfItems }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.status }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">..</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-      
-         </tbody>
-       </table>
-     </div>
-   
-   
-   </div>
+    <!-- Modal -->
+    <div
+      v-if="isModalOpen"
+      class="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4"
+    >
+      <div class="bg-white w-full max-w-md rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
+        <div class="p-4">
+          <p class="text-center text-sm font-semibold uppercase tracking-widest text-gray-700">
+            Add New Category
+          </p>
 
-    <!-- Modal backdrop  to add a new template-->
+          <!-- Input: Category Name -->
+          <div class="mt-4">
+            <label class="block text-sm text-gray-700 mb-1">Category Name</label>
+            <input
+              type="text"
+              v-model="Cname"
+              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
+            />
+          </div>
 
+          <!-- Input: Category Code -->
+          <div class="mt-4">
+            <label class="block text-sm text-gray-700 mb-1">Category Code</label>
+            <input
+              type="text"
+              v-model="Ccode"
+              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
+            />
+          </div>
 
-    <div v-if="isModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-   <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-     <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">ADD NEW CATEGORY</p>
+          <!-- Input: No of Items -->
+          <div class="mt-4">
+            <label class="block text-sm text-gray-700 mb-1">No Of Items</label>
+            <input
+              type="text"
+              v-model="CNoItems"
+              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
+            />
+          </div>
 
+          <!-- Input: Description -->
+          <div class="mt-4">
+            <label class="block text-sm text-gray-700 mb-1">Description</label>
+            <textarea
+              v-model="Cdescription"
+              rows="3"
+              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
+              placeholder="Type your product description (max 500 characters)"
+            ></textarea>
+          </div>
 
-      <div class="px-4 mt-3 sm:px-6 md:col-span-2 lg:px-8">
-           <label for="email" class="w-full text-sm text-black">Category Name</label>
-           <div class="relative">
-           <input type="text" v-model="Cname" class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400"  /> <!-- Changed border color to black -->
-           </div>
+          <!-- Buttons -->
+          <div class="mt-6 text-center">
+            <a
+              @click="AddCategory"
+              class="block w-full bg-blue-500 rounded-md py-3 text-sm font-bold uppercase text-white tracking-widest"
+            >
+              Submit
+            </a>
+            <button
+              @click="closeModal"
+              class="mt-3 w-full bg-gray-800 text-white py-2 rounded"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</template>
 
-        <div class="px-4 mt-3 sm:px-6 md:col-span-2 lg:px-8">
-           <label for="email" class="w-full text-sm text-gray-700">Category Code</label>
-           <div class="relative">
-           <input type="text"  v-model="Ccode" class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400"  /> <!-- Changed border color to black -->
-           </div>
-        </div>
-
-
-        <div class="px-4 mt-3 sm:px-6 md:col-span-2 lg:px-8">
-           <label for="email" class="w-full text-sm text-gray-700">No Of Items</label>
-           <div class="relative">
-           <input type="text" v-model="CNoItems" class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400"  /> <!-- Changed border color to black -->              
-           </div>
-        </div>
-
-      
-
-
-       <div class="px-4 text-center sm:px-6 md:col-span-2 lg:px-8">
-         <div class="mt-2">
-             <label for="message" class="w-full text-sm text-gray-700">Description</label>
-             <textarea id="message" rows="3" v-model="Cdescription"
-             class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-400 border border-gray-400"
-             placeholder="Type your product descrition maximum 500 characters"></textarea>    
-         </div>
-
-
-
-    <a  @click="AddCategory" class="mt-8 inline-block w-full bg-blue-500 rounded-md py-4 text-sm font-bold uppercase tracking-widest text-white"> SUBMIT </a>
-  
-    <button @click="closeModal" class="bg-black text-white px-1 mt-3 rounded">x</button>
-
- </div>
- </div>
- </div>
-   
-   
-   </template>  
-   
    <script>
    import {useCategoryStore} from '../store/categoryStore'
    import Swal from 'sweetalert2';

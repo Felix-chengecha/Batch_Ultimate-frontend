@@ -1,130 +1,122 @@
 <template>
-
-      
-  <div class="rounded-lg border border-gray-200  bg-gray-300 h-full">
-  
-    <div class="overflow-x-auto rounded-t-lg py-1 px-1 ">
-
-    <div class="rounded-lg border border-gray-200  bg-gray-300 h-full">
-      <div class="overflow-x-auto rounded-t-lg py-1 px-1 space-y-1 ">
-        <a @click="openModal" class="inline-block rounded bg-blue-600 px-2 py-2  mr-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring focus:ring-yellow-400"> 
-           Add new Product
-        </a> 
+  <div class="rounded-lg border border-gray-200 bg-gray-300 h-full p-2">
     
-      <input v-model="searchQuery" id="Search" @input="productSearch" type="text"  placeholder="Search your...inventory" 
-      class="w-1/4 rounded-md border-gray-200 py-2.5 mr-2 shadow-sm sm:text-sm absolute right-0"/>
-  
+    <!-- Header & Search Controls -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mb-4">
+      <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-700">My Inventory</h2>
+      <div class="flex flex-col sm:flex-row items-center gap-2">
+        <button @click="openModal"
+          class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring focus:ring-yellow-400">
+          Add New Product
+        </button>
 
-    
-    
-    
-  <h2 class="text-3xl font-bold sm:text-2xl text-center text-gray-700 mt-1">My Inventory</h2>
-
-  
-        <table class="min-w-full divide-y-1 divide-gray-200 bg-gray-100 mt-1 text-sm rounded">
-          <thead class="ltr:text-left rtl:text-right">
-            <tr>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ID</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Cost</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Buying price</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Quantity</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Buying Date</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
-
-            </tr>
-          </thead>
-    
-          <tbody class="divide-y divide-gray-200">
-            <tr v-for="(item, index) in filteredProducts" :key="index">
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-900 ml-5">{{ item .productID}}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.productName}}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.sellingPrice }}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.buyingPrice }}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.productType }}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.quantity }}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.status }}</td>
-              <td class="whitespace-nowrap px-4 py-2  font-medium text-gray-700 ml-5">{{ item.createdOn }}</td>
-              <td class="ml-5">  ..</td>
-            </tr>
-
-          </tbody>
-        </table>
+        <input v-model="searchQuery" id="Search" @input="productSearch" type="text"
+          placeholder="Search inventory..."
+          class="w-full sm:w-64 rounded-md border border-gray-300 py-2 px-3 shadow-sm text-sm focus:ring focus:ring-blue-400" />
       </div>
     </div>
 
-     <!-- Modal backdrop  to add a new product-->
-    <div v-if="isModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center w-full justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 bg-white text-sm rounded-lg shadow">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">ID</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Name</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Cost</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Buying price</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Category</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Quantity</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Status</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Buying Date</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr v-for="(item, index) in filteredProducts" :key="index">
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productID }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productName }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.sellingPrice }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.buyingPrice }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productType }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.quantity }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.status }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.createdOn }}</td>
+            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      <div class="relative flex items-center justify-center">
-          <p class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center">ADD NEW PRODUCT</p>
-          <button @click="closeModal" class="absolute right-0 bg-black text-white px-1 rounded">x</button>
-        </div>
-      <div class="grid grid-cols-2 gap-4 mt-2">
-        <div>
-          <label for="pname" class="text-sm text-black">Product name</label>
-          <input type="text" v-model="pname" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
-        </div>
-
-        <div>
-
-          <label for="pcategory" class="text-sm text-black">Product Category</label>
-          <select v-model="pcategory" id="category" class="w-full rounded-lg border border-gray-400 p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 text-black bg-white">
-            <option v-for="option in categ" :key="option.categoryID" :value="option.categoryID">{{ option.categoryName }}</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="PNoItems" class="text-sm text-gray-700">No Of Items</label>
-          <input type="text" v-model="PNoItems" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
-        </div>
-
-        <div>
-          <label for="pcost" class="text-sm text-gray-700">weight/volume</label>
-          <input type="text" v-model="punit" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
-        </div>
-
-
-        <div>
-          <label for="PNoItems" class="text-sm text-gray-700">VAT %</label>
-          <input type="text" v-model="Pvat" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
-        </div>
-
-        <div>
-          <label for="pcost" class="text-sm text-gray-700">Product Cost</label>
-          <input type="text" v-model="pcost" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
+    <!-- Modal -->
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl max-h-screen overflow-y-auto">
+        <div class="relative text-center mb-4">
+          <p class="text-lg font-semibold uppercase text-gray-700">Add New Product</p>
+          <button @click="closeModal" class="absolute right-0 top-0 bg-black text-white px-2 rounded">x</button>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Form Inputs -->
+          <div>
+            <label class="text-sm text-gray-700">Product Name</label>
+            <input v-model="pname" type="text" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
 
-        <div>
-          <label for="pbuyingprice" class="text-sm text-gray-700">Product Buying Price</label>
-          <input type="text" v-model="pbuyingprice" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
+          <div>
+            <label class="text-sm text-gray-700">Product Category</label>
+            <select v-model="pcategory" class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-white">
+              <option v-for="option in categ" :key="option.categoryID" :value="option.categoryID">{{ option.categoryName }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-700">No of Items</label>
+            <input v-model="PNoItems" type="text" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-700">Weight/Volume</label>
+            <input v-model="punit" type="text" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-700">VAT %</label>
+            <input v-model="Pvat" type="text" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-700">Product Cost</label>
+            <input v-model="pcost" type="text" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-700">Product Buying Price</label>
+            <input v-model="pbuyingprice" type="text" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
+
+          <div>
+            <label class="text-sm text-gray-700">Product Buying Date</label>
+            <input v-model="pbuyingdate" type="date" class="w-full border border-gray-300 rounded-lg p-2 text-sm" />
+          </div>
+
+          <div class="col-span-1 md:col-span-2">
+            <label class="text-sm text-gray-700">Description</label>
+            <textarea v-model="pdescription" rows="3" class="w-full border border-gray-300 rounded-lg p-2 text-sm"
+              placeholder="Max 500 characters"></textarea>
+          </div>
         </div>
 
-        <div>
-          <label for="pbuyingdate" class="text-sm text-gray-700">Product Buying Date</label>
-          <input type="date" v-model="pbuyingdate" class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 border border-gray-400" />
-        </div>
-
-        <div class="col-span-2">
-          <label for="pdescription" class="text-sm text-gray-700">Description</label>
-          <textarea id="pdescription" rows="4" v-model="pdescription" class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-400 border border-gray-400" placeholder="Type your product description, maximum 500 characters"></textarea>
+        <div class="text-center mt-4">
+          <button @click="addinventory" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm font-semibold">
+            Add Product
+          </button>
         </div>
       </div>
-
-        <div class="text-center mt-6"> 
-           <a @click="addinventory" class="inline-block bg-blue-500 rounded-md px-4 py-3 text-sm font-bold uppercase tracking-widest text-white">Add product</a>
-        </div>
-      </div>
-    </div> 
+    </div>
   </div>
-<!-- Modal backdrop  to add a new template-->
+</template>
 
-  </div>    
-</template>  
     
     <script>
     import {UseInventoryStore} from '../store/InventoryStore'

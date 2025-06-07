@@ -1,219 +1,163 @@
+
 <template>
-   <main>
-
-
-  <div class="relative flex flex-col sm:flex-row items-start w-full">
-    <div class="flex flex-wrap items-center mt-2 sm:mb-0">
-       <a @click="openModal" class="inline-block rounded-md border  bg-green-400 px-2 py-1 text-sm text-black shadow-sm focus:outline-none m-1">
-        ADD NEW CONTACT
-       </a>
-       <a @click="OpenExcel" class="inline-block rounded-md border bg-blue-400 px-2 py-1 text-sm text-white shadow-sm focus:outline-none m-1">
-        ADD EXCEL
-       </a>
-     </div>
- 
-     <label for="Search" class="sr-only">Search</label>
-     <input type="text"  id="Search" @input="updateSearch" placeholder="Search for...anything" class="w-1/3 sm:w-1/3 rounded-md border-gray-200 py-2.5 pe-10 shadow-sm  lg:absolute right-1 mt-2 sm:text-sm"/>
-  </div> 
-
-
-    
-      <div class="relative flex flex-col sm:flex-row items-center w-full bg-gray-100 mt-2">
-        <div class="flex-1 text-center">
-       <span class="text-lg mx-3">CONTACTS LIST</span>
-        </div>
-       
-        <div class="flex-1 flex justify-end items-center space-x-4 pr-8">
-          <span class="text-lg mx-3">MESSAGE TEMPLATES</span>
-          <a  @click="AddTemplate" class="inline-block bg-blue-500 rounded-md py-2 px-2 text-sm font-bold uppercase tracking-widest text-white">  ADD TEMPLATE </a>
-        </div>
-        <!-- <div class="flex-1 flex justify-end items-center space-x-4">
-          <a   @click="AddTemplate" class="inline-block bg-blue-500 rounded-md py-1 px-1 text-sm font-bold uppercase tracking-widest text-white">ADD TEMPLATE </a>
-        </div> -->
-
+  <main class="p-4">
+    <!-- Top Buttons and Search -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 sm:space-x-4 mb-4">
+      <div class="flex flex-wrap gap-2">
+        <a @click="openModal" class="rounded-md border bg-green-400 px-3 py-1 text-sm text-black shadow-sm focus:outline-none">
+          ADD NEW CONTACT
+        </a>
+        <a @click="OpenExcel" class="rounded-md border bg-blue-400 px-3 py-1 text-sm text-white shadow-sm focus:outline-none">
+          ADD EXCEL
+        </a>
+      </div>
+      <input type="text" @input="updateSearch" placeholder="Search for...anything" class="w-full sm:w-1/3 rounded-md border-gray-300 py-2 px-4 shadow-sm sm:mt-0 mt-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
     </div>
 
- 
-    <div class="grid grid-cols-3 gap-10 h-auto bg-gray-200 p-1 rounded shadow">
-       <div class="col-span-2 bg-gray-200  h-auto"> 
-         <div class="W-2/3 mt-3">
-           <table class="min-w-full table-auto rounded">
-             <thead class="justify-between">
-              <tr class="bg-gray-400 text-gray-900">
-              <th class="py-1 px-2"><span class="text-sm">#</span></th>
-              <th class="px-3"><span class="text-sm">NAME</span></th>
-              <th class="px-2"><span class="text-sm">EMAIL</span></th>
-              <th class="px-4"><span class="text-sm">PHONE NO</span></th>
-              <th class="px-3"><span class="text-sm">CREATED-BY</span></th>
-              <th class="px-2"><span class="text-sm">CREATED-AT</span></th>
-              <th class="px-1"><span class="text-sm">Action</span></th>
-             </tr>
+   
+      <div class="text-lg font-medium text-center md:text-left mb-2 md:mb-0">CONTACTS LIST</div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Table Section -->
+      <div class="lg:col-span-2 bg-white rounded shadow overflow-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-400 text-gray-900">
+            <tr>
+              <th class="py-2 px-3 text-left">#</th>
+              <th class="px-3 text-left">NAME</th>
+              <th class="px-3 text-left">EMAIL</th>
+              <th class="px-3 text-left">PHONE NO</th>
+              <th class="px-3 text-left">CREATED-BY</th>
+              <th class="px-3 text-left">CREATED-AT</th>
+              <th class="px-3 text-left">Action</th>
+            </tr>
           </thead>
-       <tbody class="bg-gray-200">
-         <tr class="bg-white border-4 border-gray-200" v-for="(contact, index) in filteredItems" :key="contact.id"
-                                            @click="openModalEdit('editmode', contact.name, contact.email, contact.phoneno,contact.status)"   :class="{'bg-blue-100': selectedRow === index, 'hover:bg-gray-200': selectedRow !== index}"  >
-                <td class="py-2">{{ index + 1 }}.</td>
-                <td class="px-2">{{ contact.username }}</td>
-                <td class="px-2">{{ contact.email }}</td>
-                <td class="px-4">{{ contact.phoneNumber }}</td>
-                <td class="px-2">{{ contact.createdBy }}</td>
-                <td class="px-3">{{ contact.createdOn }}</td>
-                <td class="px-2">
-                  <span class="text-green-500">..</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+          <tbody>
+            <tr v-for="(contact, index) in filteredItems" :key="contact.id"
+                @click="openModalEdit('editmode', contact.name, contact.email, contact.phoneno,contact.status)"
+                :class="{
+                  'bg-blue-100': selectedRow === index,
+                  'hover:bg-gray-100': selectedRow !== index
+                }" class="border-b">
+              <td class="py-2 px-3">{{ index + 1 }}</td>
+              <td class="px-3">{{ contact.username }}</td>
+              <td class="px-3">{{ contact.email }}</td>
+              <td class="px-3">{{ contact.phoneNumber }}</td>
+              <td class="px-3">{{ contact.createdBy }}</td>
+              <td class="px-3">{{ contact.createdOn }}</td>
+              <td class="px-3"><span class="text-green-500">...</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
+      <!-- Sidebar -->
 
-     <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
-      
-      <article class="rounded-xl border  border-gray-400  ">
-      
+   
+  
+         <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
+
+              <!-- Header Row -->
+    <div class="flex flex-col md:flex-row items-center justify-between bg-gray-100 py-2 px-4 rounded mb-3">
+      <div class="flex items-center gap-3">
+        <span class="text-lg">MESSAGE TEMPLATES</span>
+        <a @click="AddTemplate" class="bg-blue-500 text-white px-3 py-2 rounded-md text-sm font-semibold">
+          ADD TEMPLATE
+        </a>
+      </div>
+    </div>
+    
+       <article class="rounded-xl border  border-gray-400">
         <ul>
             <!-- <li v-for="(item, index) in recent.data" :key="index"> -->
         <li>
             <a href="#" class="block h-full rounded-lg border border-gray-900 p-1 hover:border-pink-600">
             <span class="font-medium text-gray-700"></span>
-            <p class="mt-1 text-xs text-sm text-gray-800">  </p>
-            <p class="mt-1 text-xs text-sm text-gray-800">  </p>
-            <p class="mt-1 text-xs text-sm text-gray-800"> </p>
+            <p class="mt-1 text-m text-gray-800">  </p>
           </a>
         </li>
       </ul>
-
       </article>
-
      </div>
-
- 
+      
     </div>
 
-
-
-    <!-- Modal backdrop  to add a new template-->
-   <div v-if="isModalTempOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-    <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-        <div class="relative flex items-center justify-center">
-            <p v-if="Mode === 'addmode'" class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">ADD NEW MESSAGE TEMPLATE</p>
-            <p v-if="Mode === 'editmode'" class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">EDIT MESSAGE TEMPLATE</p>
-            <button @click="closeModal" class="absolute right-0 bg-black text-white px-1 rounded">x</button>
+    <!-- Template Modal -->
+    <div v-if="isModalTempOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+      <div class="bg-white w-full max-w-lg p-4 rounded shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">
+            {{ Mode === 'addmode' ? 'ADD NEW MESSAGE TEMPLATE' : 'EDIT MESSAGE TEMPLATE' }}
+          </h2>
+          <button @click="closeModal" class="bg-black text-white px-2 rounded">x</button>
         </div>
 
-        <div class="p-4 text-center sm:p-6 md:col-span-2 lg:p-8">
-            <label for="email" class="w-full text-sm text-black">Text Header</label>
-            <div class="relative">
-                <input type="text" v-model="templateHeader" class="w-full rounded-lg p-3 text-sm shadow-sm text-black focus:border-black focus:ring-black border border-gray-700" required placeholder="Text Header" />
-            </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-black">Text Header</label>
+            <input type="text" v-model="templateHeader" class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+          </div>
+          <div>
+            <label class="block text-sm text-black">Enter Body</label>
+            <textarea rows="4" v-model="templateBody" class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" placeholder="Type your message here (max 2000 chars)"></textarea>
+          </div>
         </div>
 
-        <div class="p-4 text-center sm:p-6 md:col-span-2 lg:p-8">
-            <div class="mt-2">
-                <label for="message" class="w-full text-sm text-black">Enter Body</label>
-                <textarea id="message" rows="4" v-model="templateBody" 
-                class="w-full rounded-lg p-2 text-sm shadow-sm focus:border-black focus:ring-black border border-gray-700 text-black"
-                placeholder="Type your message here maximum 2000 characters"></textarea>   
-            </div>
-
-         
+        <div class="mt-4 flex justify-end gap-2">
+          <a v-if="Mode === 'addmode'" @click="Submittemplate"
+             class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Submit</a>
+          <div v-else class="flex gap-2">
+            <a @click="Edittemplate" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Edit</a>
+            <a @click="DisableTemplate" class="bg-gray-600 text-white px-4 py-2 rounded">Delete</a>
+          </div>
         </div>
-
-        <!-- Button container -->
-        <div class="flex justify-end space-x-2 ">
-            <a v-if="Mode === 'addmode'" @click="Submittemplate" class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                Submit
-            </a>
-
-            <div v-if="Mode === 'editmode'" class="flex items-center space-x-2"> 
-                <a @click="Edittemplate" class="px-7 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                    Edit
-                </a>
-                <a @click="DisableTemplate" class="bg-gray-700 rounded-md py-2 text-sm px-7">Delete</a>
-            </div>
-        </div>
+      </div>
     </div>
-   </div>
-   
-     <!-- excel upload modal -->
-   <div v-if="isEXCELOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-     <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-       <div class="relative flex items-center justify-center">
-         <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">UPLOAD EXCEL FILE</p>
-         <button @click="CloseExcel" class="absolute right-0 bg-black text-white px-1 rounded">x</button>
-       </div>
-    <div class="flex flex-col space-y-2 mt-10">
-     <input  type="file" @change="handleFileUpload"  class="border border-gray-300 rounded-md px-4 py-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"/>
-     <button @click="submitExceldata" class="mt-4 bg-blue-500 text-white rounded-md px-4 py-2 w-1/2 justify-center items-center ml-20 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
-       Process File
-     </button>
+
+    <!-- Excel Upload Modal -->
+    <div v-if="isEXCELOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+      <div class="bg-white w-full max-w-md p-4 rounded shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">UPLOAD EXCEL FILE</h2>
+          <button @click="CloseExcel" class="bg-black text-white px-2 rounded">x</button>
+        </div>
+        <div class="space-y-4">
+          <input type="file" @change="handleFileUpload"
+                 class="w-full border border-gray-300 rounded px-4 py-2 text-gray-600 focus:outline-none focus:ring focus:ring-gray-400" />
+          <button @click="submitExceldata"
+                  class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+            Process File
+          </button>
+        </div>
+      </div>
     </div>
-     </div>
-   </div>  
- 
-     <!-- Modal code here -->
-   <div v-if="isModalOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-   <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-     <div class="relative flex items-center justify-center">
-       <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">ADD NEW CONTACT</p>
-       <button @click="closeModal" class="bg-black text-white px-2 ml-10 rounded">x</button>
-       </div>
 
+    <!-- Add Contact Modal -->
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+      <div class="bg-white w-full max-w-md p-4 rounded shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">ADD NEW CONTACT</h2>
+          <button @click="closeModal" class="bg-black text-white px-2 rounded">x</button>
+        </div>
 
-       <div class="p-2 sm:p-6 md:col-span-2 lg:p-8">
-           <label for="email" class="w-full text-sm text-black">NAME</label>
-           <div class="relative">
-               <input
-                   type="text"
-                   v-model="Name"
-                   class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-black focus:ring-black border border-gray-700"
-               />
-           </div>
-       </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-black">NAME</label>
+            <input type="text" v-model="Name"
+                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+          </div>
+          <div>
+            <label class="block text-sm text-black">PHONE NUMBER</label>
+            <input type="text" v-model="phone"
+                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+          </div>
+        </div>
+      </div>
+    </div>
 
-       <div class="p-2 sm:p-6 md:col-span-2 lg:p-8">
-           <label for="email" class="w-full text-sm text-black">PHONE NUMBER</label>
-           <div class="relative">
-               <input
-                   type="text"
-                   v-model="phone"
-                   class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-black focus:ring-black border border-gray-700"
-               />
-           </div>
-       </div>
-
-       <div class="p-2 sm:p-6 md:col-span-2 lg:p-8">
-           <label for="email" class="w-full text-sm text-black">EMAIL ADDRESS</label>
-           <div class="relative">
-               <input
-                   type="text"
-                   v-model="Email"
-                   class="w-full rounded-lg p-3 text-sm shadow-sm focus:border-black focus:ring-black border border-gray-700"
-               />
-           </div>
-       </div>
-
-        <div v-if="Mode === 'editmode'" class="flex items-center mt-3">
-           <label for="checkbox" class="ml-2 text-gray-700">Status</label>
-           <input type="checkbox" v-model="contactstatus" id="checkbox" class="w-4 h-4 ml-1 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-         </div>
-
-       <!-- Button container -->
-       <div class="flex justify-end space-x-2 ">
-           <a @click="AddContact" class="inline-block bg-blue-500 rounded-md py-2 px-4 text-sm font-bold uppercase tracking-widest text-white">SUBMIT</a>
-
-           <div v-if="Mode === 'editmode'" class="flex items-center space-x-2">
-               <!-- <a @click="DeleteTemplate" class="bg-red-800 rounded-md py-2 px-4 text-sm"></a> -->
-               <a @click="DisableTemplate" class="bg-gray-700 rounded-md py-2 px-4 text-white text-sm">DELETE</a>
-           </div>
-
-       </div>
-   </div>
-   </div>
-
-   </main>
- </template>
+  </main>
+</template>
  
  <script>
  import { usecontactstore } from '../store/contactstore';

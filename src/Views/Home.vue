@@ -10,7 +10,7 @@
                 <div class="bg-white py-7 rounded-lg shadow-md">  
  
  
-      <!--Section one to contain cards with minimum details   -->
+              <!--Section one to contain cards with minimum details   -->
                 <div class="grid grid-cols-1 gap-8 px-4 lg:grid-cols-2 xl:grid-cols-4">
             
                   <!-- card one -->
@@ -79,49 +79,38 @@
                  </div>
                </div>
  
-          <!-- section three contains a small table and a data table -->
-              <div class="grid grid-cols-3 gap-10 h-auto mt-9 bg-gray-200 p-1 rounded shadow">
-                   <!-- First row has 2/3 widths -->
-                  <div class="col-span-2 bg-gray-200  h-auto"> 
-                    <!-- <canvas id="myChart" class="w-64 h-40"></canvas>  --> 
-                    <canvas id="salesChart" class="w-64 h-40"></canvas> 
-                  </div>
- 
-                   <!-- second Row: 1/3 width  -->
-                  <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
- 
-                 <div class="flex items-center gap-4">                      
-                    <div class="w-full">
-                       <h3 class="w-full border-gray-700  rounded-lg font-medium text-gray-700 text-center ">Recent Sales</h3>
-                
-                     </div>
-                    </div>
- 
-                  <article class="rounded-xl border  border-gray-400  ">
-                  
-                <ul>
-                  <li v-for="(item, index) in recent.data" :key="index">
-                  <a href="#" class="block h-full rounded-lg border border-gray-900 p-1 hover:border-pink-600">
-                    <span class="font-medium text-gray-700">{{ item.transactionID }}</span>
-                    <p class="mt-1 text-xs text-sm text-gray-800">
-                      {{ item.totalCost }}
-                    </p>
-                    <p class="mt-1 text-xs text-sm text-gray-800">
-                      {{ item.quantity }}
-                    </p>
-                    <p class="mt-1 text-xs text-sm text-gray-800">
-                      {{ item.timeOfDay }}
-                    </p>
-                  </a>
-                  </li>
-              </ul>
-              
+             <!-- section three contains a small table and a data table -->
+             
 
-                 </article>
- 
-                 </div>
- 
-               </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-10 h-auto mt-9 bg-gray-200 p-2 md:p-4 rounded shadow">
+                  <!-- Chart Section: Full width on mobile, 2/3 on md+ -->
+                  <div class="md:col-span-2 bg-gray-200 h-auto flex justify-center items-center"> 
+                    <canvas id="salesChart" class="w-full max-w-full h-40 sm:h-56 md:h-64 lg:h-72"></canvas> 
+                  </div>
+
+                  <!-- Recent Sales Section: Full width on mobile, 1/3 on md+ -->
+                  <div class="bg-gray-100 h-auto rounded-lg p-3">
+                    <div class="flex items-center justify-center mb-3">                      
+                      <h3 class="text-center font-semibold text-gray-700 text-lg">Recent Sales</h3>
+                    </div>
+
+                    <article class="rounded-xl border border-gray-300 p-2">
+                      <ul>
+                        <li v-for="(item, index) in recent.data" :key="index" class="mb-2">
+                          <a href="#" class="block rounded-lg border border-gray-300 p-2 hover:border-pink-600 transition">
+                            <span class="block font-medium text-gray-700">{{ item.transactionID }}</span>
+                            <p class="text-sm text-gray-800">{{ item.totalCost }}</p>
+                            <p class="text-sm text-gray-800">{{ item.quantity }}</p>
+                            <p class="text-sm text-gray-800">{{ item.timeOfDay }}</p>
+                          </a>
+                        </li>
+                      </ul>
+                    </article>
+                  </div>
+                </div>
+
+
+
                    
              </div>
  

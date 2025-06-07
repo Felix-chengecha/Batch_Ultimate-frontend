@@ -49,6 +49,18 @@ export default {
     });
   },
 
+  //get user account details   
+  getUserdetails(token,userid) {
+      return apiClient.get(`/UserDetails/${userid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      return response.data;
+    });
+  },
+
 
 
 

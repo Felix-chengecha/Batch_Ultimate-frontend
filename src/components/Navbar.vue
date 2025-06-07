@@ -59,23 +59,15 @@
    import { ref,onMounted, watch,computed } from 'vue';
    export default {
     setup(){
-    //  name: 'Navbar',
-    //  data() {
-    //    return {
-    //   
+  
       const isOpen =  ref(false);
       const dashboardstore = useDashboardStore();
 
-        //  message: '',
-    //    };
-    //  },
-    //  methods: { 
 
 
-       const toggleSidebar = ()=> {
-        dashboardstore.toggleSidebar();
-        console.log(dashboardstore.isSidebarVisible);
-        }
+      const toggleSidebar = ()=> {
+       dashboardstore.toggleResponsiveSidebar();
+      }
 
       const  toggleDropdown = () => {
          isOpen.value = !isOpen.value;

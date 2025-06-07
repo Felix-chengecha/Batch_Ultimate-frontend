@@ -1,71 +1,69 @@
 <template>
-  <!-- <div class="flex w-screen h-screen overflow-hidden"> -->
-    <div class="h-screen w-screen flex flex-col">
-
-    <Navbar class="h-16" />
-
+  <div class="h-screen w-screen flex flex-col overflow-y-auto">
+     <Navbar class="h-16" />
     <div class="flex flex-1">
-   
-    <Sidebar class="h-full  bg-gray-800 text-white " />
+       
+      <Sidebar v-if="filterLargeScreen" class="h-full  bg-gray-800 text-white " />
 
+     <Mobile_sidebar v-if="filterSmallScreen" class="fixed top-0 left-0 z-50 w-64 h-auto max-h-screen bg-gray-800 text-white shadow-lg" />
 
-      <!-- Main Content Area (Scrollable) -->
-      <main class="flex-1 bg-gray-100  overflow-y-auto">
-        <!-- RouterView will display the current route's content -->
+     <main class="flex-1 bg-gray-100  overflow-y-auto">
         <RouterView />
       </main>
     </div>
   </div>
 </template>
 
+
+
 <script>
+import { computed, watch } from 'vue';
 import { RouterView } from 'vue-router';
-import { ref, watch, onMounted, computed } from 'vue'; 
 import Navbar from '../components/Navbar.vue';
 import Sidebar from '../components/Sidebar.vue'; 
-import {useDashboardStore} from '../store/DashboardStore'
+import Mobile_sidebar from '../components/Mobile_sidebar.vue';
+import { useDashboardStore } from '../store/DashboardStore';
 
 export default {
   name: 'Dashboard',
   components: {
     Navbar,
     Sidebar,
+    Mobile_sidebar
+  },
+  setup() { 
+
+
+  const dashboardstore = useDashboardStore();
+
+    const filterSmallScreen = computed(() => dashboardstore.filterSmallScreen)
+    const filterLargeScreen = computed(() => dashboardstore.filterLargeScreen) 
+
+    watch(filterLargeScreen, (newVal, oldVal) => {
+      if (newVal) {
+        console.log(newVal, "felo") 
+
+      }
+    });
+
+   return {
+    
+        dashboardstore,
+        filterSmallScreen,
+        filterLargeScreen,
+   }
+
   },
 
-  setup() {
-    // const dashStore = useDashboardStore();
-    // const average = computed(() => dashStore.getAverages);
-    // const graph = computed(() => dashStore.getGraph);
-
-
-
-  // onMounted(() => {
-    
-  //    dashStore.getGraphData();
-  //    dashStore.getDashboardAverages();
-       
-
-
-  // //   });
-  // return{
-  //   dashStore,
-  //   average,
-  //   graph
-  // }
-
-   },
 };
+
 </script>
 
-
-
-
-
-<style scoped>
+<!-- <style scoped>
 html,
 body {
   margin: 0;
   height: 100%;
   overflow: hidden;
 }
-</style>
+</style> -->
