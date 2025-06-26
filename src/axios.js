@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+
+let dynamicBaseURL = 'http://localhost:5134/api/' 
+
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5134/api/',
+  baseURL: dynamicBaseURL, //'http://localhost:5134/api/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -13,6 +16,12 @@ const apiClient = axios.create({
 // apiClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
 // Get the token from local storage
+
+function setBaseURL(url) {
+  dynamicBaseURL = url
+  apiClient.defaults.baseURL = url // this is the key!
+}
+
 
 export default { 
 
@@ -29,7 +38,9 @@ export default {
   },
 
 //LOGIN USER
-  ulogin(postData) {
+  ulogin(postData) { 
+    // dynamicBaseURL = postData.env;
+     setBaseURL(postData.env);
     return apiClient.post(`/login`, postData, {
       })
       .then(response => {

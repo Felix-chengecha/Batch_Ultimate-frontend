@@ -40,7 +40,15 @@ export const Useuserstore = defineStore('userstore', {
   actions: {  
 
     async LoginUser(ldata) {
-      try {
+      try { 
+        localStorage.removeItem('Enviroment');
+
+       //console.log("Enviroment", ldata.env, localStorage.setItem("Enviroment",ldata.env) );
+
+        localStorage.setItem("Enviroment",ldata.env)
+
+        console.log(ldata);
+
         const response = await axios.ulogin(ldata);
         this.AllDetails = response; 
         // return response; 

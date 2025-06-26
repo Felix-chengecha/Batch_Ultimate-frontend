@@ -55,6 +55,7 @@
    
    <script>
    import { reactive } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
    import { useDashboardStore } from '../store/DashboardStore';
    import { ref,onMounted, watch,computed } from 'vue';
    export default {
@@ -62,7 +63,8 @@
   
       const isOpen =  ref(false);
       const dashboardstore = useDashboardStore();
-
+     const route = useRoute();
+       const router = useRouter();
 
 
       const toggleSidebar = ()=> {
@@ -84,7 +86,8 @@
        }
 
       const logout= ()=> {
-        $router.push('/login');
+        // $router.push('/login');
+              router.push('/login');
         localStorage.removeItem('token');
         localStorage.removeItem('isLoggedIn');
     }
