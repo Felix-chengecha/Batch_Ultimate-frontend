@@ -22,11 +22,11 @@ getters: {
 
    actions: { 
 
-    fetchdata(id) {
+    fetchCatalogue() {
       this.loading = true;
-      axios.getstatistics(id, this.token)
+      axios.getcatalogue()
            .then(response=> {
-            this.data = response.data
+            this.data = response;
             this.loading = false;
            })
            .catch(error=>{

@@ -21,26 +21,28 @@
       <table class="min-w-full divide-y divide-gray-200 bg-white text-sm rounded-lg shadow">
         <thead class="bg-gray-100">
           <tr>
-            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">ID</th>
+            <!--<th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">ID</th> -->
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Name</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Cost</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Buying price</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Category</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Quantity</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Status</th>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Supplier</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Buying Date</th>
             <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">Action</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
           <tr v-for="(item, index) in filteredProducts" :key="index">
-            <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productID }}</td>
+          <!--  <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productID }}</td> -->
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productName }}</td>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.sellingPrice }}</td>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.buyingPrice }}</td>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.productType }}</td>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.quantity }}</td>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.status }}</td>
+            <th class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap"> {{item.supplierId}} </th>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">{{ item.createdOn }}</td>
             <td class="px-4 py-2 text-gray-800 whitespace-nowrap">...</td>
           </tr>
@@ -185,8 +187,7 @@
           return false;
         }
             const postData = {
-              products: [{
-                productID:"PR_"+part1+part2+"000"+pcategory.value,
+                //productID:"PR_"+part1+part2+"000"+pcategory.value,
                 productName: pname.value,
                 productDescription: pdescription.value,
                 Weight_Volume :punit.value,
@@ -194,12 +195,13 @@
                 buyingPrice: pbuyingprice.value,
                 sellingPrice: pcost.value,
                 quantity: PNoItems.value,
-                createdBy: "chee",//localStorage.getItem('name'),
-                updatedBy: "",
-                createdOn: "2014_10_12",
-                updatedOn: ""
-              }]
-            }
+                supplier: "0197b829-6d97-7540-9ab2-89913ebf9742"
+                // createdBy: "chee",//localStorage.getItem('name'),
+                // updatedBy: "",
+                // createdOn: "2014_10_12",
+                // updatedOn: ""
+              };
+            
               inventorystore.AddnewProduct(postData);
                 setTimeout(() => {
                   DisplayMessage("success", inventorystore.successmsg)

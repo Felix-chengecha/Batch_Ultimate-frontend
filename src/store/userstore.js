@@ -3,52 +3,45 @@ import axios from '../axios';
 
 export const Useuserstore = defineStore('userstore', {
   state: () => ({ 
-    AllDetails:[],  //saves all details on login
+    AllDetails:[],  
+    // permissions: [], 
+    // details: [], 
+    // name:'',
+    // email:'',
+    // userid:'',
+    // phone:'',
+    // role:[],
+    // error: [], 
+    // success: '', 
 
-    permissions: [], 
-    details: [], 
+    status:'',
+    statusMessage:'',
     token:'',
-
-    name:'',
-    email:'',
-    userid:'',
-    phone:'',
-
-    role:[],
-    error: [], 
-    success: '', 
-
+    
   }),
 
   getters: { 
+    // getPermissions: (state) => state.permissions,
+    // getDetails: (state) => state.details,
+    // getRole:(state) => state.role,
+    // getname:(state) => state.name,
+    // getemail:(state) => state.email,
+    // getuserid:(state) => state.userid,
+    // getphone:(state) => state.phone,
+    // getError:(state) => state.error,
+    // getsucces:(state)=>state.success,
+
     getAllDetails: (state) => state.AllDetails,
-
-    getPermissions: (state) => state.permissions,
-    getDetails: (state) => state.details,
-    getRole:(state) => state.role,
+    getStatus:(state) => state.status,
+    getMessage:(state) => state.statusMessage,
     getToken:(state) => state.token,
-
-    getname:(state) => state.name,
-    getemail:(state) => state.email,
-    getuserid:(state) => state.userid,
-    getphone:(state) => state.phone,
-
-    getError:(state) => state.error,
-    getsucces:(state)=>state.success,
   },
 
   actions: {  
 
     async LoginUser(ldata) {
       try { 
-        localStorage.removeItem('Enviroment');
-
-       //console.log("Enviroment", ldata.env, localStorage.setItem("Enviroment",ldata.env) );
-
-        localStorage.setItem("Enviroment",ldata.env)
-
-        console.log(ldata);
-
+ 
         const response = await axios.ulogin(ldata);
         this.AllDetails = response; 
         // return response; 

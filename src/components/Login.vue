@@ -16,7 +16,7 @@
 <!-- <div class="w-full max-w-md lg:max-w-xl xl:max-w-2xl bg-white bg-opacity-95 rounded-lg shadow-lg p-4 lg:p-8 space-y-4"> -->
 <div class="w-full max-w-md lg:max-w-xl xl:max-w-2xl bg-white bg-opacity-95 rounded-lg shadow-lg p-4 lg:p-8 space-y-4 h-auto lg:h-[65vh] flex flex-col justify-center">
 
-        <h2 class="text-xl md:text-2xl font-semibold text-center text-gray-800">
+        <h2 class="text-xl md:text-2xl font-semibold text-center text-gray-800 md:mt-3">
           Good to see you again!
         </h2>
 
@@ -70,7 +70,6 @@
             </div>
           </div>
 
-          <!-- Remember + Submit -->
           <div class="flex items-center justify-between">
             <label class="flex items-center space-x-2">
               <input type="checkbox" v-model="remember" class="form-checkbox" />
@@ -101,13 +100,13 @@
 
 
 <script>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick,watch } from 'vue'
 import Swal from 'sweetalert2';
 import {useRouter } from 'vue-router'
 import axios from '../axios'
 import Register from './Register.vue';
 import {Useuserstore} from '../store/userstore';
-// import backgroundImage from '../assets/bgLogin.jpg';
+import links from '../assets/Enviroment.json';
 import backgroundImageLeft from '../assets/bgLogin.jpg'
 import backgroundImageRight from '../assets/bgLogin.jpg'
 export default {
@@ -121,24 +120,29 @@ export default {
     const remember = ref(false);
     const isOpen = ref(false);
     const enviroment = ref('');
-
+    const options = [];
     const dropdown = ref(null);
+    const selected = ref('');
 
-    const options = [
-      { label: "TEST", url: "http://localhost:5123/api/" },
-      { label: "LIVE", url: "https://batch-ultimate.onrender.com/" }
-    ]
-    const selected = ref('')
+    const status = ref('');
+    const token = ref('');
+
 
 
     const LoginUserStore = Useuserstore();
 
+    const Loginresponse = computed(() => LoginUserStore.getAllDetails);
+          
+      watch(Loginresponse, (newValue) => {
+           status.value = newValue.status;
+           token.value = newValue.token;
+           localStorage.setItem('token', newValue.token);
+            if(status.value == '200'){
+           router.push('/');
+          }
+        }); 
 
-   const rightSideBgStyle = computed(() => ({
-      backgroundImage: `url(${backgroundImageRight})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }))
+
  
   const showRegister =()=>{
      router.push('/register')
@@ -150,93 +154,54 @@ export default {
       event.preventDefault();   
 
      try {
-       const authdata = {
-             email: email.value,
-             password: password.value,
-             env: enviroment.value
-          };
+       const authdata = { email: email.value, password: password.value, env: enviroment.value };
         
-
         try {  
-        LoginUserStore.LoginUser(authdata);
-          setTimeout(() => {
-            DisplayMessage("success", "welcome")
-         }, 2000); 
-       } catch(error){
+          LoginUserStore.LoginUser(authdata);
+          setTimeout(() => { DisplayMessage("success", "welcome")}, 2000); 
+       } catch(error) {
          setTimeout(() => {
              ErrorMessage("Error:", error);
-
          }, 2000); 
-
        }
 
    } catch (error) {
      ErrorMessage("Login failed:", error);
    }
      
-      const success = computed(() => LoginUserStore.getsucces);
-     
-       if(success.value == true) { 
-
-      const token = computed(() => LoginUserStore.getToken);
-      const det = computed(() => LoginUserStore.getAllDetails);
-      const userid = computed(()=> LoginUserStore.getuserid);
-
-      const Uname = computed(()=> LoginUserStore.getname);
-      const Uemail = computed(()=> LoginUserStore.getemail);
-      const Uphone = computed(()=> LoginUserStore.getphone);
-
-         localStorage.setItem("userid", userid.value);
-         localStorage.setItem('token', token.value);
-         localStorage.setItem('isLoggedIn', success.value); 
-         localStorage.setItem('details', det.value); 
-         localStorage.setItem('name', Uname.value); 
-         localStorage.setItem('email', Uemail.value); 
-         localStorage.setItem('phone', Uphone.value); 
-           router.push('/');
-         }
-
-
-
-        
-  
     }
   }
 
   const validateDetails = () =>{
+    if(email.value.trim() === ""){
+      ErrorMessage("Please Enter your email address");
+      return false;
+    }
+    else if(password.value.trim() === ""){
+      ErrorMessage("Enter your password");
+    return false;
+    }
+    else if (!/\S+@\S+\.\S+/.test(email.value)) {
+      ErrorMessage("Enter a valid email address");
+      return false;
+    }
+    else{
+      return true
+    }
+    } 
 
-   if(email.value.trim() === ""){
-     ErrorMessage("Please Enter your email address");
-     return false;
-   }
-   else if(password.value.trim() === ""){
-     ErrorMessage("Enter your password");
-   return false;
-   }
-   else if (!/\S+@\S+\.\S+/.test(email.value)) {
-     ErrorMessage("Enter a valid email address");
-     return false;
-   }
-   else{
-     return true
-   }
-
-  } 
-
-    const DisplayMessage=(icon,message) => {
-      
-
-      Swal.fire({
-            position: "top-end",
-            icon: icon,
-            title: message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-     }
+  const DisplayMessage=(icon,message) => {
+    Swal.fire({
+          position: "top-end",
+          icon: icon,
+          title: message,
+          showConfirmButton: false,
+          timer: 1500
+        });
+    }
 
 
-   const ErrorMessage = (Error) =>{
+  const ErrorMessage = (Error) =>{
      Swal.fire({
            position: 'top-end',
            icon: 'error',
@@ -244,24 +209,18 @@ export default {
            showConfirmButton: false,
            timer: 2500,
          });
-
    }  
-
-
-
-   
+ 
 
   const toggleDropdown = () => {
     isOpen.value = !isOpen.value
   }
 
-const selectOption = (option) => {
-  selected.value = option.label // option is already a string
-  enviroment.value = option.url
-  console.log(selected.value)
-
-  isOpen.value = false
-}
+  const selectOption = (option) => {
+    selected.value = option.label 
+    enviroment.value = option.url
+    isOpen.value = false
+  }
 
   const handleClickOutside = (e) => {
     if (dropdown.value && !dropdown.value.contains(e.target)) {
@@ -272,6 +231,9 @@ const selectOption = (option) => {
   onMounted(async () => {
     await nextTick()
     document.addEventListener('click', handleClickOutside)
+    links.forEach(link => {
+       options.push(link);
+    });
   })
 
   onBeforeUnmount(() => {
@@ -297,7 +259,10 @@ const selectOption = (option) => {
       options,
       selectOption,
       selected,
-      enviroment
+      enviroment,
+      Loginresponse,
+      status,
+      token
 
 
      

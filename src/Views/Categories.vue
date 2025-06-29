@@ -28,7 +28,7 @@
             <tr>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category Name</th>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Code</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No of Items</th>
+              <!-- <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No of Items</th> -->
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Created on</th>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
@@ -42,7 +42,7 @@
             >
               <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryName }}</td>
               <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryCode }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.noOfItems }}</td>
+              <!-- <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.noOfItems }}</td> -->
               <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.status }}</td>
               <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
               <td class="whitespace-nowrap px-4 py-2 text-gray-700">..</td>
@@ -53,17 +53,14 @@
     </div>
 
     <!-- Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4"
-    >
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4" >
       <div class="bg-white w-full max-w-md rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
         <div class="p-4">
-          <p class="text-center text-sm font-semibold uppercase tracking-widest text-gray-700">
-            Add New Category
-          </p>
+           <div class="relative text-center mb-4">
+          <p class="text-lg font-semibold uppercase text-gray-700">Add New Category</p>
+          <button @click="closeModal" class="absolute right-0 top-0 bg-black text-white px-2 rounded">x</button>
+        </div>
 
-          <!-- Input: Category Name -->
           <div class="mt-4">
             <label class="block text-sm text-gray-700 mb-1">Category Name</label>
             <input
@@ -76,24 +73,20 @@
           <!-- Input: Category Code -->
           <div class="mt-4">
             <label class="block text-sm text-gray-700 mb-1">Category Code</label>
-            <input
-              type="text"
-              v-model="Ccode"
-              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
-            />
+            <input type="text" v-model="Ccode" class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500" />
           </div>
 
           <!-- Input: No of Items -->
-          <div class="mt-4">
+          <!-- <div class="mt-4">
             <label class="block text-sm text-gray-700 mb-1">No Of Items</label>
             <input
               type="text"
               v-model="CNoItems"
               class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
             />
-          </div>
+          </div> -->
 
-          <!-- Input: Description -->
+
           <div class="mt-4">
             <label class="block text-sm text-gray-700 mb-1">Description</label>
             <textarea
@@ -104,20 +97,12 @@
             ></textarea>
           </div>
 
-          <!-- Buttons -->
+      
           <div class="mt-6 text-center">
-            <a
-              @click="AddCategory"
-              class="block w-full bg-blue-500 rounded-md py-3 text-sm font-bold uppercase text-white tracking-widest"
-            >
+            <a @click="AddCategory" class="block w-full bg-blue-500 rounded-md py-3 text-sm font-bold uppercase text-white tracking-widest">
               Submit
             </a>
-            <button
-              @click="closeModal"
-              class="mt-3 w-full bg-gray-800 text-white py-2 rounded"
-            >
-              Cancel
-            </button>
+      
           </div>
         </div>
       </div>
@@ -179,19 +164,12 @@
         // else{
    
       const postData = {
-        categ: [
-          {
             categoryName: Cname.value,
             categoryCode:  Ccode.value,
-            noOfItems: CNoItems.value,
+            noOfItems: 1,
             categoryDescription: Cdescription.value,
-            status: "1",
-            CreatedOn	: "2024-09-15T00:00:00",  
-            createdBy: "admin",  
-            updatedOn: "",  
-            updatedBy: "" 
-          }
-         ] };
+            status: "active",
+        };
 
         try {  
         CategoryStore.AddnewCategory(postData);
@@ -224,15 +202,12 @@
      const Validation = () => { 
 
       let isNumeric = /^\d+$/;
-        if( Cname.value.trim() === "" && Ccode.value.trim() === "" && CNoItems.value.trim() ==="" &&  Cdescription.value.trim() ==="") {
+        if( Cname.value.trim() === "" && Ccode.value.trim() === "" &&   Cdescription.value.trim() ==="") {
           DisplayMessage("error", "!!error please fill all the fields");
           return false;     
         }
 
-       else if (!isNumeric.test(CNoItems.value)) {
-        DisplayMessage("error", "!!error no of item should be numeric");
-        return false;  
-      }
+    
       // else{
         return true;
       // }

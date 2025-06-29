@@ -3,6 +3,8 @@ import axios from 'axios';
 
 let dynamicBaseURL = 'http://localhost:5134/api/' 
 
+let token = localStorage.getItem('token');
+
 const apiClient = axios.create({
   baseURL: dynamicBaseURL, //'http://localhost:5134/api/',
   headers: {
@@ -29,7 +31,6 @@ export default {
     //USER AUTHENTICATION ENDPOINTS 
 //-------------------------------------------------
   register(postData) {
-    // console.log(postData);
     return apiClient.post(`/Authentication/Register`, postData, {
       })
       .then(response => {
@@ -39,9 +40,9 @@ export default {
 
 //LOGIN USER
   ulogin(postData) { 
-    // dynamicBaseURL = postData.env;
-     setBaseURL(postData.env);
-    return apiClient.post(`/login`, postData, {
+      setBaseURL(postData.env);
+      delete postData.env;
+    return apiClient.post(`Authentication/Login`, postData, {
       })
       .then(response => {
         return response.data;
@@ -78,51 +79,50 @@ export default {
 //-------------------------------------------------
    //Dashboard ENDPOINTS
 //-------------------------------------------------
-  getDashboardAverages(token) {
+  getDashboardAverages() {
     return apiClient.get(`/Dashboard/SalesAverages`, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
     return response;
   });
 },
 
-getGraphData(token) {
+getGraphData() {
   return apiClient.get(`/Dashboard/Graphdata`, {
-  // headers: {
-  //   Authorization: `Bearer ${token}`,
-  // },
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
 })
 .then(response => {
   return response;
 });
 },
 
-getRecentSalesData(token) {
+getRecentSalesData() {
   return apiClient.get(`/Dashboard/RecentSales`, {
-  // headers: {
-  //   Authorization: `Bearer ${token}`,
-  // },
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
 })
 .then(response => {
   return response;
 });
 },
+
 
 //-------------------------------------------------
    //product ENDPOINTS
 //-------------------------------------------------
-//http://localhost:5134/api/Ultimate/AddProducts /Products/GetProducts' 
-  //addproduct
   addproduct(postData) { 
     // console.log(postData);
 
     return apiClient.post('/Products/AddProducts', postData, {
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     .then(response => {
       return response;
@@ -130,16 +130,13 @@ getRecentSalesData(token) {
   },
   
 
-    //getcontact
-    //http://localhost:5134/api/Ultimate/GetProducts
     getproduct() { 
-      return apiClient.post('/Products/GetProducts',  {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
+      return apiClient.post('/Products/GetProducts', {},  {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then(response => { 
-        console.log(response);
         return response;
       });
     },
@@ -170,13 +167,12 @@ getRecentSalesData(token) {
 //-------------------------------------------------
    //SUPPLIER ENDPOINTS
 //-------------------------------------------------
-//http://localhost:5134/api/Suppliers/AddSupplier
 //add supplier
   addsupplier(postData) {
     return apiClient.post('/Suppliers/AddSupplier', postData, {
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     .then(response => {
       return response;
@@ -186,10 +182,10 @@ getRecentSalesData(token) {
 
  //get all supplier
   getsupplier() { //token
-    return apiClient.post('/Suppliers/GetSuppliers',  {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //   },
+    return apiClient.post('/Suppliers/GetSuppliers', {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
      })
      .then(response => {
       return response.data;
@@ -292,9 +288,9 @@ getSupplierTransactions(id){
 // return apiClient.post('/Ultimate/AddProducts', postData, {  addtransaction
 addtransaction(postData) {
   return apiClient.post('/Transactions/AddSales', postData, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
     return response;
@@ -303,13 +299,12 @@ addtransaction(postData) {
 
 // get one Transaction
 getTransactions() {
-  return apiClient.post('/Transactions/GetTransactions',  {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
+  return apiClient.post('/Transactions/GetTransactions', {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
-    console.log(response);
     return response;
   });
 },
@@ -357,8 +352,8 @@ Authorization: `Bearer ${token}`,
 
 
   //get catalogue
-  getcatalogue(token) {
-    return apiClient.get('/getcatalogue',  {
+  getcatalogue() {
+    return apiClient.post('/Catalogue/GetCatalogue', {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -366,7 +361,20 @@ Authorization: `Bearer ${token}`,
     .then(response => {
       return response.data;
     });
-  },
+  }, 
+
+   getActivecatalogue() {
+    return apiClient.post('Catalogue/GetActiveCatelogue', {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      return response.data;
+    });
+  }, 
+
+  //
 
    //update catalogue
    updatecatalogue(id, updateData, token) {
@@ -398,36 +406,32 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
 //-------------------------------------------------
   //Add Categories
   addcategories(postData) { 
-    // console.log(postData);
     return apiClient.post(`/Category/AddCategory`, postData, {
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     .then(response => { 
-      // console.log(response);
       return response.data;
     });
   },
 
 
   //get category
-  // //http://localhost:5134/api/Category/GetCategory
   getcategory() {
-    return apiClient.post('/Category/GetCategory',  {
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
+    return apiClient.post('/Category/GetCategory',  {},{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     .then(response => { 
-      // console.log(response.data);
       return response;
     });
   },
 
    //update category
    updatecategory(id, updateData, token) {
-    return apiClient.put(`/updatecategory/${id}`, updatecatalogue, {
+    return apiClient.put(`/updatecategory/${id}`, updateData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -437,7 +441,7 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
     });
 },
 
-//delete catalogue
+//delete category
 deletecategory(id, token) {
 return apiClient.delete(`/deletecategory/${id}`, {
   headers: {
@@ -452,7 +456,7 @@ return apiClient.delete(`/deletecategory/${id}`, {
 //-------------------------------------------------
 
   //Add inventory
-  addinventory(postData, token) {
+  addinventory(postData) {
     return apiClient.post('/addinventory', postData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -465,7 +469,7 @@ return apiClient.delete(`/deletecategory/${id}`, {
 
 
   //get inventory 
-  getinventory(token) {
+  getinventory() {
     return apiClient.get('/getinventory',  {
       headers: {
         Authorization: `Bearer ${token}`,

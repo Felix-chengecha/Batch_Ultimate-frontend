@@ -4,20 +4,13 @@
     <template>
   <div class="rounded-lg border border-gray-200 bg-gray-300 h-full p-2">
     <div class="overflow-x-auto rounded-t-lg py-1 px-1 space-y-2 mt-2">
-      <!-- <div class="relative mb-3">
-        <span class="text-xl sm:text-2xl block mb-2">Product Catalogue</span>
+ 
 
-        <label for="Search" class="sr-only">Search</label>
-        <div class="relative">
-          <input type="text"id="Search"placeholder="Search for...anything" class="w-1/2 sm:w-1/2 rounded-md border-gray-200 py-2.5 pe-10 shadow-sm text-sm" />
-        </div>
-      </div> -->
-
-      <div class="relative mb-3 flex flex-col md:flex-row md:items-center md:space-x-4">
-  <span class="text-xl sm:text-2xl mb-2 md:mb-0">
-    Product Catalogue
-  </span>      
-  <input 
+    <div class="relative mb-3 flex flex-col md:flex-row md:items-center md:space-x-4">
+     <span class="text-xl sm:text-2xl mb-2 md:mb-0">
+       Product Catalogue
+     </span>      
+    <input 
     type="text"  
     id="Search"  
     placeholder="Search for...anything" 
@@ -33,27 +26,26 @@
         <table class="min-w-full divide-y-2 divide-gray-200 bg-gray-100 text-sm rounded">
           <thead class="text-left">
             <tr>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ProductID</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">SKU</th>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Cost</th>
+              <!-- <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category</th> -->
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Buying Price</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Selling Price</th>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">In stock</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Supplier</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
             <tr v-for="(item, index) in data" :key="index">
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ item.id }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.name }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.category }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cost }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.stock }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.supplier }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.status }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.sku }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.productName }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.productCost }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.buyingPrice }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.sellingPrice }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.availability }}</td>
+              <!-- <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.supplier }}</td> -->
               <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                <!-- Example action buttons -->
                 <button class="text-blue-600 hover:underline text-xs">Edit</button>
               </td>
             </tr>
@@ -98,11 +90,31 @@
     
     
     <script>
-    // import { usehistorystore } from '../store/historystore';
-    // import {ref} from 'vue';
+    import {useCatalogueStore} from '../store/catalogueStore'
+    import Swal from 'sweetalert2';
+    import { computed,ref,onMounted,watch } from 'vue';
     
     export default {
-      setup() {
+      setup() { 
+         const CatalogStore  = useCatalogueStore();
+
+         const filtereddata = CatalogStore .filteredData;
+
+         const data = computed(() => CatalogStore.getData); 
+
+            onMounted(()=>{
+              CatalogStore.fetchCatalogue();
+              });
+
+
+
+           return {
+             CatalogStore,
+            data,
+
+
+           }   
+
         // const historystore = usehistorystore();
         // const isModalOpen = ref(false); 
     

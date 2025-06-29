@@ -39,7 +39,7 @@ getters: {
         },
 
         AddnewCategory(postData){
-          axios.addproduct( postData)
+          axios.addcategories( postData)
             .then(response => {
               this.successmsg = response.statusMessage;
               this.error =false;
