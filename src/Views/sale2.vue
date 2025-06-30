@@ -285,9 +285,10 @@
     import { UseInventoryStore } from '../store/InventoryStore';
     // import { ReceiptComponent } from '../Views/Receipt.vue';
     import { useSaleStore } from '../store/SaleStore';
-    
+    import { errorState } from '../store/ErrorState';
+
     import Swal from 'sweetalert2';
-    import { ref, onMounted, computed } from 'vue';
+    import { ref, onMounted, watch,computed } from 'vue';
     
     export default {
       // components: {
@@ -336,7 +337,15 @@
         onMounted(() => {
           inventorystore.getallproducts();
           CategoryStore.fetchCategories();
-        });
+        }); 
+
+        watch(() => errorState.message, (newVal) => {
+          if (newVal) {
+            DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+          }
+		    }) 
+		    
+
     
         const productSearch = (e) => {
           display.value = false;

@@ -165,7 +165,7 @@
  import { ref, computed, onMounted, watch } from 'vue';
  import Swal from 'sweetalert2';
 //  import * as XLSX from 'xlsx';
- 
+ import { errorState } from '../store/ErrorState';
  export default { 
  
   
@@ -198,7 +198,11 @@
      //const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
 
 
-
+     watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		 });
   
 
    onMounted(() => {
@@ -209,7 +213,24 @@
 
     const AddTemplate = () => {
       isModalTempOpen.value= true;
+    } 
+
+    	      const DisplayMessage = (icon, message) => {
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
     }
+
 
     const Submittemplate = () => {
 
@@ -496,7 +517,7 @@
        Tresponse,
        contactstatus,
        Submittemplate,
-       
+       DisplayMessage,
 
        Name,
        phone,

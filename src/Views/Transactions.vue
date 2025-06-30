@@ -86,8 +86,8 @@
     <script>
     import { useSaleStore } from '../store/SaleStore';
     import { useTransactionStore } from '../store/TransactionsStore';
-    import { ref, onMounted, computed } from 'vue';
-
+    import { ref,  watch, onMounted, computed } from 'vue';
+   import { errorState } from '../store/ErrorState'; 
     
     export default {
       setup() {
@@ -99,6 +99,13 @@
         onMounted(() => {
           transactionStore.fetchTransactions();
         });
+
+        watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+
 
         const filteredTransactions = computed(() => transactionStore.filterTransactions);
     

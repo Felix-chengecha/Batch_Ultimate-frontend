@@ -126,6 +126,7 @@
     import Swal from 'sweetalert2';
     import axios from '../axios';
     import { ref,onMounted, watch,computed } from 'vue';
+    import { errorState } from '../store/ErrorState';
     
     export default {
       setup() {
@@ -153,8 +154,16 @@
 
         const data = computed(() => inventorystore.getData);
         const categ = computed(() => CategoryStore.getData);
-        const filteredProducts = computed(() => inventorystore.filterProducts);
+        const filteredProducts = computed(() => inventorystore.filterProducts); 
 
+         watch(() => errorState.message, (newVal) => {
+          if (newVal) {
+            DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+          }
+		    }) 
+		    
+
+ 
         const productSearch = (e) => {
         inventorystore.setSearchProduct(e.target.value);
         }; 

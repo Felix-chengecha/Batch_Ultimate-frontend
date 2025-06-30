@@ -109,6 +109,7 @@
  <script>
 //  import { ref, reactive } from "vue";
  import Swal from 'sweetalert2';
+ import { errorState } from '../store/ErrorState';
  import { ref,onMounted, watch,computed } from 'vue';
  import {useCategoryStore} from '../store/categoryStore'
  import {UseInventoryStore} from '../store/InventoryStore'
@@ -140,6 +141,11 @@
    //   const filteredProducts = computed(() => ReportStore.filterProducts); 
    //   const filteredTransactions = computed(() => ReportStore.filteredTransactions )
 
+     watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
  
      const handleGenerate = () => {
        let data;

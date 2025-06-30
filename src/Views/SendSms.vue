@@ -148,6 +148,8 @@
    import axios from '../axios';
    import { QuillEditor } from '@vueup/vue-quill';
    import '@vueup/vue-quill/dist/vue-quill.snow.css';
+   import { errorState } from '../store/ErrorState';
+
   //  import { Vue3Quill } from 'vue3-quill';
   //  import Quill from 'quill'; 
    //fetchContacts  <QuillEditor v-model="content" :options="editorOptions" />
@@ -192,7 +194,12 @@
          // senderstore.fetchSenderID();
          contactstore.fetchContacts();
          });
-   
+         
+   watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
    
    
        const Usetemplate = (name,body) => {

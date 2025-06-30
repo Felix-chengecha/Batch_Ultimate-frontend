@@ -128,6 +128,7 @@
  import Chart from 'chart.js/auto';
  import {useDashboardStore} from '../store/DashboardStore';
  import { ref, watch, onMounted, computed } from 'vue'; 
+ import { errorState } from '../store/ErrorState';
  export default {
    setup() { 
  
@@ -144,7 +145,31 @@
      if (salesChart) {
         salesChart.destroy();
        }
-     });
+     }); 
+
+      watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+
+        const DisplayMessage = (icon, message) => {
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
+    }
+
+
     
     const noTransactions = computed(() => average.value.data?.noTransactions ?? 0);
     const availableProducts = computed(() => average.value.data?.availableProducts ?? 0);
@@ -227,7 +252,8 @@
       noTransactions,
       availableProducts,
       totalSales,
-      totalCash
+      totalCash,
+      DisplayMessage
       // dataPoints,
       // labels,
       // salesDatat

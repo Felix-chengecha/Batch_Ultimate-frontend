@@ -230,7 +230,8 @@
 import { useRoute } from 'vue-router';
 import { useSuppliersStore } from '../store/SuppliersStore';
 import {UseInventoryStore} from '../store/InventoryStore'
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, watch, ref} from 'vue';
+import { errorState } from '../store/ErrorState';
 
 export default {
   setup() {
@@ -276,6 +277,11 @@ export default {
     suppliersstore.getallSupliers();
    });
 
+   watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
 
    const AddSupplier =() => { 
     const now = new Date();

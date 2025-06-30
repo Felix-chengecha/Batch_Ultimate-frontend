@@ -93,6 +93,8 @@
     import {useCatalogueStore} from '../store/catalogueStore'
     import Swal from 'sweetalert2';
     import { computed,ref,onMounted,watch } from 'vue';
+    import { errorState } from '../store/ErrorState';
+
     
     export default {
       setup() { 
@@ -100,42 +102,50 @@
 
          const filtereddata = CatalogStore .filteredData;
 
-         const data = computed(() => CatalogStore.getData); 
+         const data = computed(() => CatalogStore.getData);  
+         
+    watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
 
-            onMounted(()=>{
-              CatalogStore.fetchCatalogue();
-              });
+      onMounted(()=>{
+        CatalogStore.fetchCatalogue();
+        });
+
+  const DisplayMessage = (icon, message) => {
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
+    }
+
+    const ErrorMessage = (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+        confirmButtonColor: '#3b82f6',
+      })
+    }
 
 
-
-           return {
-             CatalogStore,
-            data,
-
-
-           }   
-
-        // const historystore = usehistorystore();
-        // const isModalOpen = ref(false); 
-    
-        // function openModal() {
-        //     this.isModalOpen = true;
-        // }
-    
-        // function closeModal() {
-        //    this.isModalOpen = false;
-        // }
-    
-       
-        
-        // return {
-        // //   data: historystore.getData,
-        // //   isLoading: historystore.isLoading,
-        // //   error: historystore.getError,
-        //   openModal,
-        //   closeModal,
-        // //   fetchData: historystore.fetchData
-        // };
+        return {
+          CatalogStore,
+          data,  
+          DisplayMessage,
+          ErrorMessage
+           }        
       }
     };
     </script>

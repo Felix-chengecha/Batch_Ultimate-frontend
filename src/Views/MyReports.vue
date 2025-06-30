@@ -254,7 +254,8 @@
  
  <script>
  import { useSuppliersStore } from '../store/SuppliersStore';
- import {computed, onMounted, ref} from 'vue';
+ import {computed, onMounted, watch,ref} from 'vue';
+ import { errorState } from '../store/ErrorState';
  
  export default {
    setup() {
@@ -292,7 +293,13 @@
 
     onMounted(()=> {
      suppliersstore.fetchSuppliers();
-    });
+    }); 
+
+      watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
 
 
     const AddSupplier =() => {

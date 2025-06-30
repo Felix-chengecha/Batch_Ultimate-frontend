@@ -125,18 +125,29 @@
        const Cdescription  = ref('');
 
        const isModalOpen = ref(false); 
-       const token = ref('your-auth-token'); 
-       const submitSuccess = ref('');
-      
+     
        //store  properties
-         const CategoryStore  = useCategoryStore();
-         const filtereddata = CategoryStore .filteredData;
-         const data = computed(() => CategoryStore.getData);
+      const CategoryStore  = useCategoryStore();
+      const filtereddata = CategoryStore .filteredData;
+      const data = computed(() => CategoryStore.getData);
          
-        //  const isLoading = CategoryStore.loading;
-        //  const error = CategoryStore.error;
-        //  const hasdata = CategoryStore.hasData;
-        //  const searchquery = ref(CategoryStore.searchquery);
+	      const DisplayMessage = (icon, message) => {
+         Swal.fire({
+              position: 'center',
+              icon: icon,
+              title: message,
+              showConfirmButton: false,
+              timer: 1500,
+              backdrop: `
+                rgba(0,0,123,0.4)
+                url("/images/nyan-cat.gif")
+                left top
+                no-repeat
+              `
+            })
+    }
+
+  
 
 
        //add product modal
@@ -161,7 +172,6 @@
         if(!Validation()){
           return false;
         }
-        // else{
    
       const postData = {
             categoryName: Cname.value,
@@ -177,27 +187,13 @@
             DisplayMessage("success", CategoryStore.successmsg)
          }, 3000); 
        } catch(error){
-        console.log(error);
+        DisplayMessage("error", error);
        }
 
     } 
 
 
-     const DisplayMessage=(icon,message) => {
-      closeModal();
-            Cname.value = "";
-            Ccode.value= "";
-            CNoItems.value="";
-            Cdescription.value= "";
-
-      Swal.fire({
-            position: "top-end",
-            icon: icon,
-            title: message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-     }
+  
 
      const Validation = () => { 
 
@@ -208,9 +204,7 @@
         }
 
     
-      // else{
         return true;
-      // }
 
     }
       
