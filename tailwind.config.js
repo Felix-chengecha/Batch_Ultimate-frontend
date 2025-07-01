@@ -32,9 +32,12 @@ module.exports = {
   darkMode: 'class', // or 'media' or false
   theme: {
     extend: {
+      // fontFamily: {
+      //   sans: ['cairo', ...defaultTheme.fontFamily.sans],
+      // },
       fontFamily: {
-        sans: ['cairo', ...defaultTheme.fontFamily.sans],
-      },
+        sans: ['Inter', 'sans-serif'],
+      },
       colors: {
         light: 'var(--light)',
         dark: 'var(--dark)',

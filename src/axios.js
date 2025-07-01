@@ -1,7 +1,11 @@
 import axios from 'axios';
+import { errorState } from '../src/store/ErrorState'
+import {useRouter } from 'vue-router'
 
 
-let dynamicBaseURL = 'http://localhost:5134/api/' 
+const router = useRouter(); 
+
+let dynamicBaseURL = 'https://localhost:7231/api/' 
 
 let token = localStorage.getItem('token');
 
@@ -11,17 +15,29 @@ const apiClient = axios.create({
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-  // timeout: 1000 
 });
-// apiClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
-// apiClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    const errMsg = error.response?.data?.message || error.message
+    const errCode = error.response?.status || null
+    errorState.message = errMsg
+    errorState.code = errCode 
 
-// Get the token from local storage
+    if (!error.response) {
+       router.push('/login')
+    }
+
+    return Promise.reject(error)
+  }
+)
+
+
 
 function setBaseURL(url) {
   dynamicBaseURL = url
-  apiClient.defaults.baseURL = url // this is the key!
+  apiClient.defaults.baseURL = url 
 }
 
 
