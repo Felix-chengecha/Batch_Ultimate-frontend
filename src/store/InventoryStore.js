@@ -8,7 +8,9 @@ state: () => ({
     loading: false, 
     error: null,
     successmsg:null,
-    searchquery : ''
+    searchquery : '',
+    searchprod:'',
+    searchCateg:''
    }),
 
     // Add any getters if needed
@@ -24,9 +26,9 @@ state: () => ({
       }
 
       return state.data.filter(item =>
-        item.productName.toLowerCase().includes(state.searchquery.toLowerCase()) ||
-        item.productDescription.toLowerCase().includes(state.searchquery.toLowerCase()) ||
-        item.productType.toLowerCase().includes(state.searchquery.toLowerCase()) 
+        item.productName.toLowerCase().includes(state.searchquery.toLowerCase()) 
+        ||item.productDescription.toLowerCase().includes(state.searchquery.toLowerCase()) 
+        //||item.productType.toLowerCase().includes(state.searchquery.toLowerCase()) 
         // item.productCategory.toString().includes(state.searchTerm.toLowerCase()) 
         // item.group.toString().includes(state.searchTerm.toLowerCase())
       );
@@ -39,9 +41,12 @@ state: () => ({
       }
 
       return state.data.filter(item =>
-        item.categoryID === parseInt(state.searchCateg) // Compare both as integers 
+        item.categoryID === state.searchCateg // Compare both as integers 
       ); },
-  },
+    },
+
+ 
+
 
   filterSupplierSupplies: (state) =>{
       
@@ -54,11 +59,11 @@ state: () => ({
 
     actions: {  
 //fetch all inventory records
-      getallproducts(){     
-            axios.getproduct()
+      getallproducts(token){     
+           // axios.getproduct()
+           axios.getActiveprooducts(token)
               .then(response => {
                   this.data = response.data;
-                  // console.log("prods", this.data);
                   this.loading = false;
               })
               .catch(error => {
@@ -70,14 +75,12 @@ state: () => ({
          
       //search product from the inventory
         setSearchProduct(term) {
-          this.searchprod = term;
-          // console.log(term);
+          this.searchquery = term;
         },
 
     //search products of a certain category    
         setSearchCategory(term) {
           this.searchCateg = term;
-          // console.log(term);
         },
  
     //search products from a certain supplier term    

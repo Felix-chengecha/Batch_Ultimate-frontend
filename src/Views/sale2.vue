@@ -11,7 +11,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3  md:space-x-3 mb-4">
           <span class="text-md text-gray-600 mb-2 sm:mb-0">Search</span>
           <select  v-model="category" id="category" @input="categorysearch" class="w-full sm:w-1/2 rounded-lg border border-gray-400 p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 text-black bg-white">
-            <option disabled value="">Select a category</option>
+            <!-- <option disabled value="">Select a category</option> -->
             <option v-for="option in categ":key="option.categoryID":value="option.categoryID">
               {{ option.categoryName }}
             </option>
@@ -19,16 +19,16 @@
              <input v-model="searchQuery" id="Search" @input="productSearch"  type="text"  placeholder="Search product"  required class="mt-4 w-full sm:w-1/3 rounded-lg border border-gray-400 p-2  text-sm shadow-sm focus:outline-none focus:border-[#98c01d] text-black bg-white"/>
         </div> 
 
+
         <!-- Product listing -->
         <div  v-if="display" class="border border-gray-300 rounded-md py-3 mt-2 overflow-auto">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-            <div v-for="(prod, index) in filteredCategory" :key="index"  @click="SelectedItem(prod)" class="bg-white shadow-md rounded-lg border border-gray-200 px-2 py-1 cursor-pointer hover:bg-gray-100">
+            <div v-for="(prod, index) in filterProductCategory" :key="index"  @click="SelectedItem(prod)" class="bg-white shadow-md rounded-lg border border-gray-200 px-2 py-1 cursor-pointer hover:bg-gray-100">
               <small class="text-sm">{{ prod.productName }}</small><br />
               <small>. {{ prod.sellingPrice }} KSH</small>
             </div>
           </div>
         </div>
-
         <div  v-else class="border border-gray-300 rounded-md py-3 mt-2 overflow-auto">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
             <div v-for="(prod, index) in filteredProducts" :key="index" @click="SelectedItem(prod)" class="bg-white shadow-md rounded-lg border border-gray-200 px-2 py-1 cursor-pointer hover:bg-gray-100">
@@ -268,18 +268,7 @@
 </template>
 
    
-   <style scoped>
 
-   @import 'node_modules/@fortawesome/fontawesome-free/css/all.css';
-   .card {
-  @apply w-16 h-16 rounded-s-md relative; 
-  /* / Using Tailwind for width, height, and rounded corners / */
-   }
-   .cards-container {
-  @apply flex flex-wrap gap-4; 
-  /* / Using Tailwind for layout / */
-}
-   </style>
    <script>
     import { useCategoryStore } from '../store/categoryStore';
     import { UseInventoryStore } from '../store/InventoryStore';
@@ -331,12 +320,14 @@
     
         const categ = computed(() => CategoryStore.getData);
         const products = computed(() => inventorystore.getData);
-        const filteredCategory = computed(() => inventorystore.filterProductCategory);
+        const filterProductCategory = computed(() => inventorystore.filterProductCategory);
+        
         const filteredProducts = computed(() => inventorystore.filterProducts);
     
-        onMounted(() => {
-          inventorystore.getallproducts();
-          CategoryStore.fetchCategories();
+        onMounted(() => { 
+          let token = localStorage.getItem('token');
+          inventorystore.getallproducts(token);
+          CategoryStore.fetchCategories(token);
         }); 
 
         watch(() => errorState.message, (newVal) => {
@@ -344,7 +335,6 @@
             DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
           }
 		    }) 
-		    
 
     
         const productSearch = (e) => {
@@ -376,7 +366,7 @@
           let ECount;
     
           ExistCount += 1;
-          if (existingProduct) {
+          if (existingProduct == true) {
             ECount = parseInt(existingProduct.count);
             ECount += 1;
             existingProduct.count = ECount;
@@ -406,6 +396,7 @@
           totalcost.value = parseFloat(ITcost.value) + less - parseFloat(Discount.value);
         };
     
+        //SubmitCash
         const submitpayment = async () => {
           const productsArray = [];
           let totalSellingPrice = 0;
@@ -421,8 +412,10 @@
             totalSellingPrice += selectedItem.sellingPrice;
     
             productsArray.push({
-              productID: selectedItem.productID,
+              productID: selectedItem.productId,
               productName: selectedItem.productName,
+              SKU:selectedItem.sku,
+              Availability:selectedItem.availability,
               quantity: selectedItem.count,
               price: selectedItem.sellingPrice,
               discount: selectedItem.discount || 0,
@@ -441,28 +434,28 @@
           const postData = {
             transaction: [
               {
-                transactionID: TrxId,
-                userID: 1,
+                // transactionID: TrxId,
+                //userID: 1,
                 totalValueAddedTax: 0,
-                productID: selectedItems.value[0]?.productID,
+               // productID: selectedItems.value[0]?.productID,
                 totalCost: totalSellingPrice,
                 totalDiscount: Discount.value,
                 amountRecieved: receivedcash.value,
                 cashChange: cashchange.value,
                 quantity: NoItems.value,
                 remarks: 'Sold in good condition',
-                createdBy: 'chee',
-                updatedBy: '',
+                // createdBy: 'chee',
+                // updatedBy: '',
                 transactionproducts: productsArray,
                 paymentDetails: [
                   {
-                    paymentID: PaymentID,
+                    // paymentID: PaymentID,
                     paymentMethod: paymentMethod.value, //paymentrefference.value,
                     paymentStatus: 1,
                     paymentReference: paymentrefference.value,
                     amount: totalSellingPrice,
                     transactionID: TrxId,
-                    paymentDate: new Date().toISOString(),
+                    // paymentDate: new Date().toISOString(),
                   },
                 ],
               },
@@ -543,6 +536,10 @@
            paymentMethod.value = "MPESA";
            submitpayment();
          }
+
+         const SubmitCash = () =>{
+            PayViaCash();
+         }
     
           const PayViaCash = () =>{
               isCashOpen.value = false;
@@ -579,16 +576,23 @@
           isCreditOpen.value = false;
         };
     
+     
+
         const DisplayMessage = (icon, message) => {
-          Swal.fire({
-            position: 'center',
-            icon: icon,
-            title: icon === 'success' ? 'Success!' : 'An ERROR occurred!',
-            text: message,
-            showConfirmButton: true,
-            timer: 4000,
-          });
-        };
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
+    }
     
         return {
           products,
@@ -628,12 +632,27 @@
           DisplayMessage,
           printReceipt,
           filteredProducts,
-          filteredCategory,
+          filterProductCategory,
           PayViaMpesa,
           PayViaCash,
+          SubmitCash,
           paymentMethod,
-          paymentrefference
+          paymentrefference,
+          categ,
+          category
         };
       },
     };
     </script> 
+
+  <style scoped>
+   @import 'node_modules/@fortawesome/fontawesome-free/css/all.css';
+   .card {
+  @apply w-16 h-16 rounded-s-md relative; 
+  /* / Using Tailwind for width, height, and rounded corners / */
+   }
+   .cards-container {
+  @apply flex flex-wrap gap-4; 
+  /* / Using Tailwind for layout / */
+}
+   </style>

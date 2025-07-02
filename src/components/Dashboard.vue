@@ -19,6 +19,7 @@
 <script>
 import { computed, watch } from 'vue';
 import { RouterView } from 'vue-router';
+import Swal from 'sweetalert2';
 import Navbar from '../components/Navbar.vue';
 import Sidebar from '../components/Sidebar.vue'; 
 import Mobile_sidebar from '../components/Mobile_sidebar.vue';

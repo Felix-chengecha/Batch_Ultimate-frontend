@@ -23,10 +23,10 @@ getters: {
 
    actions: { 
 
-    fetchCategories(){     
+    fetchCategories(token){     
       this.loading = true;
       this.error = null;   
-          axios.getcategory()
+          axios.getcategory(token)
             .then(response => {
                 // this.data.push(response.products.data.data); 
                 this.data = response.data;

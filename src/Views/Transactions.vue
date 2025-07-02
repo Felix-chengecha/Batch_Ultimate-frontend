@@ -1,56 +1,63 @@
-
+<template>
+  <div class="rounded-xl bg-white h-full p-4 shadow-sm border border-gray-100">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Transactions</h1>
+        <p class="text-sm text-gray-500 mt-1">All transactions</p>
+      </div>
       
-    <template>
-  <main class="p-2">
-    <!-- Header and Search Bar -->
-    <div class="overflow-x-auto rounded-t-lg py-1 px-1">
-      <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-2">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 text-center sm:text-left">
-          Transactions
-        </h2>
-        <input
-          type="text"
-          id="Search"
-          @input="productSearch"
-          placeholder="Search for...anything"
-          class="w-full sm:w-1/3 rounded-md border-gray-300 py-2 px-4 shadow-sm sm:text-sm"
-        />
+      <div class="relative w-full md:w-96">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          id="Search" 
+          placeholder="Search your transactions..." 
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+        >
       </div>
     </div>
 
-    <!-- Responsive Table Container -->
-    <div class="overflow-x-auto mt-4">
-      <table class="min-w-full divide-y divide-gray-200 text-sm bg-gray-50 rounded">
-        <thead class="text-gray-900 border border-gray-300 bg-white">
-          <tr>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">ID</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">BatchID</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Item</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Code</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Description</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Cost</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Selling Price</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Status</th>
-            <th class="px-4 py-2 whitespace-nowrap font-medium">Action</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr v-for="(item, index) in filteredTransactions" :key="index">
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.transactionID }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.quantity }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.amountRecieved }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.cashChange }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.totalCost }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.totalDiscount }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.createdOn }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">{{ item.createdBy }}</td>
-            <td class="px-4 py-2 whitespace-nowrap">
-              <span @click="openproducts(item.transactionID)" class="cursor-pointer">...</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
+
+     <div class="overflow-x-auto">
+        <table class="min-w-full divide-y-2 divide-gray-200 bg-gray-100 text-sm rounded">
+          <thead class="text-left">
+            <tr>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Transaction ID</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">SKU</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Item</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No Item</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Transaction Code</th>
+               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Cost</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">served By </th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Date</th>
+              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          
+            <tr class="bg-white border-4 border-gray-200" v-for="(item, index) in filteredTransactions" :key="index">
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.transactionID }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.quantity }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.amountRecieved }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cashChange }}</td> 
+
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalCost }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalDiscount }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdBy }}</td>
+
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">..</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
 
     <!-- Modal for Products -->
     <div v-if="isModalProductsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 px-4">
@@ -78,7 +85,8 @@
         </div>
       </div>
     </div>
-  </main>
+  </div>
+
 </template>
 
     

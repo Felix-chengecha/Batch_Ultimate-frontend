@@ -95,7 +95,7 @@ export default {
 //-------------------------------------------------
    //Dashboard ENDPOINTS
 //-------------------------------------------------
-  getDashboardAverages() {
+  getDashboardAverages(token) {
     return apiClient.get(`/Dashboard/SalesAverages`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -106,7 +106,7 @@ export default {
   });
 },
 
-getGraphData() {
+getGraphData(token) {
   return apiClient.get(`/Dashboard/Graphdata`, {
   headers: {
     Authorization: `Bearer ${token}`,
@@ -117,7 +117,7 @@ getGraphData() {
 });
 },
 
-getRecentSalesData() {
+getRecentSalesData(token) {
   return apiClient.get(`/Dashboard/RecentSales`, {
   headers: {
     Authorization: `Bearer ${token}`,
@@ -145,6 +145,18 @@ getRecentSalesData() {
     });
   },
   
+//http://localhost:5134/api/Catalogue/GetActiveCatelogue
+
+    getActiveprooducts(token) { 
+      return apiClient.post('/Catalogue/GetActiveCatelogue', {},  {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(response => { 
+        return response;
+      });
+    },
 
     getproduct() { 
       return apiClient.post('/Products/GetProducts', {},  {
@@ -434,7 +446,7 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
 
 
   //get category
-  getcategory() {
+  getcategory(token) {
     return apiClient.post('/Category/GetCategory',  {},{
       headers: {
         Authorization: `Bearer ${token}`,

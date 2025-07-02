@@ -138,10 +138,11 @@
     const average = computed(() => dashStore.getAverages);
     const recent = computed(()=> dashStore.getRecentsalesData);
 
-    onMounted(() => { 
-     dashStore.getGraphData();
-     dashStore.getDashboardAverages();
-     dashStore.getRecentSales();
+    onMounted(() => {  
+     let token = localStorage.getItem('token');
+     dashStore.getGraphData(token);
+     dashStore.getDashboardAverages(token);
+     dashStore.getRecentSales(token);
      if (salesChart) {
         salesChart.destroy();
        }

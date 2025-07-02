@@ -2,18 +2,35 @@
    <template>
   <div class="rounded-lg border border-gray-200 bg-gray-300 min-h-screen p-4">
     <!-- Header -->
-    <div class="overflow-x-auto rounded-t-lg">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 relative">
-        <h2 class="text-xl sm:text-3xl font-bold text-gray-700 text-center sm:text-left">
-          Product Categories
-        </h2>
-        <a
-          @click="openModal"
-          class="mt-2 sm:mt-0 inline-block rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring focus:ring-yellow-400 sm:absolute sm:right-0"
-        >
-          Add new Category
-        </a>
+
+
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+       <div>
+        <h1 class="text-2xl font-bold text-gray-800">Categories</h1>
+        <p class="text-sm text-gray-500 mt-1">Manage your Categories</p>
       </div>
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+        <input 
+          v-model="searchQuery" 
+          id="Search" 
+          @input="productSearch" 
+          type="text"
+          placeholder="Search Category..."
+          class="w-full sm:w-64 rounded-lg border border-gray-200 py-2 px-4 shadow-sm text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+        />
+        <button @click="openModal(null)"
+          class="w-full sm:w-auto rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add New Category
+        </button>
+      </div>
+    </div>
+
+
+
+
 
       <!-- Search bar placeholder -->
       <div class="relative mb-2">
@@ -22,30 +39,47 @@
       </div>
 
       <!-- Table Wrapper -->
+    <div class="overflow-hidden rounded-xl border border-gray-200 shadow-xs">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y-2 divide-gray-200 bg-gray-100 text-sm rounded">
-          <thead class="text-left">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
             <tr>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Category Name</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Code</th>
-              <!-- <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No of Items</th> -->
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Created on</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Action</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category Name</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Code</th>
+              <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Items</th> -->
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created on</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Products</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
             <tr
-              class="bg-white border-4 border-gray-200"
+              class="bg-white border-4 border-gray-200 hover:bg-gray-50 transition-colors"
               v-for="(item, index) in data"
               :key="item.categoryID"
             >
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryName }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.categoryCode }}</td>
-              <!-- <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.noOfItems }}</td> -->
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.status }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">..</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+               <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                  {{ item.categoryName }} 
+               </span> </td>
+             <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-500 max-w-xs truncate">{{ item.categoryCode }}</div> </td> 
+               <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="{
+                  'px-2 inline-flex text-xs leading-5 font-semibold rounded-full': true,
+                  'bg-green-100 text-green-800': item.status  = true,
+                  'bg-red-100 text-red-800': item.availability = false
+                }">
+                  {{ item.availability }} in stock
+                </span>
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500 max-w-xs truncate">{{ item.createdOn }} </div> </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500 max-w-xs truncate">{{ 20}} </div> </td>
+              <td class="px-6 py-4 whitespace-nowrap">.</td>
             </tr>
           </tbody>
         </table>
@@ -70,21 +104,10 @@
             />
           </div>
 
-          <!-- Input: Category Code -->
           <div class="mt-4">
             <label class="block text-sm text-gray-700 mb-1">Category Code</label>
             <input type="text" v-model="Ccode" class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500" />
           </div>
-
-          <!-- Input: No of Items -->
-          <!-- <div class="mt-4">
-            <label class="block text-sm text-gray-700 mb-1">No Of Items</label>
-            <input
-              type="text"
-              v-model="CNoItems"
-              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
-            />
-          </div> -->
 
 
           <div class="mt-4">
@@ -107,7 +130,8 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
+
 </template>
 
    <script>
