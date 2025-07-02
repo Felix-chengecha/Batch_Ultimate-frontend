@@ -1,139 +1,158 @@
-
-   <template>
-  <div class="rounded-lg border border-gray-200 bg-gray-300 min-h-screen p-4">
-    <!-- Header -->
-
-
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Categories</h1>
-        <p class="text-sm text-gray-500 mt-1">Manage your Categories</p>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-        <input 
-          v-model="searchQuery" 
-          id="Search" 
-          @input="productSearch" 
-          type="text"
-          placeholder="Search Category..."
-          class="w-full sm:w-64 rounded-lg border border-gray-200 py-2 px-4 shadow-sm text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
-        />
-        <button @click="openModal(null)"
-          class="w-full sm:w-auto rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+<template>
+  <div class="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Header Section -->
+      <div class="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Product Categories</h1>
+          <p class="text-sm text-gray-500 mt-1">Manage your product categories and organization</p>
+        </div>
+        <button
+          @click="openModal"
+          class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
           </svg>
           Add New Category
         </button>
       </div>
-    </div>
 
-
-
-
-
-      <!-- Search bar placeholder -->
-      <div class="relative mb-2">
-        <label for="Search" class="sr-only"> Search </label>
-        <!-- Optional search input could go here -->
-      </div>
-
-      <!-- Table Wrapper -->
-    <div class="overflow-hidden rounded-xl border border-gray-200 shadow-xs">
+      <!-- Table Section -->
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category Name</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Code</th>
-              <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Items</th> -->
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category Name</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
               <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created on</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Products</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created On</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr
-              class="bg-white border-4 border-gray-200 hover:bg-gray-50 transition-colors"
-              v-for="(item, index) in data"
-              :key="item.categoryID"
-            >
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-               <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                  {{ item.categoryName }} 
-               </span> </td>
-             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500 max-w-xs truncate">{{ item.categoryCode }}</div> </td> 
-               <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="{
-                  'px-2 inline-flex text-xs leading-5 font-semibold rounded-full': true,
-                  'bg-green-100 text-green-800': item.status  = true,
-                  'bg-red-100 text-red-800': item.availability = false
-                }">
-                  {{ item.availability }} in stock
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="(item, index) in data" :key="item.categoryID" class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{ item.categoryName }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">{{ item.categoryCode }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="item.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'" class="px-2 py-1 text-xs font-medium rounded-full">
+                  {{ item.status }}
                 </span>
               </td>
-
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-500 max-w-xs truncate">{{ item.createdOn }} </div> </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-500 max-w-xs truncate">{{ 20}} </div> </td>
-              <td class="px-6 py-4 whitespace-nowrap">.</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ item.createdOn }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                <button class="text-red-600 hover:text-red-900">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Empty State -->
+      <div v-if="data.length === 0" class="p-12 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No categories found</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by adding a new product category.</p>
+        <div class="mt-6">
+          <button
+            @click="openModal"
+            type="button"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Add Category
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Modal -->
-    <div v-if="isModalOpen" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4" >
-      <div class="bg-white w-full max-w-md rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
-        <div class="p-4">
-           <div class="relative text-center mb-4">
-          <p class="text-lg font-semibold uppercase text-gray-700">Add New Category</p>
-          <button @click="closeModal" class="absolute right-0 top-0 bg-black text-white px-2 rounded">x</button>
-        </div>
+    <div v-if="isModalOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="closeModal"></div>
 
-          <div class="mt-4">
-            <label class="block text-sm text-gray-700 mb-1">Category Name</label>
-            <input
-              type="text"
-              v-model="Cname"
-              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
-            />
+        <!-- Modal panel -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Add New Category</h3>
+                  <button @click="closeModal" class="text-gray-400 hover:text-gray-500">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="mt-6 space-y-4">
+                  <div>
+                    <label for="category-name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                    <input
+                      type="text"
+                      id="category-name"
+                      v-model="Cname"
+                      class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="category-code" class="block text-sm font-medium text-gray-700">Category Code</label>
+                    <input
+                      type="text"
+                      id="category-code"
+                      v-model="Ccode"
+                      class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="category-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea
+                      id="category-description"
+                      v-model="Cdescription"
+                      rows="3"
+                      class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      placeholder="Type your category description (max 500 characters)"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div class="mt-4">
-            <label class="block text-sm text-gray-700 mb-1">Category Code</label>
-            <input type="text" v-model="Ccode" class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500" />
-          </div>
-
-
-          <div class="mt-4">
-            <label class="block text-sm text-gray-700 mb-1">Description</label>
-            <textarea
-              v-model="Cdescription"
-              rows="3"
-              class="w-full rounded-lg p-2 text-sm border border-gray-400 focus:border-gray-500 focus:ring-gray-500"
-              placeholder="Type your product description (max 500 characters)"
-            ></textarea>
-          </div>
-
-      
-          <div class="mt-6 text-center">
-            <a @click="AddCategory" class="block w-full bg-blue-500 rounded-md py-3 text-sm font-bold uppercase text-white tracking-widest">
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              type="button"
+              @click="AddCategory"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            >
               Submit
-            </a>
-      
+            </button>
+            <button
+              type="button"
+              @click="closeModal"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>
     </div>
-    </div>
-
+  </div>
 </template>
-
    <script>
    import {useCategoryStore} from '../store/categoryStore'
    import Swal from 'sweetalert2';
@@ -184,8 +203,9 @@
        }
 
        //fetch all records on load from the store
-       onMounted(()=>{
-         CategoryStore.fetchCategories();
+       onMounted(()=> {
+           let token = localStorage.getItem('token'); 
+         CategoryStore.fetchCategories(token);
          })
 
        

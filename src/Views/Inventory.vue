@@ -310,9 +310,10 @@
         };
 
         //fetch all records on load from the store
-        onMounted(()=>{
-          inventorystore.getallproducts();
-          CategoryStore.fetchCategories();
+        onMounted(()=>{ 
+           let token = localStorage.getItem('token'); 
+          inventorystore.getallproducts(token);
+          CategoryStore.fetchCategories(token);
 
           });
     

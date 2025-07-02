@@ -27,7 +27,7 @@ state: () => ({
 
       return state.data.filter(item =>
         item.productName.toLowerCase().includes(state.searchquery.toLowerCase()) 
-        ||item.productDescription.toLowerCase().includes(state.searchquery.toLowerCase()) 
+       // ||item.productDescription.toLowerCase().includes(state.searchquery.toLowerCase()) 
         //||item.productType.toLowerCase().includes(state.searchquery.toLowerCase()) 
         // item.productCategory.toString().includes(state.searchTerm.toLowerCase()) 
         // item.group.toString().includes(state.searchTerm.toLowerCase())

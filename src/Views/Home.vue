@@ -1,126 +1,132 @@
-
-
 <template>
-
-    <main class="flex-1 bg-gray-100 px-3">
-       <div class="container mx-auto">
-             <h1 class="text-1xl font-semibold text-gray-700">Welcome back felix</h1>
-             <div class="mt-2">
-                <!-- Add your content here -->
-                <div class="bg-white py-7 rounded-lg shadow-md">  
- 
- 
-              <!--Section one to contain cards with minimum details   -->
-                <div class="grid grid-cols-1 gap-8 px-4 lg:grid-cols-2 xl:grid-cols-4">
-            
-                  <!-- card one -->
-                 <div class="flex items-center justify-between p-4 bg-slate-400  rounded-md dark:bg-darker">
-                   <div>
-                     <h6 class="text-xs font-medium leading-none tracking-wider text-gray-800 uppercase dark:text-primary-light">Total sales</h6>
-                     <span class="text-xl font-semibold">{{noTransactions}}</span>
-                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md"> +4.4% </span>
-                   </div>
-                   <div>
-                     <span>
-                       <svg viewBox="0 0 24 24" class="w-12 h-12 text-gray-300 dark:text-primary-dark"  xmlns="http://www.w3.org/2000/svg"  fill="none" >
-                         <path  stroke-linecap="round"    stroke-linejoin="round"    stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                       </svg>
-                     </span>
-                   </div>
-                 </div>
- 
-                 <!-- card two-->
-                 <div class="flex items-center justify-between p-4 bg-slate-400  rounded-md dark:bg-darker">
-                   <div>
-                     <h6 class="text-xs font-medium leading-none tracking-wider text-gray-800 uppercase dark:text-primary-light"> Users </h6>
-                     <span class="text-xl font-semibold"> {{ availableProducts }}</span>
-                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md"> +2.6% </span>
-                   </div>
-                   <div>
-                     <span>
-                       <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24"     stroke="currentColor">
-                         <path stroke-linecap="round"  stroke-linejoin="round"   stroke-width="2"   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                       </svg>
-                     </span>
-                   </div>
-                 </div>
- 
-                 <!--Card THREE -->
-                 <div class="flex items-center justify-between p-4 bg-slate-400 rounded-md dark:bg-darker">
-                   <div>
-                     <h6 class="text-xs font-medium leading-none tracking-wider text-gray-800 uppercase dark:text-primary-light"> Orders </h6>
-                     <span class="text-xl font-semibold">{{totalSales}}</span>
-                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md"> +3.1% </span>
-                   </div>
-                   <div>
-                     <span>
-                       <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"   fill="none"   viewBox="0 0 24 24" stroke="currentColor">
-                         <path  stroke-linecap="round"  stroke-linejoin="round"  stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                       </svg>
-                     </span>
-                   </div>
-                 </div>
- 
-                 <!--Card Four -->
-                 <div class="flex items-center justify-between p-4 bg-slate-400 rounded-md dark:bg-darker">
-                   <div>
-                     <h6 class="text-xs font-medium leading-none tracking-wider text-gray-800 uppercase dark:text-primary-light"> Total cash </h6>
-                     <span class="text-xl font-semibold">{{ totalCash }} ksh</span>
-                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">+3.1% </span>
-                   </div>
- 
-                   <div>
-                     <span>
-                       <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path stroke-linecap="round"  stroke-linejoin="round"  stroke-width="2"  d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"  />
-                       </svg>
-                     </span>
-                   </div>
-                 </div>
-               </div>
- 
-             <!-- section three contains a small table and a data table -->
-             
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-10 h-auto mt-9 bg-gray-200 p-2 md:p-4 rounded shadow">
-                  <!-- Chart Section: Full width on mobile, 2/3 on md+ -->
-                  <div class="md:col-span-2 bg-gray-200 h-auto flex justify-center items-center"> 
-                    <canvas id="salesChart" class="w-full max-w-full h-40 sm:h-56 md:h-64 lg:h-72"></canvas> 
-                  </div>
-
-                  <!-- Recent Sales Section: Full width on mobile, 1/3 on md+ -->
-                  <div class="bg-gray-100 h-auto rounded-lg p-3">
-                    <div class="flex items-center justify-center mb-3">                      
-                      <h3 class="text-center font-semibold text-gray-700 text-lg">Recent Sales</h3>
-                    </div>
-
-                    <article class="rounded-xl border border-gray-300 p-2">
-                      <ul>
-                        <li v-for="(item, index) in recent.data" :key="index" class="mb-2">
-                          <a href="#" class="block rounded-lg border border-gray-300 p-2 hover:border-pink-600 transition">
-                            <span class="block font-medium text-gray-700">{{ item.transactionID }}</span>
-                            <p class="text-sm text-gray-800">{{ item.totalCost }}</p>
-                            <p class="text-sm text-gray-800">{{ item.quantity }}</p>
-                            <p class="text-sm text-gray-800">{{ item.timeOfDay }}</p>
-                          </a>
-                        </li>
-                      </ul>
-                    </article>
-                  </div>
-                </div>
-
-
-
-                   
-             </div>
- 
+  <main class="flex-1 bg-gray-50 px-4 py-6">
+    <div class="container mx-auto max-w-7xl">
+      <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Welcome back, Felix</h1>
+        <p class="text-gray-500 mt-1">Here's what's happening with your store today</p>
+      </div>
+      
+      <!-- Stats Cards Grid -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <!-- Card 1: Total Sales -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Sales</p>
+              <div class="flex items-baseline mt-2">
+                <h3 class="text-2xl font-semibold text-gray-900">{{noTransactions}}</h3>
+                <span class="ml-2 text-sm font-medium text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+4.4%</span>
+              </div>
             </div>
- 
-         </div>
-       </main>
-  
- </template>
- 
+            <div class="p-3 rounded-lg bg-blue-50 text-blue-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Users -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Products</p>
+              <div class="flex items-baseline mt-2">
+                <h3 class="text-2xl font-semibold text-gray-900">{{ availableProducts }}</h3>
+                <span class="ml-2 text-sm font-medium text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+2.6%</span>
+              </div>
+            </div>
+            <div class="p-3 rounded-lg bg-purple-50 text-purple-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Orders -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Orders</p>
+              <div class="flex items-baseline mt-2">
+                <h3 class="text-2xl font-semibold text-gray-900">{{totalSales}}</h3>
+                <span class="ml-2 text-sm font-medium text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+3.1%</span>
+              </div>
+            </div>
+            <div class="p-3 rounded-lg bg-orange-50 text-orange-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Total Cash -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Cash</p>
+              <div class="flex items-baseline mt-2">
+                <h3 class="text-2xl font-semibold text-gray-900">{{ totalCash }} ksh</h3>
+                <span class="ml-2 text-sm font-medium text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+3.1%</span>
+              </div>
+            </div>
+            <div class="p-3 rounded-lg bg-green-50 text-green-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart and Recent Sales Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Chart Section -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Sales Overview</h2>
+            <div class="flex space-x-2">
+              <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">Week</button>
+              <button class="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">Month</button>
+              <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">Year</button>
+            </div>
+          </div>
+          <div class="h-80">
+            <canvas id="salesChart" class="w-full h-full"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Sales Section -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Recent Transactions</h2>
+            <button class="text-sm text-blue-600 hover:text-blue-800">View All</button>
+          </div>
+          
+          <div class="space-y-4">
+            <div v-for="(item, index) in recent.data" :key="index" class="flex items-start p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <div class="flex-shrink-0 p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm font-medium text-gray-900">Order #{{ item.transactionID }}</p>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>{{ item.quantity }} items</span>
+                  <span>{{ item.timeOfDay }}</span>
+                </div>
+                <p class="text-sm font-semibold text-gray-800 mt-1">{{ item.totalCost }} KSH</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
   
  
  
@@ -267,11 +273,26 @@
  </script>
  
  
- 
- 
- 
-  
-  <style scoped>
- 
-  </style>
+<style scoped>
+/* Smooth transitions for interactive elements */
+button, a {
+  transition: all 0.2s ease;
+}
+
+/* Custom scrollbar for the recent transactions */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+</style>
   

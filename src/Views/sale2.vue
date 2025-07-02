@@ -1,266 +1,400 @@
 <template>
-  <div class="bg-gray-100 min-h-screen">
-    <span class="text-2xl text-gray-600 px-3 py-2 block">Make sale</span>
+  <div class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white shadow-sm px-6 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-semibold text-gray-800">Make Sale</h1>
+    </div>
 
     <!-- Main content area -->
-    <div class="flex flex-col lg:flex-row mx-3 mt-2 gap-4">
-
-
-      <!-- Section two: Available products -->
-      <div class="w-full lg:w-3/7 bg-white shadow-md p-3 border border-gray-200 rounded-md flex flex-col">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3  md:space-x-3 mb-4">
-          <span class="text-md text-gray-600 mb-2 sm:mb-0">Search</span>
-          <select  v-model="category" id="category" @input="categorysearch" class="w-full sm:w-1/2 rounded-lg border border-gray-400 p-2 text-sm shadow-sm focus:border-gray-400 focus:ring-gray-700 text-black bg-white">
-            <!-- <option disabled value="">Select a category</option> -->
-            <option v-for="option in categ":key="option.categoryID":value="option.categoryID">
-              {{ option.categoryName }}
-            </option>
-          </select>
-             <input v-model="searchQuery" id="Search" @input="productSearch"  type="text"  placeholder="Search product"  required class="mt-4 w-full sm:w-1/3 rounded-lg border border-gray-400 p-2  text-sm shadow-sm focus:outline-none focus:border-[#98c01d] text-black bg-white"/>
-        </div> 
-
-
-        <!-- Product listing -->
-        <div  v-if="display" class="border border-gray-300 rounded-md py-3 mt-2 overflow-auto">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-            <div v-for="(prod, index) in filterProductCategory" :key="index"  @click="SelectedItem(prod)" class="bg-white shadow-md rounded-lg border border-gray-200 px-2 py-1 cursor-pointer hover:bg-gray-100">
-              <small class="text-sm">{{ prod.productName }}</small><br />
-              <small>. {{ prod.sellingPrice }} KSH</small>
+    <div class="flex flex-col lg:flex-row mx-4 mt-4 gap-6">
+      <!-- Products Section -->
+      <div class="w-full lg:w-2/5 bg-white shadow-sm rounded-lg border border-gray-200 flex flex-col">
+        <div class="p-4">
+          <div class="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3 md:items-center">
+            <div class="relative flex-grow">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input 
+                v-model="searchQuery" 
+                @input="productSearch"  
+                type="text"  
+                placeholder="Search products..."  
+                class="pl-10 w-full rounded-lg border border-gray-300 py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
             </div>
+            <select 
+              v-model="category" 
+              @input="categorysearch" 
+              class="w-full md:w-48 rounded-lg border border-gray-300 py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
+            >
+              <option value="" disabled selected>Filter by category</option>
+              <option v-for="option in categ" :key="option.categoryID" :value="option.categoryID">
+                {{ option.categoryName }}
+              </option>
+            </select>
           </div>
         </div>
-        <div  v-else class="border border-gray-300 rounded-md py-3 mt-2 overflow-auto">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-            <div v-for="(prod, index) in filteredProducts" :key="index" @click="SelectedItem(prod)" class="bg-white shadow-md rounded-lg border border-gray-200 px-2 py-1 cursor-pointer hover:bg-gray-100">
-              <small class="text-sm">{{ prod.productName }}</small><br />
-              <small>{{ prod.sellingPrice }} KSH</small>
+
+        <!-- Product listing -->
+      <div class="border-t border-gray-200 flex-grow overflow-hidden flex flex-col">
+  <div class="p-4 overflow-y-auto flex-grow">
+    <!-- Grid View -->
+    <div v-if="display" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div 
+        v-for="(prod, index) in filteredCategory" 
+        :key="index"  
+        @click="SelectedItem(prod)" 
+        class="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-green-300 hover:bg-green-50 flex flex-col h-full"
+      >
+        <!-- Product Image -->
+        <div class="bg-gray-100 rounded-lg mb-3 w-full aspect-square flex items-center justify-center">
+          <span class="text-gray-400">Product Image</span>
+          <!-- Replace with: <img :src="prod.imageUrl" class="w-full h-full object-cover rounded-lg"> -->
+        </div>
+
+        <!-- Product Details -->
+        <div class="flex flex-col flex-grow space-y-2">
+          <h3 class="font-medium text-gray-900 line-clamp-2" :title="prod.productName">
+            {{ prod.productName }}
+          </h3>
+          
+          <p class="text-lg font-semibold text-green-600 mt-auto">
+            {{ prod.sellingPrice }} KSH
+          </p>
+          
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-500">
+              Stock: {{ prod.stockQuantity || 'N/A' }}
+            </span>
+            <!-- <button 
+              class="text-green-600 hover:text-green-800 focus:outline-none"
+              @click.stop="addToCart(prod)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List View -->
+    <div v-else class="grid grid-cols-1 gap-3">
+      <div 
+        v-for="(prod, index) in filteredProducts" 
+        :key="index" 
+        @click="SelectedItem(prod)" 
+        class="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-green-300 hover:bg-green-50 flex items-center"
+      >
+        <!-- Product Image (smaller in list view) -->
+        <!-- <div class="bg-gray-100 rounded-lg mr-4 w-16 h-16 flex-shrink-0 flex items-center justify-center">
+          <span class="text-gray-400 text-xs">Image</span>
+        </div> -->
+        
+        <!-- Product Details -->
+        <div class="flex-grow min-w-0">
+          <div class="flex justify-between items-start">
+            <div class="pr-2">
+              <p class="font-medium text-gray-800 line-clamp-2" :title="prod.productName">
+                {{ prod.productName }}
+              </p>
+              <p class="text-sm text-gray-500 mt-1">Stock: {{ prod.stockQuantity || 'N/A' }}</p>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-lg font-semibold text-green-600 whitespace-nowrap">
+                {{ prod.sellingPrice }} KSH
+              </span>
+              <!-- <button 
+                class="text-green-600 hover:text-green-800 focus:outline-none mt-2"
+                @click.stop="addToCart(prod)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </button> -->
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+      </div>
 
-      <!-- Section one: Items bought -->
-      <div class="w-full lg:w-4/7 bg-white shadow-lg text-lg rounded-md border border-gray-200 flex flex-col">
-        <div class="overflow-x-auto rounded-lg p-1 flex-grow flex flex-col">
-          <div class="flex-grow overflow-auto">
-            <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow-md">
-              <thead class="bg-gray-50 text-gray-800">
+      <!-- Cart Section -->
+      <div class="w-full lg:w-3/5 bg-white shadow-sm rounded-lg border border-gray-200 flex flex-col">
+        <div class="p-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-800">Order Summary</h2>
+        </div>
+        
+        <div class="flex-grow overflow-hidden flex flex-col">
+          <div class="overflow-y-auto flex-grow">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
                 <tr>
-                  <th class="py-3 px-4 text-left text-sm font-semibold uppercase">#</th>
-                  <th class="py-3 px-4 text-left text-sm font-semibold uppercase">Product</th>
-                  <th class="py-3 px-4 text-right text-sm font-semibold uppercase">Quantity</th>
-                  <th class="py-3 px-4 text-right text-sm font-semibold uppercase">Price</th>
-                  <th class="py-3 px-4 text-right text-sm font-semibold uppercase">Subtotal</th>
-                  <th class="py-3 px-4 text-right text-sm font-semibold uppercase">Action</th>
+                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                  <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                  <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                  <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                  <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-200">
-                <tr v-for="(item, index) in selectedItems" :key="index" class="hover:bg-gray-100 transition duration-200">
-                  <td class="py-3 px-4 text-sm">{{ index + 1 }}</td>
-                  <td class="py-3 px-4 text-sm">{{ item.productName }}</td>
-                  <td class="py-3 px-4 text-sm text-right">
-                    <input type="text" v-model="item.count" @input="getCount(item)" class="w-12 p-1 border rounded mx-auto lg:mx-0"/>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="(item, index) in selectedItems" :key="index" class="hover:bg-gray-50 transition-colors duration-150">
+                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
+                  <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                    <div class="truncate max-w-xs" :title="item.productName">{{ item.productName }}</div>
                   </td>
-                  <td class="py-3 px-4 text-sm text-right">{{ item.sellingPrice }}.00</td>
-                  <td class="py-3 px-4 text-sm text-right">{{ item.subtotal }}.00</td>
-                  <td class="py-3 px-4 text-sm text-right">
-                    <button @click="removeItem(index, item.productID)"class="text-red-500 hover:text-red-700 focus:outline-none">
-                      X
+                  <td class="px-4 py-3 whitespace-nowrap text-right">
+                    <input 
+                      type="number" 
+                      v-model="item.count" 
+                      @input="getCount(item)" 
+                      min="1"
+                      class="w-16 text-right p-1 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                    />
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-500">{{ item.sellingPrice }}.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm text-right font-medium text-gray-900">{{ item.subtotal }}.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                    <button 
+                      @click="removeItem(index, item.productID)"
+                      class="text-red-500 hover:text-red-700 focus:outline-none"
+                      title="Remove item"
+                    >
+                      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                     </button>
                   </td>
                 </tr>
               </tbody>
             </table>
+            
+            <div v-if="selectedItems.length === 0" class="p-8 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">Empty cart</h3>
+              <p class="mt-1 text-sm text-gray-500">Start by adding products from the left panel</p>
+            </div>
           </div>
         </div>
       </div>
-
-      
-
     </div>
 
-    <!-- Section three: totals and payment buttons -->
-    <div class="footer bg-white px-3 py-4 mx-3 mt-4 flex flex-col md:flex-row items-center justify-between rounded-md border border-gray-300 space-y-3 md:space-y-0">
-      <!-- <div class="flex flex-wrap items-center space-x-2 text-gray-600">
-        <span class="text-md font-semibold">ITEMS:</span>
-        <span class="text-md border px-3 rounded-md border-gray-900">{{ NoItems }}</span>
-
-        <span class="text-md font-semibold ml-2">DISCOUNT:</span>
-        <span class="text-md border px-6 rounded-md border-gray-900">{{ Discount }}</span>
-
-        <span class="text-md font-semibold ml-2">SHIPPING:</span>
-        <span class="text-sm border px-6 rounded-md border-gray-900">{{ Shipping }}</span>
-
-        <span class="text-md font-semibold ml-2">VAT:</span>
-        <span class="text-sm border px-6 rounded-md border-gray-900">{{ Vat }}</span>
-
-        <span class="text-md font-semibold ml-2">TOTAL PAYMENT:</span>
-        <span class="text-md border px-8 rounded-md border-gray-900">{{ TtotalCost }}</span>
-      </div> -->
-
-      <div class="flex flex-wrap gap-x-4 gap-y-2 text-gray-600">
-  <div class="flex items-center space-x-2">
-    <span class="text-md font-semibold">ITEMS:</span>
-    <span class="text-md border px-8 w-50 rounded-md border-gray-900">{{ NoItems }}</span>
-  </div>
-
-  <div class="flex items-center space-x-2">
-    <span class="text-md font-semibold">DISCOUNT:</span>
-    <span class="text-md border px-8 rounded-md border-gray-900">{{ Discount }}</span>
-  </div>
-
-  <div class="flex items-center space-x-2">
-    <span class="text-md font-semibold">SHIPPING:</span>
-    <span class="text-sm border px-6 rounded-md border-gray-900">{{ Shipping }}</span>
-  </div>
-
-  <div class="flex items-center space-x-2">
-    <span class="text-md font-semibold">VAT:</span>
-    <span class="text-sm border px-6 rounded-md border-gray-900">{{ Vat }}</span>
-  </div>
-
-  <div class="flex items-center space-x-2">
-    <span class="text-md font-semibold">TOTAL PAYMENT:</span>
-    <span class="text-md border px-12 rounded-md border-gray-900">{{ TtotalCost }}</span>
-  </div>
-</div>
-
-
-      <div class="flex space-x-3">
-        <button @click="OpenCash" class="bg-blue-600 text-gray-800 font-bold border border-gray-200 rounded-lg py-2 px-4 hover:bg-blue-400 focus:outline-none focus:bg-white focus:border-gray-500">
-          CASH
-        </button>
-        <button @click="OpenMpesa" class="bg-green-700 text-gray-800 font-bold border border-gray-200 rounded-lg py-2 px-4 hover:bg-green-600 focus:outline-none focus:bg-white focus:border-gray-500">
-          M-PESA
-        </button>
-        <button @click="OpencCredit"
-          class="bg-gray-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-2 px-4 hover:bg-gray-800 focus:outline-none focus:bg-white focus:border-gray-500" >
-          CREDIT
-        </button>
+    <!-- Footer with totals and payment buttons -->
+    <div class="bg-white px-6 py-4 mx-4 mt-4 rounded-lg border border-gray-200 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-gray-500">ITEMS</span>
+            <span class="text-lg font-semibold text-gray-800">{{ NoItems }}</span>
+          </div>
+          
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-gray-500">DISCOUNT</span>
+            <span class="text-lg font-semibold text-gray-800">{{ Discount }}</span>
+          </div>
+          
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-gray-500">SHIPPING</span>
+            <span class="text-lg font-semibold text-gray-800">{{ Shipping }}</span>
+          </div>
+          
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-gray-500">VAT</span>
+            <span class="text-lg font-semibold text-gray-800">{{ Vat }}</span>
+          </div>
+          
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-gray-500">TOTAL</span>
+            <span class="text-xl font-bold text-green-600">{{ TtotalCost }} KSH</span>
+          </div>
+        </div>
+        
+        <div class="flex space-x-3">
+          <button 
+            @click="OpenCash" 
+            :disabled="selectedItems.length === 0"
+            :class="{'bg-blue-600 hover:bg-blue-700': selectedItems.length > 0, 'bg-blue-400 cursor-not-allowed': selectedItems.length === 0}"
+            class="text-white font-medium rounded-lg px-6 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+          >
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            CASH
+          </button>
+          
+          <button 
+            @click="OpenMpesa" 
+            :disabled="selectedItems.length === 0"
+            :class="{'bg-green-600 hover:bg-green-700': selectedItems.length > 0, 'bg-green-400 cursor-not-allowed': selectedItems.length === 0}"
+            class="text-white font-medium rounded-lg px-6 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
+          >
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+            </svg>
+            M-PESA
+          </button>
+          
+          <button 
+            @click="OpencCredit"
+            :disabled="selectedItems.length === 0"
+            :class="{'bg-gray-700 hover:bg-gray-800': selectedItems.length > 0, 'bg-gray-400 cursor-not-allowed': selectedItems.length === 0}"
+            class="text-white font-medium rounded-lg px-6 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+          >
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            CREDIT
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Section four: Payment modals -->
-
+    <!-- Payment Modals -->
     <!-- Mpesa payment modal -->
-    <div
-      v-if="isMpesaOpen"
-      class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4"
-    >
-      <div class="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full max-h-full overflow-auto">
-        <div class="relative flex items-center justify-center mb-4">
-          <p
-            class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center w-full"
-          >
-            Pay via mpesa
-          </p>
-          <button
-            @click="CloseMpesa"
-            class="absolute right-0 top-0 text-gray-600 hover:text-gray-900 focus:outline-none"
-          >
-            X
+    <div v-if="isMpesaOpen" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+        <div class="flex items-center justify-between p-5 border-b border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-900">Pay via M-PESA</h3>
+          <button @click="CloseMpesa" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-        <form @submit.prevent="SubmitMpesa">
-          <label class="block mb-1 text-gray-600 font-semibold" for="phone">
-            Phone Number
-          </label>
-          <input
-            id="phone"
-            type="text"
-            placeholder="Enter Phone number"
-            v-model="phoneNumber"
-            class="w-full px-3 py-2 mb-3 rounded border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#98c01d]"
-            required
-          />
-          <button
-            type="submit"
-            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full"
-          >
-            Pay
-          </button>
+        <form @submit.prevent="PayViaMpesa" class="p-5">
+          <div class="mb-5">
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="text-gray-500 sm:text-sm">+254</span>
+              </div>
+              <input
+                id="phone"
+                type="tel"
+                placeholder="700123456"
+                v-model="phoneNumber"
+                class="focus:ring-green-500 focus:border-green-500 block w-full pl-16 py-3 sm:text-sm border-gray-300 rounded-md"
+                required
+                pattern="[0-9]{9}"
+                maxlength="9"
+              />
+            </div>
+          </div>
+          <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+            <button type="button" @click="CloseMpesa" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              Confirm Payment
+            </button>
+          </div>
         </form>
       </div>
     </div>
 
     <!-- Cash payment modal -->
-    <div
-      v-if="isCashOpen"
-      class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4"
-    >
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <div class="relative flex items-center justify-center mb-4">
-          <p
-            class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center w-full"
-          >
-            Pay via cash
-          </p>
-          <button
-            @click="CloseCash"
-            class="absolute right-0 top-0 text-gray-600 hover:text-gray-900 focus:outline-none"
-          >
-            X
+    <div v-if="isCashOpen" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+        <div class="flex items-center justify-between p-5 border-b border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-900">Pay via Cash</h3>
+          <button @click="CloseCash" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-        <form @submit.prevent="SubmitCash">
-          <label class="block mb-1 text-gray-600 font-semibold" for="cashAmount">
-            Amount tendered
-          </label>
-          <input
-            id="cashAmount"
-            type="number"
-            v-model.number="cashAmount"
-            class="w-full px-3 py-2 mb-3 rounded border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#98c01d]"
-            required
-            min="0"
-          />
-          <button
-            type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
-          >
-            Submit
-          </button>
+        <form @submit.prevent="PayViaCash" class="p-5">
+          <div class="mb-5">
+            <label for="cashAmount" class="block text-sm font-medium text-gray-700 mb-1">Amount Tendered</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="text-gray-500 sm:text-sm">KSh</span>
+              </div>
+              <input
+                id="cashAmount"
+                type="number"
+                v-model.number="cashAmount"
+                :min="TtotalCost"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-12 py-3 sm:text-sm border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            <div v-if="cashAmount > 0" class="mt-2 text-sm">
+              <p class="text-gray-600">Total: <span class="font-medium">{{ TtotalCost }} KSh</span></p>
+              <p class="text-gray-600">Change: <span class="font-medium">{{ cashAmount - TtotalCost }} KSh</span></p>
+            </div>
+          </div>
+          <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+            <button type="button" @click="CloseCash" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Confirm Payment
+            </button>
+          </div>
         </form>
       </div>
     </div>
 
     <!-- Credit payment modal -->
-    <div
-      v-if="isCreditOpen"
-      class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4"
-    >
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <div class="relative flex items-center justify-center mb-4">
-          <p
-            class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center w-full"
-          >
-            Pay via credit
-          </p>
-          <button
-            @click="CloseCredit"
-            class="absolute right-0 top-0 text-gray-600 hover:text-gray-900 focus:outline-none"
-          >
-            X
+    <div v-if="isCreditOpen" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+        <div class="flex items-center justify-between p-5 border-b border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-900">Pay via Credit</h3>
+          <button @click="CloseCredit" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-        <form @submit.prevent="SubmitCredit">
-          <label class="block mb-1 text-gray-600 font-semibold" for="creditAmount">
-            Credit Amount
-          </label>
-          <input
-            id="creditAmount"
-            type="number"
-            v-model.number="creditAmount"
-            class="w-full px-3 py-2 mb-3 rounded border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#98c01d]"
-            required
-            min="0"
-          />
-          <button
-            type="submit"
-            class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 w-full"
-          >
-            Submit
-          </button>
+        <form @submit.prevent="SubmitCredit" class="p-5">
+          <div class="mb-5">
+            <label for="creditAmount" class="block text-sm font-medium text-gray-700 mb-1">Credit Amount</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="text-gray-500 sm:text-sm">KSh</span>
+              </div>
+              <input
+                id="creditAmount"
+                type="number"
+                v-model.number="creditAmount"
+                :min="TtotalCost"
+                class="focus:ring-gray-500 focus:border-gray-500 block w-full pl-12 py-3 sm:text-sm border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            <div v-if="creditAmount > 0" class="mt-2 text-sm">
+              <p class="text-gray-600">Total: <span class="font-medium">{{ TtotalCost }} KSh</span></p>
+              <p class="text-gray-600">Balance: <span class="font-medium">{{ creditAmount - TtotalCost }} KSh</span></p>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+            <input
+              id="customerName"
+              type="text"
+              v-model="customerName"
+              class="focus:ring-gray-500 focus:border-gray-500 block w-full py-2 px-3 sm:text-sm border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+            <button type="button" @click="CloseCredit" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+              Confirm Credit
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -655,4 +789,46 @@
   @apply flex flex-wrap gap-4; 
   /* / Using Tailwind for layout / */
 }
-   </style>
+ 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Smooth transitions */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Truncate text with ellipsis */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

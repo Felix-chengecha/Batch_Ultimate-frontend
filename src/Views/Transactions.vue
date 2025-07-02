@@ -1,92 +1,142 @@
 <template>
-  <div class="rounded-xl bg-white h-full p-4 shadow-sm border border-gray-100">
-    <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800">Transactions</h1>
-        <p class="text-sm text-gray-500 mt-1">All transactions</p>
-      </div>
-      
-      <div class="relative w-full md:w-96">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-          </svg>
+  <main class="p-4 md:p-6">
+    <!-- Header and Search Bar -->
+    <div class="mb-6">
+      <div class="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Transaction History</h1>
+          <p class="text-sm text-gray-500 mt-1">View and manage all transactions</p>
         </div>
-        <input 
-          type="text" 
-          id="Search" 
-          placeholder="Search your transactions..." 
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-        >
+        <div class="relative w-full md:w-64">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="Search"
+            @input="productSearch"
+            placeholder="Search transactions..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
+          />
+        </div>
       </div>
     </div>
 
-
-
-     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y-2 divide-gray-200 bg-gray-100 text-sm rounded">
-          <thead class="text-left">
+    <!-- Table Section -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
             <tr>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Transaction ID</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">SKU</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Item</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No Item</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Transaction Code</th>
-               <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Cost</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">served By </th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Date</th>
-              <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cashier</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
-          
-            <tr class="bg-white border-4 border-gray-200" v-for="(item, index) in filteredTransactions" :key="index">
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.transactionID }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.quantity }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.amountRecieved }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.cashChange }}</td> 
-
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalCost }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.totalDiscount }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdOn }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ item.createdBy }}</td>
-
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">..</td>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="(item, index) in filteredTransactions" :key="index" class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.transactionID }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.quantity }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Ksh {{ item.amountRecieved }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Ksh {{ item.cashChange }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Ksh {{ item.totalCost }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.totalDiscount }}%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(item.createdOn) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.createdBy }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button 
+                  @click="openproducts(item.transactionID)"
+                  class="text-blue-600 hover:text-blue-900 mr-3 transition-colors"
+                  title="View products"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
+    </div>
 
+    <!-- Empty State -->
+    <div v-if="filteredTransactions.length === 0" class="mt-12 text-center">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">No transactions found</h3>
+      <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+    </div>
 
-    <!-- Modal for Products -->
-    <div v-if="isModalProductsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 px-4">
-      <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
-        <button @click="closeModal" class="bg-black text-white rounded px-2 py-1 mt-2 ml-2">x</button>
-        <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center mt-2">{{ TRXID }}: PRODUCTS</p>
+    <!-- Products Modal -->
+    <div v-if="isModalProductsOpen" class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div class="absolute inset-0 bg-gray-500 opacity-75" @click="closeModal"></div>
+        </div>
 
-        <div class="p-4 sm:p-6">
-          <ul class="space-y-4">
-            <li
-              v-for="(product, pIndex) in allParsedProducts"
-              :key="pIndex"
-              class="border p-4 rounded-lg shadow-sm hover:bg-gray-50 transition"
-            >
-              <div class="flex justify-between items-center">
-                <strong class="text-md font-semibold">{{ product.ProductName }}</strong>
-                <span class="text-gray-600 text-sm">Price: ksh.{{ product.Price }}</span>
+        <!-- Modal content -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    Transaction #{{ TRXID }} Products
+                  </h3>
+                  <button @click="closeModal" class="text-gray-400 hover:text-gray-500">
+                    <span class="sr-only">Close</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="mt-4">
+                  <ul class="divide-y divide-gray-200">
+                    <li v-for="(product, pIndex) in allParsedProducts" :key="pIndex" class="py-4">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                          </div>
+                          <div class="ml-4">
+                            <h4 class="text-sm font-medium text-gray-900">{{ product.ProductName }}</h4>
+                            <p class="text-sm text-gray-500">Qty: {{ product.Quantity }}</p>
+                          </div>
+                        </div>
+                        <div class="text-right">
+                          <p class="text-sm font-medium text-gray-900">Ksh {{ product.Price }}</p>
+                          <p v-if="product.Discount > 0" class="text-xs text-red-500">{{ product.Discount }}% discount</p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div class="flex justify-between items-center text-sm text-gray-500">
-                <span>Quantity: {{ product.Quantity }}</span>
-                <span>Discount: {{ product.Discount }}%</span>
-              </div>
-            </li>
-          </ul>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button type="button" @click="closeModal" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
+  </main>
 </template>
 
     
@@ -104,7 +154,8 @@
         const isModalProductsOpen = ref(false); 
         const TRXID = ref('');
 
-        onMounted(() => {
+        onMounted(() => { 
+           let token = localStorage.getItem('token'); 
           transactionStore.fetchTransactions();
         });
 
@@ -120,6 +171,12 @@
     const openproducts = (transactionID) => {
       isModalProductsOpen.value = true;
       TRXID.value= transactionID;
+    }; 
+
+     const formatDate = (dateString) => {
+      if (!dateString) return '';
+      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
     };
     
     const closeModal = () => {
@@ -145,7 +202,8 @@
           saleStore,
           transactionStore,
           TRXID,
-          allParsedProducts
+          allParsedProducts,
+          formatDate
         //   fetchData: contactStore.fetchData
         };
       }
