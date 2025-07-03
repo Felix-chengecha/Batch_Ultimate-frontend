@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { errorState } from '../src/store/ErrorState'
 import {useRouter } from 'vue-router'
+import Documents from './Views/Documents.vue';
 
 
 const router = useRouter(); 
@@ -585,6 +586,46 @@ return apiClient.delete(`/deleteinventory/${id}`, {
   },
 });
 },
+
+//##############################
+// Documents
+//###############################
+
+  async uploadFile(formData) {
+    return apiClient.post('/upload', formData, {}, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+    async GetFiles() {
+    return apiClient.post('/getAllfiles',  {
+    headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+
+  // important for binary response (PDF)
+  async getFilePreview(fileId) {
+    return apiClient.get(`/preview/${fileId}`, {
+      responseType: 'blob', 
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+  async downloadFile(fileId) {
+    return apiClient.get(`/download/${fileId}`, {
+      responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 
 
 

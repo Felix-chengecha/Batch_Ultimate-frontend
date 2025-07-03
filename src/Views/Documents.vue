@@ -1,19 +1,66 @@
 <template>
   <div class="min-h-screen flex bg-gray-100">
     <!-- Main Content -->
-    <main class="flex-1 p-6 overflow-auto">
-      <span class="text-lg font-semibold text-center md:text-left mb-2 md:mb-0">DOC-MANAGER:</span>
+    <main class="flex-1 p-3 overflow-auto">
 
-      <!-- Breadcrumbs -->
-      <nav class="text-sm text-gray-600 mb-4">
-        <ol class="list-reset flex space-x-2">
-          <li><a href="#" class="hover:underline">Home</a></li>
-          <li>/</li>
-          <li><a href="#" class="hover:underline">Documents</a></li>
-          <li>/</li>
-          <li>All</li>
-        </ol>
-      </nav>
+      <!-- Header Section -->
+      <div class="px-1 py-0 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">DOC-MANAGER:</h1>
+          <p class="text-sm text-gray-500 mt-1 mb-1">Manage your all your  documents  here</p>
+        </div>
+        <button @click="ModalDocOpen" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors focus:outline-none 
+          focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Add New Document
+        </button>
+      </div>
+
+      <!-- Add document modal start-->
+<div v-if="uploadDoc" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-lg">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Upload Document</h2>
+        <button @click="ModalDocClose" class="text-gray-500 hover:text-red-500 text-xl">&times;</button>
+      </div>
+
+      <div class="mb-4">
+        <label class="block mb-1 font-medium">File Name</label>
+                    <input
+                      type="text"
+                      id="file-name"
+                      v-model="FileName"
+                      class="w-full border rounded p-2"
+                    />
+                  </div>
+
+      <div class="mb-4">
+        <label class="block mb-1 font-medium">Choose file:</label>
+        <input type="file" @change="handleFileChange" class="w-full border rounded p-2" />
+        <p v-if="selectedFile" class="text-sm mt-2 text-gray-600">
+          Selected: {{ selectedFile.name }}
+        </p>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button @click="closeModal" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+          Cancel
+        </button>
+        <button
+          :disabled="!selectedFile"
+          @click="uploadDocument"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 
       <!-- Search & Filters -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
@@ -22,17 +69,13 @@
           placeholder="Search documents..."
           class="flex-1 p-2 border border-gray-300 rounded"
         />
-        <select class="border border-gray-300 rounded p-2 w-48">
-          <option>Date Modified</option>
-          <option>Name</option>
-          <option>Size</option>
-        </select>
+       
       </div>
 
-      <!-- Document List -->
+      <!-- Document List DocumentList-->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
-          v-for="doc in documents"
+          v-for="doc in documentslist "
           :key="doc.id"
           class="bg-white p-4 rounded shadow hover:shadow-md cursor-pointer"
         >
@@ -46,8 +89,8 @@
             </div>
           </div>
           <div class="flex justify-between text-sm text-gray-400">
-            <button @click="previewDoc(doc)" class="hover:text-blue-600">Preview</button>
-            <button @click="downloadDoc(doc)" class="hover:text-green-600">Download</button>
+            <button @click="previewFile(doc.name)" class="hover:text-blue-600">Preview</button>
+            <button @click="downloadFile(doc.name)" class="hover:text-green-600">Download</button>
             <button class="hover:text-red-600">Delete</button>
           </div>
         </div>
@@ -55,63 +98,103 @@
     </main>
 
     <!-- PDF Preview Modal -->
-    <div v-if="previewUrl" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-lg w-full max-w-4xl h-[80vh] overflow-hidden flex flex-col">
-        <div class="flex justify-between items-center p-4 border-b">
-          <h2 class="text-lg font-semibold">Document Preview</h2>
-          <button @click="previewUrl = null" class="text-red-500 hover:underline">Close</button>
-        </div>
-        <iframe :src="previewUrl" class="flex-1 w-full" frameborder="0"></iframe>
+     <div v-if="previewUrl" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg w-full max-w-4xl h-[80vh] overflow-hidden flex flex-col">
+      <div class="flex justify-between items-center p-4 border-b">
+        <h2 class="text-lg font-semibold">Document Preview</h2>
+        <button @click="previewUrl = null" class="text-red-500 hover:underline">Close</button>
       </div>
+      <iframe :src="previewUrl" class="flex-1 w-full" frameborder="0"></iframe>
     </div>
   </div>
+  </div>
+
+
+  
 </template>
 
 <script>
+   import FilePreview   from './FilePreview.vue';
+    import {UseDocumentStore} from '../store/DocumentsStore';
+    import { computed,ref,onMounted,watch } from 'vue';
+
+
 export default {
-  data() {
-    return {
-      documents: [
+  setup() {
+
+  const fileStore = UseDocumentStore();
+  const previewUrl = ref(null);
+  const uploadDoc = ref(false); 
+  const FileName = ref('');
+
+  const DocumentList = computed(() => fileStore.getData);  
+
+  const documentslist= ref ([
         { id: 1, name: "Project_Plan.pdf", modified: "2025-06-05" },
         { id: 2, name: "Meeting_Notes.docx", modified: "2025-06-01" },
         { id: 3, name: "Budget.xlsx", modified: "2025-05-28" },
-      ],
-      previewUrl: null,
-    };
-  },
-  filters: {
-    formatDate(value) {
-      if (!value) return "";
-      return new Date(value).toLocaleDateString();
-    },
-  },
-  methods: {
-    async previewDoc(doc) {
-      try {
-        // Simulate fetch PDF from API
-        const response = await fetch(`/api/files/${doc.name}`);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        this.previewUrl = url;
-      } catch (err) {
-        console.error("Error previewing file:", err);
-        alert("Failed to preview the document.");
-      }
-    },
-    async downloadDoc(doc) {
-      try {
-        const response = await fetch(`/api/files/${doc.name}`);
-        const blob = await response.blob();
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = doc.name;
-        link.click();
-      } catch (err) {
-        console.error("Download error:", err);
-      }
-    },
-  },
+      ]);
+
+  onMounted(()=>{
+        fileStore.fetchDocuments();
+        });
+
+
+ const handleFileChange = (e) => {
+  selectedFile.value = e.target.files[0]; // ✅ store selected file
+ };
+
+const uploadDocument = async () => {
+  if (!selectedFile.value || !FileName.value) {
+    alert("Please select a file and provide a file name.");
+    return;
+  }
+  const postDoc = {
+    file: selectedFile.value,
+    fileName: FileName.value,
+  };
+
+  await fileStore.upload(postDoc); // upload via Pinia store
 };
+
+const previewFile = async (fileId) => {
+  await fileStore.preview(fileId);
+  previewUrl.value = fileStore.previewBlobUrl;
+}; 
+
+const downloadFile = () => {
+  fileStore.download(fileStore.uploadedFileId);
+};
+
+
+
+const ModalDocOpen= ()=>{
+  uploadDoc.value = true;
+} 
+
+
+const ModalDocClose= ()=>{
+  uploadDoc.value = false;
+}
+
+
+    return { 
+      fileStore,
+      previewUrl,
+      uploadDoc,
+      ModalDocClose,
+      ModalDocOpen,
+      handleFileChange,
+      uploadDocument,
+      DocumentList,
+      documentslist,
+      previewFile,
+      FileName,
+      downloadFile
+    }
+  }
+};
+      
 </script>
 
 <style scoped>
