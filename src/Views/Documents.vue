@@ -18,6 +18,7 @@
         </button>
       </div>
 
+      <!-- <span>{{ DocumentList }}</span> -->
       <!-- Add document modal start-->
 <div v-if="uploadDoc" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-lg">
@@ -52,8 +53,7 @@
         <button
           :disabled="!selectedFile"
           @click="uploadDocument"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
-        >
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50">
           Upload
         </button>
       </div>
@@ -75,7 +75,7 @@
       <!-- Document List DocumentList-->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
-          v-for="doc in documentslist "
+          v-for="doc in DocumentList "
           :key="doc.id"
           class="bg-white p-4 rounded shadow hover:shadow-md cursor-pointer"
         >
@@ -84,13 +84,13 @@
               <path d="M6 2h7a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"/>
             </svg>
             <div>
-              <h4 class="font-semibold truncate max-w-xs">{{ doc.name }}</h4>
-              <p class="text-xs text-gray-500">{{ doc.modified | formatDate }}</p>
+              <h4 class="font-semibold truncate max-w-xs">{{ doc.fileName }}</h4>
+              <p class="text-xs text-gray-500">{{ doc.createdOn }}</p>
             </div>
           </div>
           <div class="flex justify-between text-sm text-gray-400">
-            <button @click="previewFile(doc.name)" class="hover:text-blue-600">Preview</button>
-            <button @click="downloadFile(doc.name)" class="hover:text-green-600">Download</button>
+            <button @click="previewFile(doc.documentId)" class="hover:text-blue-600">Preview</button>
+            <button @click="downloadFile(doc.documentId)" class="hover:text-green-600">Download</button>
             <button class="hover:text-red-600">Delete</button>
           </div>
         </div>
@@ -99,7 +99,7 @@
 
     <!-- PDF Preview Modal -->
      <div v-if="previewUrl" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg w-full max-w-4xl h-[80vh] overflow-hidden flex flex-col">
+    <div class="bg-white rounded-lg w-full max-w-8xl h-[90vh] overflow-hidden flex flex-col">
       <div class="flex justify-between items-center p-4 border-b">
         <h2 class="text-lg font-semibold">Document Preview</h2>
         <button @click="previewUrl = null" class="text-red-500 hover:underline">Close</button>
@@ -126,6 +126,8 @@ export default {
   const previewUrl = ref(null);
   const uploadDoc = ref(false); 
   const FileName = ref('');
+  const selectedFile = ref('');
+  const token = ref(''); 
 
   const DocumentList = computed(() => fileStore.getData);  
 
@@ -135,8 +137,9 @@ export default {
         { id: 3, name: "Budget.xlsx", modified: "2025-05-28" },
       ]);
 
-  onMounted(()=>{
-        fileStore.fetchDocuments();
+  onMounted(()=> {
+          token.value = localStorage.getItem('token'); 
+        fileStore.fetchDocuments(token.value);
         });
 
 
@@ -154,16 +157,18 @@ const uploadDocument = async () => {
     fileName: FileName.value,
   };
 
-  await fileStore.upload(postDoc); // upload via Pinia store
+  await fileStore.upload(postDoc,token.value); // upload via Pinia store
 };
 
-const previewFile = async (fileId) => {
-  await fileStore.preview(fileId);
+const previewFile = async (fileId) => { 
+  await fileStore.preview(fileId,token.value);
   previewUrl.value = fileStore.previewBlobUrl;
 }; 
 
-const downloadFile = () => {
-  fileStore.download(fileStore.uploadedFileId);
+const downloadFile = async (fileid) => { 
+  console.log(fileid,"test");
+
+  fileStore.download(fileStore.download(fileid,token.value));
 };
 
 
@@ -190,7 +195,9 @@ const ModalDocClose= ()=>{
       documentslist,
       previewFile,
       FileName,
-      downloadFile
+      downloadFile,
+      selectedFile,
+      token
     }
   }
 };

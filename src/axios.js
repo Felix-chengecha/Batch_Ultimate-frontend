@@ -513,16 +513,30 @@ return apiClient.delete(`/deletecategory/${id}`, {
 // NotificationS ENDPOINTS 
 //**************************************************
  
-getcontacts() {
+getcontacts(token) {
   return apiClient.get('/Notification/GetContacts',  {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
     return response.data;
   });
 },
+
+
+getTemplates(token) {
+  return apiClient.get('/Notification/GetSmsTemplates',  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+//
+
 
 SendSms(postData) { 
   // console.log(postData);
@@ -538,19 +552,31 @@ SendSms(postData) {
 },
 
 
-addcontact(postData) { 
+addcontact(postData,token) { 
   // console.log(postData);
 
   return apiClient.post('/Notification/AddContact', postData, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
     return response;
   });
 },
 
+addsmsTemplate(postData,token) { 
+  // console.log(postData);
+
+  return apiClient.post('/Notification/AddSmsTemplate', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+},
 
 
 getSentMessages() {
@@ -591,26 +617,38 @@ return apiClient.delete(`/deleteinventory/${id}`, {
 // Documents
 //###############################
 
-  async uploadFile(formData) {
-    return apiClient.post('/upload', formData, {}, {
+async uploadFile(formData, token) {
+  return axios.post(
+    'http://localhost:5134/api/Document/AddDocument',
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  );
+},
+
+  // async uploadFile(formData,token) {
+  //   return apiClient.post('/Document/AddDocument', formData,  {
+  //   headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+  // },
+
+    async GetFiles(token) {
+    return apiClient.post('/Document/GetDocuments', {}, {
     headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   },
 
-    async GetFiles() {
-    return apiClient.post('/getAllfiles',  {
-    headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  },
 
-
-  // important for binary response (PDF)
-  async getFilePreview(fileId) {
-    return apiClient.get(`/preview/${fileId}`, {
+  // important for binary response (PDF) 
+  async getFilePreview(fileId,token) {
+    return apiClient.get(`/Document/preview/${fileId}`, {
       responseType: 'blob', 
       headers: {
         Authorization: `Bearer ${token}`,
@@ -619,7 +657,7 @@ return apiClient.delete(`/deleteinventory/${id}`, {
   },
 
   async downloadFile(fileId) {
-    return apiClient.get(`/download/${fileId}`, {
+    return apiClient.get(`/Document/DownloadDocument/${fileId}`, {
       responseType: 'blob',
       headers: {
         Authorization: `Bearer ${token}`,

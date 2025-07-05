@@ -67,21 +67,20 @@
         </a>
       </div>
     </div>
-    
+    <!-- <span>{{ SMStemplates }}</span> -->
        <article class="rounded-xl border  border-gray-400">
         <ul>
-            <!-- <li v-for="(item, index) in recent.data" :key="index"> -->
-        <li>
-            <a href="#" class="block h-full rounded-lg border border-gray-900 p-1 hover:border-pink-600">
-            <span class="font-medium text-gray-700"></span>
-            <p class="mt-1 text-m text-gray-800">  </p>
+            <li v-for="(item, index) in SMStemplates" :key="index">
+            <a href="#" class="block h-full rounded-lg border border-gray-200 p-1 hover:border-pink-600">
+            <span class="font-medium text-gray-700">{{ item.templateBody }}</span>
+            <small class="mt-1 text-m text-gray-800"> edit</small>
           </a>
         </li>
       </ul>
       </article>
      </div>
-      
     </div>
+
 
     <!-- Template Modal -->
     <div v-if="isModalTempOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
@@ -152,6 +151,19 @@
             <input type="text" v-model="phone"
                    class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
           </div>
+           <div>
+            <label class="block text-sm text-black">EMAIL ADDRESS</label>
+            <input type="text" v-model="Email"
+                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+          </div>
+
+          <button 
+            @click="AddContact" 
+            class="px-4 py-2.5 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2
+             focus:ring-blue-400 focus:ring-offset-2 transition-colors"> Add Contact
+          </button>
+
+
         </div>
       </div>
     </div>
@@ -161,16 +173,13 @@
  
  <script>
  import { usecontactstore } from '../store/contactstore';
-//  import { useContactGroupstore } from '../store/ContactGroupstore';
  import { ref, computed, onMounted, watch } from 'vue';
  import Swal from 'sweetalert2';
 //  import * as XLSX from 'xlsx';
  import { errorState } from '../store/ErrorState';
+
  export default { 
- 
-  
    setup() {
-    //  const Token = ref(localStorage.getItem('token'));
      const isModalOpen = ref(false);
      const Mode = ref('addmode');
      const isEXCELOpen   = ref(false);
@@ -186,36 +195,41 @@
      const itemsPerPage = 18; 
      const templateHeader = ref('');
      const templateBody = ref('');
-
+     const token = ref('');
 
      const contactStore = usecontactstore();
-   //   const groupstore = useContactGroupstore(); 
-     
-   //   const contGroup = computed(() => groupstore.getData);
+
      const contactsStr = computed(() => contactStore.getData);
      const filteredItems = computed(() => contactStore.filteredContacts);
+     const SMStemplates = computed(() => contactStore.getTemplate);
+
      const Tresponse = computed(()=>contactStore. getsucces);
      //const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
 
 
-     watch(() => errorState.message, (newVal) => {
+      watch(() => errorState.message, (newVal) => {
 			 if (newVal) {
-			   ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
 			 }
-		 });
+		    }) 
   
 
-   onMounted(() => {
-     contactStore.fetchContacts();
+   onMounted(() => { 
+    token.value = localStorage.getItem('token');                      
+     contactStore.fetchContacts(token.value);
+    contactStore.fetchTemplates(token.value); //reload dataS
    //   groupstore.fetchContactGroup();
     });
+
+    
+    
 
 
     const AddTemplate = () => {
       isModalTempOpen.value= true;
     } 
 
-    	      const DisplayMessage = (icon, message) => {
+    const DisplayMessage = (icon, message) => {
       Swal.fire({
         position: 'center',
         icon: icon,
@@ -235,28 +249,26 @@
     const Submittemplate = () => {
 
       if(templateHeader.value == " " || templateHeader.value == undefined){
-       showalertdialog("error", "header is required");
+       DisplayMessage("error", "header is required");
        return;
       } 
      else if(templateBody.value == " " || templateBody.value == undefined){
-       showalertdialog("error", "body no is required");
+       DisplayMessage("error", "body no is required");
        return;
      } 
   
      else{
-
-
-
          const data = {
-           contacts:[{
-               header: templateHeader.value,
-               body: templateBody.value,
-               status: 1,
+           template:[{
+               templateID: templateHeader.value,
+               templateBody: templateBody.value,
+              //  status: 1,
            }]
          }
        try{
-         contactStore.AddNewTemplate(data);
-           contactStore.fetchTemplate(); //reload dataS
+         contactStore.AddNewTemplate(data,token.value);
+         closeModal(); 
+         contactStore.fetchTemplate(); //reload dataS
        }
        catch(error){
          console.log(error);
@@ -285,32 +297,33 @@
 
      
        // Watch the Tresponse and trigger SweetAlert when the response changes
-   watch(Tresponse, (newValue) => {
-     if (newValue && typeof newValue === 'object') {
-     // SweetAlert for success
-       if (newValue.success) {
-         Swal.fire({
-           position: 'top-end',
-           icon: 'success',
-           // title: 'Contact Group added by successfully',
-           title: newValue.msg,
-           showConfirmButton: false,
-           timer: 2500,
-         });
-       }
-         // SweetAlert for failure
-       else {
-         Swal.fire({
-           position: 'top-end',
-           icon: 'error',
-           title: newValue.msg,
-           // title: 'Failed to add Contact Group',
-           showConfirmButton: false,
-           timer: 2500,
-         });
-       }
-     }
-   });
+
+  //  watch(Tresponse, (newValue) => {
+  //    if (newValue && typeof newValue === 'object') {
+  //    // SweetAlert for success
+  //      if (newValue.success) {
+  //        Swal.fire({
+  //          position: 'top-end',
+  //          icon: 'success',
+  //          // title: 'Contact Group added by successfully',
+  //          title: newValue.msg,
+  //          showConfirmButton: false,
+  //          timer: 2500,
+  //        });
+  //      }
+  //        // SweetAlert for failure
+  //      else {
+  //        Swal.fire({
+  //          position: 'top-end',
+  //          icon: 'error',
+  //          title: newValue.msg,
+  //          // title: 'Failed to add Contact Group',
+  //          showConfirmButton: false,
+  //          timer: 2500,
+  //        });
+  //      }
+  //    }
+  //  });
    
     //function to handle contact list search
    const updateSearch = (e) => { 
@@ -318,7 +331,98 @@
        contactStore.setSearchTerm(e.target.value);
    };
 
-     //function to handle file upload
+  
+
+ 
+     // Function to add a single contact 
+     const AddContact = () => {   
+      if(Name.value == " " || Name.value == undefined){
+       DisplayMessage("error", "name is required");
+       return;
+      } 
+     else if(phone.value == " " || phone.value == undefined){
+       DisplayMessage("error", "phone no is required");
+       return;
+     } 
+     else if(Email.value == " " || Email.value == undefined){
+       DisplayMessage("error", "Email is required");
+       return;
+     }
+     else{
+
+
+
+    const data = {
+      contact:[{
+          ClientID: generateUnique6DigitCode(),
+          Username: Name.value,
+          PhoneNumber: phone.value,
+          Email: Email.value,
+      }]
+         }
+       try{
+         contactStore.AddNewContacts(data,token.value);
+           closeModal(); 
+           contactStore.fetchContacts(); //reload dataS
+       }
+       catch(error){
+         console.log(error);
+       }
+      }
+     }
+
+ 
+     
+ 
+     const openModal = () => { 
+       Mode.value = "addmode";
+       Name.value = " ",
+       phone.value = " ";
+       contactgroup.value =" ",
+       Email.value  = " ";
+       isModalOpen.value = true;
+     };
+
+     const closeModal = () => {
+       isModalOpen.value = false;
+     };
+
+     //close excel upload modal
+     const CloseExcel = () => {
+        isEXCELOpen.value = false;
+     }
+
+     //open excel upload modal 
+     const OpenExcel = () => {
+        isEXCELOpen.value = true;
+    }
+     
+
+       //open modal for editing contacts
+     const openModalEdit = (mode, name, email,phoneno, status, group) => { 
+       const stat = status;
+       const statusBoolean = stat === 'A  ctive'; 
+
+       isModalOpen.value = true;
+       Mode.value = mode;
+       Name.value = name,
+       phone.value =phoneno;
+       contactgroup.value =group,
+       Email.value  = email;
+       contactstatus.value =statusBoolean
+       console.log(statusBoolean);
+       }
+
+
+    const  generateUnique6DigitCode =()=>{
+     const timestamp = Date.now().toString();
+     const uniqueNumber = timestamp.slice(-6); // Get the last 6 digits
+     const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // Generate a random letter A-Z
+     return randomLetter + uniqueNumber; 
+    }
+
+
+      //function to handle file upload
    const handleFileUpload = (event) => {
        const file = event.target.files[0];
        const reader = new FileReader();
@@ -376,7 +480,7 @@
      });
    }; 
 
-   // submit  or save contact list in excel file
+     // submit  or save contact list in excel file
    const submitExceldata = async () => {
      validateExcel(); // Validate before submission
 
@@ -397,107 +501,6 @@
        }
    } 
 
-     // Function to add a single contact 
-     const AddContact = () => {   
-
-      if(Name.value == " " || Name.value == undefined){
-       showalertdialog("error", "name is required");
-       return;
-      } 
-     else if(phone.value == " " || phone.value == undefined){
-       showalertdialog("error", "phone no is required");
-       return;
-     } 
-     else if(Email.value == " " || Email.value == undefined){
-       showalertdialog("error", "Email is required");
-       return;
-     }
-     else{
-
-
-
-         const data = {
-           contacts:[{
-             clientid: generateUnique6DigitCode(),
-               groupName: contactgroup.value,
-               name: Name.value,
-               mobile: phone.value,
-               email: Email.value,
-               status: 1,
-           }]
-         }
-       try{
-         contactStore.AddNewContacts(data);
-           closeModal(); 
-           contactStore.fetchContacts(); //reload dataS
-       }
-       catch(error){
-         console.log(error);
-       }
-      }
-     }
-
- 
-     
- 
-     const openModal = () => { 
-       Mode.value = "addmode";
-       Name.value = " ",
-       phone.value = " ";
-       contactgroup.value =" ",
-       Email.value  = " ";
-       isModalOpen.value = true;
-     };
-
-     const closeModal = () => {
-       isModalOpen.value = false;
-     };
-
-     //close excel upload modal
-     const CloseExcel = () => {
-        isEXCELOpen.value = false;
-     }
-
-     //open excel upload modal 
-     const OpenExcel = () => {
-        isEXCELOpen.value = true;
-    }
-     
-
-       //open modal for editing contacts
-     const openModalEdit = (mode, name, email,phoneno, status, group) => { 
-       const stat = status;
-       const statusBoolean = stat === 'A  ctive'; 
-
-       isModalOpen.value = true;
-       Mode.value = mode;
-       Name.value = name,
-       phone.value =phoneno;
-       contactgroup.value =group,
-       Email.value  = email;
-       contactstatus.value =statusBoolean
-       console.log(statusBoolean);
-       }
-
-    const  generateUnique6DigitCode =()=>{
-
-     const timestamp = Date.now().toString();
-     const uniqueNumber = timestamp.slice(-6); // Get the last 6 digits
-     const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // Generate a random letter A-Z
-     return randomLetter + uniqueNumber; 
-    }
-
-
-
-     const showalertdialog = (icon,resp) => {
-         Swal.fire({
-           position: "top-end",
-           icon:  icon,
-           title: resp,
-           showConfirmButton: false,
-           timer: 1500
-         });
-   };
  
      return {
        filteredItems,
@@ -510,10 +513,9 @@
        contactgroup,
        contactsStr,
        isModalTempOpen,
-      //  contGroup ,
+      SMStemplates ,
        openModalEdit,
        Mode,
-       showalertdialog,
        Tresponse,
        contactstatus,
        Submittemplate,
@@ -532,7 +534,9 @@
        submitExceldata,
        ContactsExcel,
        AddTemplate,
-
+       token   ,           
+      templateHeader ,
+      templateBody 
 
      
       //  paginatedContacts,

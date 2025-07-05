@@ -16,13 +16,23 @@ getters: {
 
 
   actions: {
-    async upload({ fileName, file }) {
+    async upload({ fileName, file },token) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('fileName', fileName); // if your backend expects it
 
-      const res = await fileService.uploadFile(formData);
-      this.uploadedFileId = res.data.fileId;
+      // const res = await fileService.uploadFile(formData);
+
+     axios.uploadFile(formData,token)
+      .then(response => {
+                    this.data = response.data;
+                    // this.uploadedFileId = res.data.fileId;
+                })
+                .catch(error => {
+                    this.error=error;
+                    this.loading = false;
+                });
+
     },
 
    async fetchDocuments(token){     
@@ -38,16 +48,16 @@ getters: {
             },
 
 
-    async preview(fileId) {
-      const res = await fileService.getFilePreview(fileId);
+    async preview(fileId,token) {
+      const res = await axios.getFilePreview(fileId,token);
       const blob = new Blob([res.data], { type: 'application/pdf' });
       this.previewBlobUrl = URL.createObjectURL(blob);
     },
 
     //GetFiles
 
- async download(fileId) {
-  const res = await fileService.downloadFile(fileId);
+ async download(fileId,token) {
+  const res = await axios.downloadFile(fileId,token);
   const blob = new Blob([res.data], { type: res.headers['content-type'] });
 
   const link = document.createElement('a');
