@@ -1,23 +1,33 @@
 <template>
 
-   <div class="bg-gray-200 rounded-lg shadow-md h-full w-full">  
-     <div class="mx-auto max-w-screen-xl px-1 py-1 sm:px-6 lg:px-1 h-full ">
-   
-      
-   
-       <div class="mx-auto h-auto max-w-full sm:h-full">
-     <form action="#" class="mb-0 space-y-4 space-x-0 sm:space-x-16 sm:mr-16 rounded-lg sm:p-6 lg:p-1">
-       
-       <div class="flex flex-col w-full relative">
-         <h3 class="font-medium text-1xl text-gray-700 ml-12 ">SEND SMS</h3>
-         <div class="absolute right-0 space-x-2 sm:space-x-4">   
-           <a @click="OpenContacts" class="inline-block rounded-md border border-gray-400 bg-green-500 px-3 py-1 text-sm text-white hover:text-gray-700 focus:outline-none">CONTACTS</a>
-           <!-- <a @click="OpenTemplates" class="inline-block rounded-md border border-gray-700 bg-blue-500 px-3 py-1 text-sm text-white hover:text-gray-700 focus:outline-none">TEMPLATE</a>          -->
+<div class="rounded-xl border border-gray-200 bg-gray-200 h-full p-4 shadow-sm">
+  <!-- Header & Search Controls start-->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-2">
+      <div>
+        <h3 class="text-2xl font-bold text-gray-800">Send Sms & Email</h3>
+      </div>  
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <span class="text-lg ml-3">MESSAGE TEMPLATES</span>
+
+        <div>
+           <a @click="OpenTemplateModal" class="bg-blue-500 text-white px-3 py-2 rounded-md text-sm font-semibold">
+            ADD TEMPLATE
+          </a>
+
          </div>
-       </div>
-   
+       <a @click="OpenContacts" class="inline-block rounded-md border border-gray-400 bg-green-500 px-3 py-1 text-sm text-white hover:text-gray-700 focus:outline-none">CONTACTS</a>
+      </div>
+    </div>
+  <!-- Header & Search Controls end-->
+
+ <div class="grid grid-cols-1 lg:grid-cols-3">
+ <!--Send sms and email section start -->
+  <div class="lg:col-span-2 bg-white rounded shadow overflow-auto mr-2">
+     <!-- <form action="#" class="mb-0 space-y-0 space-x-0 sm:space-x-16 sm:mr-16 rounded-lg sm:p-6 lg:p-1"> -->
+<form action="#">
+
+
        <div class="border border-gray-200 rounded-xl px-4 py-2 h-full bg-white"> 
-         
          <div class="flex flex-col space-y-4 ">
            <div class="flex flex-col sm:flex-row sm:space-x-4">
              <div class="flex-1">
@@ -55,11 +65,13 @@
            <div class="mt-3">
              <label for="message" class="text-sm ml-3">WRITE MESSAGE</label>
        
+             <textarea v-model="textmessage" class="w-full rounded-lg p-3 border border-gray-200 text-sm shadow-sm focus:border-black
+              focus:ring-black text-black bg-white" >  </textarea>
                
-               <QuillEditor v-model="textmessage"   id="richEditor"   
+               <!-- <QuillEditor v-model="textmessage"   id="richEditor"   
                class="w-full h-164 bg-white border border-gray-300 rounded-lg shadow-sm"   
                :options="editorOptions"
-               @input="handleInput"   />
+               @input="handleInput"   /> -->
             </div> 
    
    
@@ -72,7 +84,29 @@
      </form>
    </div>
    
-   
+<!-- Sidebar SMStemplates section start -->
+  <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
+      <div class="bg-white w-full max-w-md p-4 rounded shadow-lg"> 
+       <!-- <div class="flex flex-col md:flex-row items-center justify-between bg-gray-100 py-2 px-4 rounded mb-3">
+       <div @click="UseContactGroup(cont.username, cont.phoneNumber)">  
+        </div> -->
+       <article class="rounded-xl border  border-gray-400">
+        <ul>
+             <li v-for="(item, index) in SMStemplates" :key="index"
+             @click="Usetemplate(item.templateBody)">
+             <a href="#" class="block h-full rounded-lg border border-gray-200 p-1 hover:border-pink-600">
+             <span class="font-medium text-gray-700">{{ item.templateBody }}</span>
+             <small class="mt-1 text-m text-gray-800"> edit</small>
+            </a>
+           </li>
+          </ul>
+         </article>
+       </div>
+    </div>
+<!-- Sidebar SMStemplates section end -->
+
+  </div>
+</div>
    
    
     
@@ -80,44 +114,14 @@
    
    
    
-       <!--Choose contacts dialog start-->
-   
-     <!-- Choose contacts  dialog end -->
-   
-     
-   
-   
-   
-       <!--Contact dialog start-->
-       <!-- <div v-if="isModalContactsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center overflow-y-auto">
-       <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full">
-         <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">Contacts, Contact Group</p>  
-         <ul>
-         <li class="border rounded-md p-4"  v-for="(cont, index) in contactGroup" :key="index">
-           <div  @click="UseContactGroup(cont.name, cont.description)" >  
-               <div>
-                 <span class="text-2xl">{{ index + 1 }}.</span>
-                 <span class=" text-2xl">  {{ cont.name }}  </span> 
-               </div>
-                <span>{{ cont.description }}  </span> 
-           </div>  
-         </li>
-        </ul>
-   
-        <button @click="CloseModalContacts" class="bg-black text-white px-1 mt-3 rounded">x</button>
-     </div>
-       </div> -->
-     <!-- Contact dialog end -->
+  <!--Choose contacts dialog start-->
      <div v-if="isModalContactsOpen" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center overflow-y-auto">
      <div class="bg-white p-3 rounded-lg shadow-lg max-w-lg w-full max-h-screen h-screen overflow-y-auto">
        <!-- <p class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center">Contacts, Contact Group</p>   -->
-   
        <div class="relative flex items-center justify-center">
              <p class="text-lg font-semibold uppercase tracking-widest text-gray-700 text-center">SELECT CONTACTS </p>
              <button @click="CloseModalContacts" class="absolute right-0 bg-black text-white px-1 rounded">x</button>
            </div>
-   
-   
        <ul class="space-y-2 mt-2">
          <li class="border rounded-md p-4" v-for="(cont, index) in contacts" :key="index">
            <div @click="UseContactGroup(cont.username, cont.phoneNumber)">  
@@ -125,19 +129,55 @@
                <span class="text-2xl">{{ index + 1 }}.</span>
                <span class="text-2xl"> {{ cont.username }} </span> 
              </div>
+             <div class="ml-2">
              <span>{{ cont.phoneNumber }}</span> 
+             </div>
+             <div class="ml-2">
+             <span>{{ cont.email }}</span> 
+            </div>
            </div>  
          </li>
        </ul>
-   
-       <!-- <button @click="CloseModalContacts" class="bg-black text-white px-3 py-1 mt-3 rounded">Close</button> -->
      </div>
-   </div>
-   
-   
-   
      </div>
-   </div>
+<!-- Choose contacts  dialog end -->
+
+
+  <!-- Add edit sms template start -->
+   <div v-if="isModalTempOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+      <div class="bg-white w-full max-w-lg p-4 rounded shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">
+            {{ Mode === 'addmode' ? 'ADD NEW MESSAGE TEMPLATE' : 'EDIT MESSAGE TEMPLATE' }}
+          </h2>
+          <button @click="closeTemplateModal" class="bg-black text-white px-2 rounded">x</button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-black">Text Header</label>
+            <input type="text" v-model="templateHeader" class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+          </div>
+          <div>
+            <label class="block text-sm text-black">Enter Body</label>
+            <textarea rows="4" v-model="templateBody" class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" placeholder="Type your message here (max 2000 chars)"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-4 flex justify-end gap-2">
+          <a v-if="Mode === 'addmode'" @click="Submittemplate"
+             class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Submit</a>
+          <div v-else class="flex gap-2">
+            <a @click="Edittemplate" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Edit</a>
+            <a @click="DisableTemplate" class="bg-gray-600 text-white px-4 py-2 rounded">Delete</a>
+          </div>
+        </div>
+      </div>
+   </div> 
+  <!-- Add edit sms template end -->
+   
+ 
+   
    </template>
    
    <script>
@@ -163,10 +203,11 @@
      setup() { 
    
    
-       const Token = ref(localStorage.getItem('token')); 
+       const token = ref(localStorage.getItem('token')); 
        const isModalContactsOpen = ref(false);
        const contactgrouselected = ref(false);
-       const hideonecontact = ref(true)
+       const hideonecontact = ref(true);
+       const Mode = ref('addmode');
       //  const senderid = ref('');
        const textheader = ref('');
        const textmessage = ref('');
@@ -177,14 +218,14 @@
        const contactlist = ref([]);
        const sendmsg = ref([]);
        const filteredNumbers = ref([]);
-      //  const isModalPickContactsOpen = ref(false);
-
+       const isModalTempOpen = ref(false);
+       const templateHeader = ref('');
+       const templateBody = ref('');
        const contactstore = usecontactstore();
        const messageStore = useMessageStore();
 
-      //  const senderids = computed(() => senderstore.getData);
        const contacts = computed(() => contactstore.filteredContacts);
-   
+       const SMStemplates = computed(() => contactstore.getTemplate);
    
    
        onMounted(() => {
@@ -192,7 +233,9 @@
          // templatestore.fetchSmsTemplate();
          // groupstore.fetchContactList();
          // senderstore.fetchSenderID();
-         contactstore.fetchContacts();
+
+         contactstore.fetchContacts(token.value);
+         contactstore.fetchTemplates(token.value); 
          });
          
    watch(() => errorState.message, (newVal) => {
@@ -205,7 +248,6 @@
        const Usetemplate = (name,body) => {
          textheader.value = name;
          textmessage .value=body;
-         closeModalTemplate();
        }
    
        const UseContactGroup = (name,phone) =>{
@@ -224,9 +266,6 @@
         //    isChecked: true
         //  })); 
 
-
-   
-        //  isModalPickContactsOpen.value = true;
          isModalContactsOpen.value = false;
      }
               
@@ -265,15 +304,54 @@
             date: senddate.value,
             time: sendtime.value,
        };
-         messageStore.SendSms(smspayload);
+         messageStore.SendSms(smspayload,token.value);
       } };
 
+
+
+ const Submittemplate = () => {
+    if(templateHeader.value == " " || templateHeader.value == undefined){
+      DisplayMessage("error", "header is required");
+      return;
+    } 
+    else if(templateBody.value == " " || templateBody.value == undefined){
+      DisplayMessage("error", "body no is required");
+      return;
+    } 
+     else{
+         const data = {
+           template:[{
+               templateID: templateHeader.value,
+               templateBody: templateBody.value,
+              //  status: 1,
+           }]
+         }
+       try{
+         contactstore.AddNewTemplate(data,token.value);
+          contactstore.fetchTemplates(token.value); //reload dataS
+          closeTemplateModal();
+       }
+       catch(error){
+         console.log(error);
+       }
+      }
+     
+    }
+
+
        const OpenContacts=()=>{ 
-         // groupstore.fetchContactList();
          contactstore.fetchContacts();
          isModalContactsOpen.value = true;
        };
    
+       const OpenTemplateModal = () =>{
+          isModalTempOpen.value = true;
+       } 
+
+      const closeTemplateModal = () =>{
+          isModalTempOpen.value = false;
+       } 
+
        const CloseModalContacts =()=>{
          isModalContactsOpen.value = false;
        };
@@ -316,27 +394,26 @@
         textmessage.value = value.explicitOriginalTarget.innerText;
       };
 
-       const editorOptions = ref({ 
+      //  const editorOptions = ref({ 
 
-        theme: 'snow',
-        // placeholder: 'Write something amazing...',
-        modules: {
-          toolbar: [
-            // Toolbar rows
-            [{ font: [] }], // Font family dropdown
-            [{ size: ['small', false, 'large', 'huge'] }], // Font size dropdown
-            ['bold', 'italic', 'underline', 'strike'], // Text styles
-            [{ color: [] }, { background: [] }], // Text and background colors
-            [{ script: 'sub' }, { script: 'super' }], // Subscript/Superscript
-            [{ header: 1 }, { header: 2 }], // Header styles
-            [{ list: 'ordered' }, { list: 'bullet' }], // Lists
-            [{ align: [] }], // Text alignment
-            ['link', 'image', 'video'], // Links, images, videos
-            ['blockquote', 'code-block'], // Blockquote and code block
-            ['clean'], // Clear formatting
-          ],
-        },
-      });
+      //   theme: 'snow',
+      //   // placeholder: 'Write something amazing...',
+      //   modules: {
+      //     toolbar: [   // Toolbar rows
+      //       [{ font: [] }], 
+            // [{ size: ['small', false, 'large', 'huge'] }], // Font size dropdown
+            // ['bold', 'italic', 'underline', 'strike'], // Text styles
+            // [{ color: [] }, { background: [] }], // Text and background colors
+            // [{ script: 'sub' }, { script: 'super' }], // Subscript/Superscript
+            // [{ header: 1 }, { header: 2 }], // Header styles
+            // [{ list: 'ordered' }, { list: 'bullet' }], // Lists
+            // [{ align: [] }], // Text alignment
+            // ['link', 'image', 'video'], // Links, images, videos
+            // ['blockquote', 'code-block'], // Blockquote and code block
+      //       ['clean'], // Clear formatting
+      //     ],
+      //   },
+      // });
    
     
    
@@ -352,8 +429,10 @@
          phonenumber,
          SendSms,
          contacts,
+         token,
          // senderids,
-      
+      Mode,
+      Submittemplate,
          Usetemplate,
          contactlist,
          showalertdialog,
@@ -363,12 +442,17 @@
          selectAllpeople,
          checkSelectAllState,
          hideonecontact,
+         isModalTempOpen,
+         OpenTemplateModal,
+         closeTemplateModal,
         //  isModalPickContactsOpen,
         //  closeModalPickContact,
          UseContactGroup, 
-        //  SubmitContacts
-        editorOptions,
-        handleInput
+       SMStemplates,
+        // editorOptions,
+        handleInput,
+        templateHeader,
+       templateBody 
        };
      }
    }

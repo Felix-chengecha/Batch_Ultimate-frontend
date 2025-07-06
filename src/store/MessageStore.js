@@ -53,8 +53,8 @@ export const useMessageStore = defineStore('MessageStore', {
             });
     },
 
-    SendSms(payload) {
-          axios.SendSms(payload) // Use `this.Token`
+    SendSms(payload,token) {
+          axios.SendSms(payload,token) // Use `this.Token`
             .then(response => {
               this.data = response.data.messages; // Store the API data in state
               // console.log(this.data.messages);

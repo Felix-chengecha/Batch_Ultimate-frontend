@@ -538,13 +538,13 @@ getTemplates(token) {
 //
 
 
-SendSms(postData) { 
+SendSms(postData,token) { 
   // console.log(postData);
 
   return apiClient.post('/Notification/Sendsms', postData, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
     return response;
