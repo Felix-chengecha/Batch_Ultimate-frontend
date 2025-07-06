@@ -509,6 +509,27 @@ return apiClient.delete(`/deletecategory/${id}`, {
     });
   },
 
+    //update inventory
+  updateinventory(id, updateData, token) {
+  return apiClient.put(`/updateinventory/${id}`, updateinventory, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+//delete inventory
+deleteinventory(id, token) {
+return apiClient.delete(`/deleteinventory/${id}`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+},
+
 //____________________________________________
 // NotificationS ENDPOINTS 
 //**************************************************
@@ -538,20 +559,6 @@ getTemplates(token) {
 //
 
 
-SendSms(postData,token) { 
-  // console.log(postData);
-
-  return apiClient.post('/Notification/Sendsms', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  .then(response => {
-    return response;
-  });
-},
-
-
 addcontact(postData,token) { 
   // console.log(postData);
 
@@ -576,8 +583,7 @@ addsmsTemplate(postData,token) {
   .then(response => {
     return response;
   });
-},
-
+}, 
 
 getSentMessages() {
   return apiClient.get('/getinventory',  {
@@ -588,30 +594,34 @@ getSentMessages() {
   .then(response => {
     return response.data;
   });
+}, 
+
+SendSms(postData,token) { 
+  return apiClient.post('/Notification/Sendsms', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
 },
 
 
 
-   //update inventory
-   updateinventory(id, updateData, token) {
-    return apiClient.put(`/updateinventory/${id}`, updateinventory, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      return response.data;
-    });
+
+AddNotification(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
 },
 
-//delete inventory
-deleteinventory(id, token) {
-return apiClient.delete(`/deleteinventory/${id}`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
-},
 
 //##############################
 // Documents

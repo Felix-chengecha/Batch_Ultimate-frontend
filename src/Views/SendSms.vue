@@ -6,6 +6,7 @@
       <div>
         <h3 class="text-2xl font-bold text-gray-800">Send Sms & Email</h3>
       </div>  
+
       <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
           <span class="text-lg ml-3">MESSAGE TEMPLATES</span>
 
@@ -21,30 +22,16 @@
   <!-- Header & Search Controls end-->
 
  <div class="grid grid-cols-1 lg:grid-cols-3">
+
  <!--Send sms and email section start -->
   <div class="lg:col-span-2 bg-white rounded shadow overflow-auto mr-2">
      <!-- <form action="#" class="mb-0 space-y-0 space-x-0 sm:space-x-16 sm:mr-16 rounded-lg sm:p-6 lg:p-1"> -->
-<form action="#">
-
-
+    <form action="#">
        <div class="border border-gray-200 rounded-xl px-4 py-2 h-full bg-white"> 
          <div class="flex flex-col space-y-4 ">
-           <div class="flex flex-col sm:flex-row sm:space-x-4">
-             <div class="flex-1">
-               <label for="email" class="text-sm ml-3">TEXT HEADER</label>
-               <input type="text" v-model="textheader" class="border border-gray-200 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-black" />
-             </div>
-   
-             <!-- <div class="flex-1">
-               <label for="options" class="text-lg ml-3">SENDER ID</label>
-               <select v-model="senderid" id="category" class="w-full rounded-lg border border-gray-700 p-3 text-sm shadow-sm focus:border-black focus:ring-black text-black bg-white mt-2">          
-                 <option v-for="option in senderids" :key="option.value" :value="option.value">{{ option.value }}</option>
-               </select> 
-             </div> -->
-           </div>  
-   
-      
-           <div class="flex flex-col sm:flex-row space-x-0 sm:space-x-4 mt-1">
+
+
+             <div class="flex flex-col sm:flex-row space-x-0 sm:space-x-4 mt-1">
              <div class="flex-1">
                <label for="date" class="text-sm text-center w-full">SCHEDULE DATE</label>
                <input type="date" v-model="senddate" class="w-full rounded-lg p-3 border border-gray-200 text-sm shadow-sm focus:border-black focus:ring-black text-black bg-white" />
@@ -55,6 +42,22 @@
                <input type="time" v-model="sendtime" class="w-full rounded-lg p-3 border border-gray-200 text-sm shadow-sm focus:border-black focus:ring-black text-black bg-white" />
              </div>
            </div>
+
+
+           <div class="flex flex-col sm:flex-row sm:space-x-4">
+             <div class="flex-1">
+               <label for="header" class="text-sm ml-3">TEXT HEADER</label>
+               <input type="text" v-model="textheader" class="border border-gray-200 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-black" />
+             </div>
+           </div>  
+   
+              <div class="flex-1">
+               <label for="email" class="text-sm ml-3">EMAIL ADDRESS</label>
+                <input type="text" v-model="email" class="border border-gray-200 rounded p-3 w-full focus:outline-none focus:ring-2 focus:ring-black" />
+             </div>
+
+      
+        
    
            <div class="mt-4" v-if="hideonecontact">
              <label for="contacts" class="text-sm ml-3">ENTER CONTACTS</label>
@@ -74,34 +77,28 @@
                @input="handleInput"   /> -->
             </div> 
    
-   
-   
            <div class="mt-5 mb-4 text-center">
              <a @click="SendSms" class="inline-block rounded bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring focus:ring-yellow-400">SUBMIT</a>
            </div>
+
          </div>
        </div>
      </form>
    </div>
    
 <!-- Sidebar SMStemplates section start -->
-  <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
-      <div class="bg-white w-full max-w-md p-4 rounded shadow-lg"> 
-       <!-- <div class="flex flex-col md:flex-row items-center justify-between bg-gray-100 py-2 px-4 rounded mb-3">
-       <div @click="UseContactGroup(cont.username, cont.phoneNumber)">  
-        </div> -->
-       <article class="rounded-xl border  border-gray-400">
+  <div class="col-span-1 bg-gray-100 h-auto rounded-lg border border-gray-300 ">
+       <article class="rounded-xl border  border-gray-100">
         <ul>
              <li v-for="(item, index) in SMStemplates" :key="index"
              @click="Usetemplate(item.templateBody)">
-             <a href="#" class="block h-full rounded-lg border border-gray-200 p-1 hover:border-pink-600">
+             <a href="#" class="block h-full rounded-lg border border-gray-200 p-4 hover:border-gray-400">
              <span class="font-medium text-gray-700">{{ item.templateBody }}</span>
              <small class="mt-1 text-m text-gray-800"> edit</small>
             </a>
            </li>
           </ul>
          </article>
-       </div>
     </div>
 <!-- Sidebar SMStemplates section end -->
 
@@ -124,7 +121,7 @@
            </div>
        <ul class="space-y-2 mt-2">
          <li class="border rounded-md p-4" v-for="(cont, index) in contacts" :key="index">
-           <div @click="UseContactGroup(cont.username, cont.phoneNumber)">  
+           <div @click="UseContactGroup(cont.username, cont.phoneNumber,cont.email)">  
              <div>
                <span class="text-2xl">{{ index + 1 }}.</span>
                <span class="text-2xl"> {{ cont.username }} </span> 
@@ -215,6 +212,7 @@
        const senddate = ref(''); 
        const selectAllpeople = ref(false);
        const phonenumber = ref('');  
+       const email = ref('');
        const contactlist = ref([]);
        const sendmsg = ref([]);
        const filteredNumbers = ref([]);
@@ -245,16 +243,15 @@
 		    }) 
    
    
-       const Usetemplate = (name,body) => {
+       const Usetemplate = (body,email,name) => {
          textheader.value = name;
          textmessage .value=body;
        }
    
-       const UseContactGroup = (name,phone) =>{
-     
+       const UseContactGroup = (name,phone,Emailtxt) =>{
         filteredNumbers.value = phone;
-
         phonenumber.value = phone;
+        email.value = Emailtxt;
 
         //  contactgrouselected.value = true;
         //  hideonecontact.value = false;
@@ -268,12 +265,15 @@
 
          isModalContactsOpen.value = false;
      }
-              
-   
-       const SendSms = () => { 
-   
-   
+             
+    const generateUnique6DigitCode = () => {
+        const timestamp = Date.now().toString();
+        const uniqueNumber = timestamp.slice(-6);
+        const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        return "msg_" + randomLetter + uniqueNumber;
+      }
         
+    const SendSms = () => { 
        if(textheader.value == "" || textheader.value == undefined){
            showalertdialog("error", "text header is required");
            return;
@@ -296,16 +296,38 @@
     
       //  const phoneNumbersObject = phoneNumbersArray.join(",");
 
-       const smspayload = {
-            username: 'sandbox',
-            to: filteredNumbers.value,  //phonenumber.value,
-            header: textheader.value, 
-            message: textmessage.value,
-            date: senddate.value,
-            time: sendtime.value,
-       };
+      const smspayload = { notification: [ {
+                          messageID: generateUnique6DigitCode(),
+                          phoneNumber: filteredNumbers.value,
+                          textHeader: textheader.value,
+                          message: textmessage.value,
+                          status: "0",
+                          module: "universal",
+                          smsRequest: [
+                            {
+                             // username: "felofelo",
+                              to: filteredNumbers.value,
+                              header: textheader.value,
+                              senderId: "string",
+                              message: textmessage.value,
+                             // token: "stcvfdhytutsrghcvnmiiiiiiiuyttrewring"
+                            }
+                          ]
+                        }
+                      ]
+                    };
+          
          messageStore.SendSms(smspayload,token.value);
-      } };
+       }   };
+                    
+           
+                  
+
+
+
+
+
+
 
 
 
@@ -339,31 +361,31 @@
     }
 
 
-       const OpenContacts=()=>{ 
-         contactstore.fetchContacts();
-         isModalContactsOpen.value = true;
-       };
+  const OpenContacts=()=>{ 
+    contactstore.fetchContacts();
+    isModalContactsOpen.value = true;
+  };
    
-       const OpenTemplateModal = () =>{
-          isModalTempOpen.value = true;
-       } 
+  const OpenTemplateModal = () =>{
+    isModalTempOpen.value = true;
+  } 
 
-      const closeTemplateModal = () =>{
-          isModalTempOpen.value = false;
-       } 
+  const closeTemplateModal = () =>{
+    isModalTempOpen.value = false;
+  } 
 
-       const CloseModalContacts =()=>{
-         isModalContactsOpen.value = false;
-       };
-   
-       const showalertdialog = (icon,resp) => {
-         Swal.fire({
-           position: "top-end",
-           icon:  icon,
-           title: resp,
-           showConfirmButton: false,
-           timer: 1500
-         });
+  const CloseModalContacts =()=>{
+    isModalContactsOpen.value = false;
+  };
+
+  const showalertdialog = (icon,resp) => {
+    Swal.fire({
+      position: "top-end",
+      icon:  icon,
+      title: resp,
+      showConfirmButton: false,
+      timer: 1500
+    });
        };
    
       //  const closeModalPickContact =() =>{
@@ -395,7 +417,6 @@
       };
 
       //  const editorOptions = ref({ 
-
       //   theme: 'snow',
       //   // placeholder: 'Write something amazing...',
       //   modules: {
@@ -418,6 +439,7 @@
     
    
        // Return reactive state and functions
+       
        return {
          isModalContactsOpen,
          OpenContacts,
@@ -430,8 +452,10 @@
          SendSms,
          contacts,
          token,
+         generateUnique6DigitCode,
          // senderids,
       Mode,
+      email,
       Submittemplate,
          Usetemplate,
          contactlist,
