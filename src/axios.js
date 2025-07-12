@@ -130,6 +130,20 @@ getRecentSalesData() {
 
 
 //-------------------------------------------------
+   //Report ENDPOINTS
+//-------------------------------------------------
+  getReportData(postData) {
+    return apiClient.post(`/Reports/Generate`,postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+},
+
+//-------------------------------------------------
    //product ENDPOINTS
 //-------------------------------------------------
   addproduct(postData) { 

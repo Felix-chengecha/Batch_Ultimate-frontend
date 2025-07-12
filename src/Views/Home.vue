@@ -2,7 +2,7 @@
   <main class="flex-1 bg-gray-50 px-4 py-6">
     <div class="container mx-auto max-w-7xl">
       <div class="mb-6">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Welcome back, Felix</h1>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Welcome back, {{ userName }}</h1>
         <p class="text-gray-500 mt-1">Here's what's happening with your store today</p>
       </div>
       
@@ -141,6 +141,8 @@ export default {
     const average = computed(() => dashStore.getAverages);
     const recent = computed(()=> dashStore.getRecentsalesData);
 
+    const userName = ref(localStorage.getItem("userName") || "Guest")
+
     onMounted(() => { 
       dashStore.getGraphData();
       dashStore.getDashboardAverages();
@@ -256,7 +258,8 @@ export default {
       noTransactions,
       availableProducts,
       totalSales,
-      totalCash
+      totalCash,
+      userName
     }
   }
 };

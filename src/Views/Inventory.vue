@@ -391,15 +391,23 @@ export default {
         const postData = {
           productName: pname.value,
           productDescription: pdescription.value,
-          Weight_Volume: punit.value,
+          weight_Volume: punit.value,
           categoryID: pcategory.value,
-          buyingPrice: pbuyingprice.value,
-          sellingPrice: pcost.value,
-          quantity: PNoItems.value,
-          supplier: "0197b829-6d97-7540-9ab2-89913ebf9742"
+          buyingPrice: Number(pbuyingprice.value),
+          sellingPrice: Number(pcost.value),
+          quantity: Number(PNoItems.value),
+          supplier: "0197b829-6d97-7540-9ab2-89913ebf9742",
+          createdBy : localStorage.getItem("userName"),
+          updatedBy : localStorage.getItem("userName"),
         };
+
+        const productsPayload = {
+          "products":[
+            postData
+          ]
+        }
         
-        inventorystore.AddnewProduct(postData);
+        inventorystore.AddnewProduct(productsPayload);
         setTimeout(() => {
           DisplayMessage("success", inventorystore.successmsg)
         }, 2000); 
@@ -429,24 +437,38 @@ export default {
       });
     }
 
+    const isEmpty = (val) =>{
+      return val === null || val === undefined || String(val).trim() === "";
+    }
+
     const Validation = () => { 
-      if (pname.value.trim() === "" || 
-          pcategory.value.trim() === "" || 
-          pbuyingprice.value.trim() === "" || 
-          pcost.value.trim() === "" || 
-          PNoItems.value.trim() === "") {
-        DisplayMessage("error", "Please fill all required fields");
-        return false;     
+      // if (pname.value.trim() === "" || 
+      //     pcategory.value.trim() === "" || 
+      //     pbuyingprice.value === "" || 
+      //     pcost.value.trim() === "" || 
+      //     PNoItems.value.trim() === "") {
+      //   DisplayMessage("error", "Please fill all required fields");
+      //   return false;     
+      // }
+
+      if(isEmpty(pname.value) || isEmpty( pcategory.value) || isEmpty(pbuyingprice.value) || 
+    isEmpty(pcost.value) || 
+    isEmpty(PNoItems.value)){
+
+      DisplayMessage("error", "Please fill all required fields");
+      return false;
+
       }
-      else if (isNaN(pbuyingprice.value)) {
+
+      if (isNaN(pbuyingprice.value)) {
         DisplayMessage("error", "Buying price should be numeric");
         return false;  
       }
-      else if (isNaN(pcost.value)) {
+       if (isNaN(pcost.value)) {
         DisplayMessage("error", "Product cost should be numeric");
         return false;  
       }
-      else if (isNaN(PNoItems.value)) {
+      if (isNaN(PNoItems.value)) {
         DisplayMessage("error", "No of items should be numeric");
         return false;  
       }  
