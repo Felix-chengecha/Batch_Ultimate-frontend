@@ -17,7 +17,7 @@
           >
             <option value="Sales Report">Sales Report</option>
             <option value="Product Report">Product Report</option>
-            <option value="Stock Alert Reports">Stock Alert Report</option>
+            <option value="Stock Alert Report">Stock Alert Report</option>
             <option value="Customer Report">Customer Report</option>
             <option value="Suppliers Report">Suppliers Report</option>
             <option value="Supplies Report">Supplies Report</option>
@@ -62,7 +62,7 @@
         </div>
 
         <!-- Stock Alert Report Filter -->
-        <div v-if="reportType === 'Stock Alert Reports'" class="mt-4">
+        <div v-if="reportType === 'Stock Alert Report'" class="mt-4">
           <label class="block text-gray-700 mb-1">
             Low Stock Threshold:
           </label>
@@ -328,7 +328,7 @@ export default {
           }
           break;
           
-        case "Stock Alert Reports":
+        case "Stock Alert Report":
           if (lowStockThreshold.value) {
             data = data.filter(item => 
               item.quantity <= parseFloat(lowStockThreshold.value)
@@ -399,7 +399,7 @@ export default {
           payLoad.parameters = {
             customerName: customerName.value
           };
-        } else if (reportType.value === "Stock Alert Reports") {
+        } else if (reportType.value === "Stock Alert Report") {
           payLoad.parameters = {
             LowStockThreshold: lowStockThreshold.value
           };
@@ -429,7 +429,7 @@ export default {
       }
     };
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
       if (filteredData.value.length === 0) {
         Swal.fire({
           icon: 'warning',
@@ -437,9 +437,58 @@ export default {
           text: 'Please generate a report first.',
           confirmButtonColor: '#3b82f6',
         });
-        return;
+        return false;
+      }else{
+
+        //Get Parameters Dynamically
+
+
+        //Define RequestData
+        var requestData = {
+          reportType : reportType.value,
+          format : "pdf",
+          parameters : {
+          }
+        }
+        // Set parameters based on report type
+        if (reportType.value === "Sales Report") {
+          requestData.parameters = {
+            fromDate: fromDate.value,
+            toDate: toDate.value
+          };
+        } else if (reportType.value === "Product Report") {
+          requestData.parameters = {
+            productType: productType.value
+          };
+        } else if (reportType.value === "Customer Report") {
+          requestData.parameters = {
+            customerName: customerName.value
+          };
+        } else if (reportType.value === "Stock Alert Report") {
+          requestData.parameters = {
+            lowStockThreshold: lowStockThreshold.value
+          };
+        }
+
+        //pass request to backend
+        try{
+          const response = await ReportStore.ExportReportData(requestData);
+          alert("Your report has been generated and downloaded successfully.");
+          return true;
+        }catch(error){
+          Swal.fire({
+            icon: 'error',
+            title: 'Download Failed',
+            text: error.message || 'An error occurred while downloading the report.',
+            confirmButtonColor: '#e11d48'
+          });
+
+          return false;
+        }
+        
+
+
       }
-      window.print();
     };
 
     const handleExport = () => {

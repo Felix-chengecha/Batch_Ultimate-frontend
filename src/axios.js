@@ -143,6 +143,19 @@ getRecentSalesData() {
   });
 },
 
+exportReportData(postData){
+  return apiClient.post('/Reports/JasperReports',postData,{
+    headers : {
+      Authorization: `Bearer ${token}`,
+      Accept : "application/pdf",
+    },
+    responseType : 'blob'
+  })
+    .then(response =>{
+      return response;
+    });
+},
+
 //-------------------------------------------------
    //product ENDPOINTS
 //-------------------------------------------------
