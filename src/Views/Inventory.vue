@@ -77,7 +77,7 @@
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.supplierId }}
+            {{ item.supplier?.supplierName  }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div class="flex items-center space-x-2">
@@ -206,13 +206,25 @@
             />
           </div>
 
-          <div class="space-y-1">
+          <!-- <div class="space-y-1">
             <label class="block text-sm font-medium text-gray-700">Product Buying Date</label>
             <input 
               v-model="pbuyingdate" 
               type="date" 
               class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
             />
+          </div> -->
+           <div class="space-y-1">
+            <label class="block text-sm font-medium text-gray-700">Supplier <span class="text-red-500">*</span></label>
+            <select 
+              v-model="supplier" 
+              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+            >
+              <option value="" disabled selected>Select a Supplier</option>
+              <option v-for="option in supplierdata" :key="option.supplierId" :value="option.supplierId">
+                {{ option.supplierName }}
+              </option>
+            </select>
           </div>
 
           <div class="col-span-1 md:col-span-2 space-y-1">
@@ -256,7 +268,7 @@
     import axios from '../axios';
     import { ref,onMounted, watch,computed } from 'vue';
     import { errorState } from '../store/ErrorState';
-    
+    import { useSuppliersStore } from '../store/SuppliersStore';
     export default {
       setup() {
   
@@ -272,10 +284,12 @@
         const pbuyingdate  = ref('');
         const pdescription  = ref('');
         const pcategory = ref('');
+        const supplier = ref('');
         const submitSuccess = ref('');
         const PNoItems = ref('');
         const isModalOpen = ref(false); 
         const token = ref('your-auth-token'); 
+        const suppliersstore = useSuppliersStore();
        
         //store  properties
         const inventorystore  = UseInventoryStore();
@@ -284,12 +298,24 @@
         const data = computed(() => inventorystore.getData);
         const categ = computed(() => CategoryStore.getData);
         const filteredProducts = computed(() => inventorystore.filterProducts); 
+        const supplierdata  = computed(()=>suppliersstore.filterSuppliers);
 
          watch(() => errorState.message, (newVal) => {
           if (newVal) {
             DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
           }
-		    }) 
+		    });
+     
+
+        watch(() =>  inventorystore.getResponse, (newval) => {
+            if (newval.status == 200) { 
+               DisplayMessage("success", newval.statusMessage);
+            } 
+            else{
+              DisplayMessage("error", newval.statusMessage);
+            }
+
+        });
 		    
         const formatCurrency = (value) => {
               return parseFloat(value || 0).toFixed(2);
@@ -312,10 +338,10 @@
         //fetch all records on load from the store
         onMounted(()=>{ 
            let token = localStorage.getItem('token'); 
-          inventorystore.getallproducts(token);
-          CategoryStore.fetchCategories(token);
-
-          });
+           inventorystore.getallproducts(token);
+           CategoryStore.fetchCategories(token);
+           suppliersstore.getallSupliers()
+        });
     
 
       //add new product to inventory
@@ -328,7 +354,6 @@
           return false;
         }
             const postData = {
-                //productID:"PR_"+part1+part2+"000"+pcategory.value,
                 productName: pname.value,
                 productDescription: pdescription.value,
                 Weight_Volume :punit.value,
@@ -336,20 +361,13 @@
                 buyingPrice: pbuyingprice.value,
                 sellingPrice: pcost.value,
                 quantity: PNoItems.value,
-                supplier: "0197b829-6d97-7540-9ab2-89913ebf9742"
-                // createdBy: "chee",//localStorage.getItem('name'),
-                // updatedBy: "",
-                // createdOn: "2014_10_12",
-                // updatedOn: ""
+                supplier: supplier.value
               };
             
-              inventorystore.AddnewProduct(postData);
-                setTimeout(() => {
-                  DisplayMessage("success", inventorystore.successmsg)
-               }, 2000); 
+              inventorystore.AddnewProduct(postData); 
 
          } catch(error){
-          DisplayMessage("success", error);
+          DisplayMessage("Error", error);
         }
       }
 
@@ -376,7 +394,7 @@
       const Validation = () => { 
 
         let isNumeric = /^\d+$/;
-          if( pname.value.trim() === "" && pdescription.value.trim() === "" && punit.value.trim() === "" &&  pcategory.value.trim() === "" &&  pbuyingprice.value.trim() === ""   &&  pcost.value.trim() === ""   &&  PNoItems.value.trim() === "" ) {
+          if( pname.value.trim() === "" && pdescription.value.trim() === "" && punit.value.trim() === "" &&  pcategory.value.trim() === "" && supplier.value.trim() ==="" && pbuyingprice.value.trim() === ""   &&  pcost.value.trim() === ""   &&  PNoItems.value.trim() === "" ) {
             DisplayMessage("error", "!!error please fill all the fields");
             return false;     
           }
@@ -415,6 +433,7 @@
         pdescription,
         PNoItems,
         pcategory,
+        supplier,
         data,
         Pvat,
         punit,
@@ -426,7 +445,8 @@
         categ,
         productSearch,
         filteredProducts,
-        formatCurrency
+        formatCurrency,
+        supplierdata
         // filtereddata
         };
       }

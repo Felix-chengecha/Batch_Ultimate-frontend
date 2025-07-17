@@ -409,6 +409,7 @@
     // import { ReceiptComponent } from '../Views/Receipt.vue';
     import { useSaleStore } from '../store/SaleStore';
     import { errorState } from '../store/ErrorState';
+        import {useCatalogueStore} from '../store/catalogueStore'
 
     import Swal from 'sweetalert2';
     import { ref, onMounted, watch,computed } from 'vue';
@@ -421,6 +422,8 @@
         const CategoryStore = useCategoryStore();
         const inventorystore = UseInventoryStore();
         const saleStore = useSaleStore();
+        const CatalogStore  = useCatalogueStore();
+
     
         const paymentrefference = ref('');
         const display = ref(false);
@@ -454,12 +457,15 @@
     
         const categ = computed(() => CategoryStore.getData);
         const products = computed(() => inventorystore.getData);
+        //const filteredProducts = computed(() => CatalogStore.getData); 
         const filterProductCategory = computed(() => inventorystore.filterProductCategory);
         
-        const filteredProducts = computed(() => inventorystore.filterProducts);
+       const filteredProducts = computed(() => inventorystore.filterProducts);
     
         onMounted(() => { 
           let token = localStorage.getItem('token');
+           CatalogStore.fetchCatalogue(token);
+
           inventorystore.getallproducts(token);
           CategoryStore.fetchCategories(token);
         }); 
@@ -773,7 +779,8 @@
           paymentMethod,
           paymentrefference,
           categ,
-          category
+          category,
+          CatalogStore
         };
       },
     };

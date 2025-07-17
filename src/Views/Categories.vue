@@ -45,7 +45,7 @@
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ item.createdOn }}
+                {{ formatDate(item.createdOn) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
@@ -90,7 +90,9 @@
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Add New Category</h3>
+                  <!-- <h3 class="text-lg leading-6 font-medium text-gray-900 " id="modal-title">Add New Category</h3> -->
+                   <h3 class="text-lg leading-6 font-bold text-gray-900" id="modal-title">Add New Category</h3>
+
                   <button @click="closeModal" class="text-gray-400 hover:text-gray-500">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -100,23 +102,21 @@
                 <div class="mt-6 space-y-4">
                   <div>
                     <label for="category-name" class="block text-sm font-medium text-gray-700">Category Name</label>
-                    <input
-                      type="text"
-                      id="category-name"
-                      v-model="Cname"
-                      class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    <input type="text"
+                      id="category-name" v-model="Cname"
+                      class="mt-1 h-10  block w-full shadow-sm sm:text-sm border-2 border-gray-300 rounded-md"
                     />
                   </div>
 
-                  <div>
+                  <!-- <div>
                     <label for="category-code" class="block text-sm font-medium text-gray-700">Category Code</label>
                     <input
                       type="text"
                       id="category-code"
                       v-model="Ccode"
-                      class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      class="mt-1 h-10   block w-full shadow-sm sm:text-sm border-2 border-gray-300 rounded-md"
                     />
-                  </div>
+                  </div> -->
 
                   <div>
                     <label for="category-description" class="block text-sm font-medium text-gray-700">Description</label>
@@ -124,7 +124,7 @@
                       id="category-description"
                       v-model="Cdescription"
                       rows="3"
-                      class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      class="mt-1  block w-full shadow-sm sm:text-sm border-2 border-gray-300 rounded-md"
                       placeholder="Type your category description (max 500 characters)"
                     ></textarea>
                   </div>
@@ -151,7 +151,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 </template>
    <script>
    import {useCategoryStore} from '../store/categoryStore'
@@ -160,45 +160,25 @@
    
    export default {
      setup() {
- 
+       
        //properties
        const Cname   = ref('');
        const Ccode   = ref('');
        const CNoItems  = ref('');
        const Cdescription  = ref('');
-
        const isModalOpen = ref(false); 
      
-       //store  properties
       const CategoryStore  = useCategoryStore();
       const filtereddata = CategoryStore .filteredData;
       const data = computed(() => CategoryStore.getData);
          
-	      const DisplayMessage = (icon, message) => {
-         Swal.fire({
-              position: 'center',
-              icon: icon,
-              title: message,
-              showConfirmButton: false,
-              timer: 1500,
-              backdrop: `
-                rgba(0,0,123,0.4)
-                url("/images/nyan-cat.gif")
-                left top
-                no-repeat
-              `
-            })
-    }
-
-  
-
-
+	      
        //add product modal
-       const openModal = () => {
+      const openModal = () => {
          isModalOpen.value = true;
        };
        
-       const closeModal = () => {
+      const closeModal = () => {
          isModalOpen.value = false;
        }
 
@@ -206,51 +186,84 @@
        onMounted(()=> {
            let token = localStorage.getItem('token'); 
          CategoryStore.fetchCategories(token);
-         })
+         });
+
+        watch(() => CategoryStore.getResponse, (newval) => {
+          if (newval?.status === 200) {
+            DisplayMessage("success", newval.statusMessage);
+            Cname.value= "";
+            Ccode.value="";
+            Cdescription.value="";
+            closeModal();
+                 let token = localStorage.getItem('token'); 
+         CategoryStore.fetchCategories(token);
+          } else {
+            DisplayMessage("error", newval?.statusMessage || "Unknown error");
+          }
+        }); 
+
+        const generateCategoryCode = (categoryName) => {
+            const prefix = categoryName.slice(0, 2).toUpperCase();
+            const randomPart = Math.random().toString(36).substring(2, 5).toUpperCase(); // 3 random chars
+            return (prefix + randomPart).padEnd(5, 'X'); // Ensures it's 5 letters even if input is short
+          }
+
+
+      const formatDate =(dateString)=> {
+            const cleanDateString = dateString.replace(/(\.\d{3})\d+/, '$1');
+            const date = new Date(cleanDateString);
+            return date.toISOString().split('T')[0];
+          }
 
        
-         
      //add new product to inventory
       const AddCategory = () => {
-        
         if(!Validation()){
           return false;
         }
-   
-      const postData = {
+        const postData = {
             categoryName: Cname.value,
-            categoryCode:  Ccode.value,
+            categoryCode: generateCategoryCode(Cname.value),
             noOfItems: 1,
             categoryDescription: Cdescription.value,
             status: "active",
-        };
+          };
+          try {  
+            CategoryStore.AddnewCategory(postData);
+     
+          } catch(error){
+            DisplayMessage("error", error);
+          }
 
-        try {  
-        CategoryStore.AddnewCategory(postData);
-          setTimeout(() => {
-            DisplayMessage("success", CategoryStore.successmsg)
-         }, 3000); 
-       } catch(error){
-        DisplayMessage("error", error);
-       }
-
-    } 
+      } 
 
 
   
 
-     const Validation = () => { 
-
+    const Validation = () => { 
       let isNumeric = /^\d+$/;
         if( Cname.value.trim() === "" && Ccode.value.trim() === "" &&   Cdescription.value.trim() ==="") {
           DisplayMessage("error", "!!error please fill all the fields");
           return false;     
         }
-
-    
         return true;
+    } 
 
-    }
+    const DisplayMessage = (icon, message) => {
+        Swal.fire({
+            position: 'center',
+            icon: icon,
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+            backdrop: `
+              rgba(0,0,123,0.4)
+              url("/images/nyan-cat.gif")
+              left top
+              no-repeat
+            `
+            })
+        }
       
        
        return {
@@ -259,7 +272,6 @@
       Ccode,
       CNoItems,
       Cdescription,
-
       data,
       AddCategory,
       openModal,
@@ -267,6 +279,8 @@
       isModalOpen,
       filtereddata,
       Validation,
+      formatDate,
+      generateCategoryCode,
       DisplayMessage
        };
      }

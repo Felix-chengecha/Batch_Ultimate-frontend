@@ -6,8 +6,8 @@ export const UseInventoryStore = defineStore('InventoryStore', {
 state: () => ({
     data: [], 
     loading: false, 
-    error: null,
-    successmsg:null,
+    Error: null,
+    Response:null,
     searchquery : '',
     searchprod:'',
     searchCateg:''
@@ -18,6 +18,7 @@ state: () => ({
     getData: (state) => state.data,
     isLoading: (state) => state.loading,
     getError: (state) => state.error,
+    getResponse: (state)=> state.Response,
 
     // Filter based on the search Term in the store for multiple rows
     filterProducts: (state) => {
@@ -48,8 +49,7 @@ state: () => ({
  
 
 
-  filterSupplierSupplies: (state) =>{
-      
+  filterSupplierSupplies: (state) => {
     return state.data.filter(item =>
       item.data.toLowerCase().includes(state.searchSUP.toLowerCase()) 
     );
@@ -60,16 +60,14 @@ state: () => ({
     actions: {  
 //fetch all inventory records
       getallproducts(token){     
-           // axios.getproduct()
-           axios.getActiveprooducts(token)
+           axios.getproduct(token)
               .then(response => {
                   this.data = response.data;
-                  this.loading = false;
+                  // this.loading = false;
               })
               .catch(error => {
-                  this.error=error;
-                  this.loading = false;
-                  // console.log(error);
+                  this.Error=error;
+                  // this.loading = false;
               });
           },
          
@@ -93,12 +91,10 @@ state: () => ({
         AddnewProduct(postData){
           axios.addproduct( postData)
             .then(response => {
-              this.successmsg = response.data.statusMessage;
-              this.error =false;
+              this.Response = response.data
             })
             .catch(error=>{ 
-              this.successmsg = response.statusMessage;
-              this.error = true;
+              this.Error=error;
             })
         },
     

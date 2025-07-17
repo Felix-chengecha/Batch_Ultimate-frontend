@@ -131,7 +131,7 @@
     
     <script>
     import {useCatalogueStore} from '../store/catalogueStore'
-    import Swal from 'sweetalert2';
+    import Swal from 'sweetalert2'; 
     import { computed,ref,onMounted,watch } from 'vue';
     import { errorState } from '../store/ErrorState';
 
@@ -150,8 +150,9 @@
 			 }
 		    }) 
 
-      onMounted(()=>{
-        CatalogStore.fetchCatalogue();
+      onMounted(()=>{ 
+        let token = localStorage.getItem('token');
+        CatalogStore.fetchCatalogue(token);
         });
 
   const DisplayMessage = (icon, message) => {

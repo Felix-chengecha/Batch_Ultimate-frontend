@@ -4,7 +4,7 @@ import axios from '../axios';
 
 export const useSuppliersStore = defineStore('SuppliersStore', {
 state: () => ({
-    data: [], // Array to store API data
+    data: [], // Array to store API data 
     success:' ',
     error:' ',
     token : localStorage.getItem('token')

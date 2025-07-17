@@ -381,7 +381,7 @@ Authorization: `Bearer ${token}`,
 
 
   //get catalogue
-  getcatalogue() {
+  getcatalogue(token) {
     return apiClient.post('/Catalogue/GetCatalogue', {}, {
       headers: {
         Authorization: `Bearer ${token}`,
