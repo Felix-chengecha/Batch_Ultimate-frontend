@@ -106,33 +106,27 @@
 
    
      <!-- REPORTS SECTION -->
-     <li>
-        <div @click="toggleMenu('reports')" class="flex cursor-pointer  rounded-lg text-white mt-10">
+    <li>
+        <details class="group [&_summary::-webkit-details-marker]:hidden mt-10">
+          <summary class="flex cursor-pointer items-center justify-between rounded-lg  text-white">
             <i class="fas fa-file-alt text-1xl mr-3"></i>
-              <span class="text-1xl font-semibold mr-24  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Reports</span>
-            <span :class="{ 'rotate-180': openMenu === 'reports' }">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-            </span>
-          </div>
 
-        <ul v-show="openMenu === 'reports'" class="mt-2 space-y-1 px-4"> 
-          <li>
-            <router-link to="/reports" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"> Reports </router-link>
-          </li>
-          <li>
-        <router-link to="/reports" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"> my reports </router-link>
-        </li>
-     
-          </ul>
-     </li>  
+             <router-link to="/reports"class="text-1xl font-semibold mr-24  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Reports</router-link>
+
+      </summary>
+      </details>
+     </li>
+
+    
+
+
+
 
  <!-- SUPPLIERS SECTION -->
      <li>
         <details class="group [&_summary::-webkit-details-marker]:hidden mt-10">
           <summary
-            class="flex cursor-pointer items-center justify-between rounded-lg  text-gray-500">
+            class="flex cursor-pointer items-center justify-between rounded-lg  text-white">
             <i class="fas fa-truck text-white text-1xl"></i>
 
             <router-link to="/Supplier" class="text-1xl font-semibold mr-20  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Suppliers</router-link>
@@ -144,7 +138,7 @@
      <li>
       <details class="group [&_summary::-webkit-details-marker]:hidden mt-10">
         <summary
-          class="flex cursor-pointer items-center justify-between rounded-lg  text-gray-500">
+          class="flex cursor-pointer items-center justify-between rounded-lg  text-white">
           <i class="fas fa-address-book text-white text-1xl"></i>
           <router-link to="/account" class="text-1xl font-semibold mr-20  rounded-lg  
            hover:bg-gray-100 hover:text-gray-700 ">My Account</router-link>

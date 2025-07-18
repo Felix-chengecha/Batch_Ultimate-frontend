@@ -66,29 +66,6 @@ export default {
       });
   },
 
-  //USER ACCOUNT DETAILS
-    getccountdetails(token) {
-      return apiClient.get(`/accountdetails/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      return response.data;
-    });
-  },
-
-  //get user account details   
-  getUserdetails(token,userid) {
-      return apiClient.get(`/UserDetails/${userid}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      return response.data;
-    });
-  },
 
 
 
@@ -675,6 +652,154 @@ async uploadFile(formData, token) {
     });
   },
 
+  //-------------------------------------------------
+   //Report ENDPOINTS
+//-------------------------------------------------
+  getReportData(postData) {
+    return apiClient.post(`/Reports/Generate`,postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+},
 
+exportReportData(postData){
+  return apiClient.post('/Reports/JasperReports',postData,{
+    headers : {
+      Authorization: `Bearer ${token}`,
+      Accept : "application/pdf",
+    },
+    responseType : 'blob'
+  })
+    .then(response =>{
+      return response;
+    });
+},
+
+// **************************************
+  //USER ACCOUNT DETAILS
+// ************************************** 
+
+addEditRoles(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+},
+
+
+addEditPermissions(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+},
+
+
+addBusinessDetails(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+}, 
+
+
+
+getPermissions(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+ getRoles(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+ 
+
+getUsers(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+
+getLogDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getAccountDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getBusinessDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getPersonalDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
 
 };
