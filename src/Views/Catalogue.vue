@@ -134,26 +134,33 @@
     import Swal from 'sweetalert2'; 
     import { computed,ref,onMounted,watch } from 'vue';
     import { errorState } from '../store/ErrorState';
-
+    import {useRouter } from 'vue-router'
     
     export default {
       setup() { 
          const CatalogStore  = useCatalogueStore();
 
          const filtereddata = CatalogStore .filteredData;
-
+         const router = useRouter(); 
          const data = computed(() => CatalogStore.getData);  
          
-    watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+     
 
       onMounted(()=>{ 
         let token = localStorage.getItem('token');
         CatalogStore.fetchCatalogue(token);
         });
+
+
+         watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
 
   const DisplayMessage = (icon, message) => {
       Swal.fire({
@@ -190,7 +197,8 @@
           formatCurrency,
           data,  
           DisplayMessage,
-          ErrorMessage
+          ErrorMessage,
+          router
            }        
       }
     };

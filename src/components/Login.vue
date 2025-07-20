@@ -261,6 +261,9 @@ export default {
             if(status.value == '200') {
               localStorage.setItem('isLoggedIn', true); 
               localStorage.setItem('token', newValue.token);
+              localStorage.setItem('userid', newValue.userID);
+              localStorage.setItem('username', newValue.username);
+
               DisplayMessage("success", "Welcome back!");
               router.push('/');
             }

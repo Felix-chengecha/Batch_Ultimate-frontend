@@ -410,7 +410,7 @@
     import { useSaleStore } from '../store/SaleStore';
     import { errorState } from '../store/ErrorState';
         import {useCatalogueStore} from '../store/catalogueStore'
-
+      import {useRouter } from 'vue-router'
     import Swal from 'sweetalert2';
     import { ref, onMounted, watch,computed } from 'vue';
     
@@ -423,7 +423,8 @@
         const inventorystore = UseInventoryStore();
         const saleStore = useSaleStore();
         const CatalogStore  = useCatalogueStore();
-
+const router = useRouter(); 
+				
     
         const paymentrefference = ref('');
         const display = ref(false);
@@ -470,12 +471,15 @@
           CategoryStore.fetchCategories(token);
         }); 
 
-        watch(() => errorState.message, (newVal) => {
-          if (newVal) {
-            DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-          }
-		    }) 
-
+       watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
     
         const productSearch = (e) => {
           display.value = false;
@@ -733,8 +737,19 @@
         `
       })
     }
+    const ErrorMessage = (error) => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: error,
+                  confirmButtonColor: '#3b82f6',
+                })
+                  }
+    
     
         return {
+
+          ErrorMessage,
           products,
           NoItems,
           ITcost,
@@ -780,7 +795,8 @@
           paymentrefference,
           categ,
           category,
-          CatalogStore
+          CatalogStore,
+          router
         };
       },
     };

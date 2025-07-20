@@ -68,23 +68,23 @@ export const Useuserstore = defineStore('userstore', {
         }
     },
 
-   GetUserDetails(token,userid){
-     axios.getUserdetails(token,userid)
-      .then((response)=> {
+  //  GetUserDetails(token,userid){
+  //    axios.getUserdetails(token,userid)
+  //     .then((response)=> {
 
-        this.permissions = response.permissions;
-        this.role = response.roles[0];
+  //       this.permissions = response.permissions;
+  //       this.role = response.roles[0];
 
-        // console.log("permiss", this.permissions);
-        console.log("rrroles", this.role);
-        // return response;
+  //       // console.log("permiss", this.permissions);
+  //       console.log("rrroles", this.role);
+  //       // return response;
 
         
-      })
-      .catch((error)=>{
-        this.error = error.response;   
-      })
-    },
+  //     })
+  //     .catch((error)=>{
+  //       this.error = error.response;   
+  //     })
+  //   },
 
 
     GetToken(postData) {

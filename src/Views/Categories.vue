@@ -157,7 +157,8 @@
    import {useCategoryStore} from '../store/categoryStore'
    import Swal from 'sweetalert2';
    import { computed,ref,onMounted,watch } from 'vue';
-   
+   import {useRouter } from 'vue-router'
+   import { errorState } from '../store/ErrorState';
    export default {
      setup() {
        
@@ -167,7 +168,7 @@
        const CNoItems  = ref('');
        const Cdescription  = ref('');
        const isModalOpen = ref(false); 
-     
+      const router = useRouter();
       const CategoryStore  = useCategoryStore();
       const filtereddata = CategoryStore .filteredData;
       const data = computed(() => CategoryStore.getData);
@@ -202,6 +203,17 @@
           }
         }); 
 
+
+        watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
+
         const generateCategoryCode = (categoryName) => {
             const prefix = categoryName.slice(0, 2).toUpperCase();
             const randomPart = Math.random().toString(36).substring(2, 5).toUpperCase(); // 3 random chars
@@ -234,10 +246,16 @@
           } catch(error){
             DisplayMessage("error", error);
           }
-
       } 
 
-
+       const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
   
 
     const Validation = () => { 
@@ -281,7 +299,9 @@
       Validation,
       formatDate,
       generateCategoryCode,
-      DisplayMessage
+      DisplayMessage,
+      router,
+      ErrorMessage
        };
      }
    };

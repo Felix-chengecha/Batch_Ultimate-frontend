@@ -163,6 +163,7 @@
  import { usecontactstore } from '../store/contactstore';
  import { ref, computed, onMounted, watch } from 'vue';
  import Swal from 'sweetalert2';
+ import {useRouter } from 'vue-router'
 //  import * as XLSX from 'xlsx';
  import { errorState } from '../store/ErrorState';
 
@@ -188,16 +189,20 @@
 
      const contactsStr = computed(() => contactStore.getData);
      const filteredItems = computed(() => contactStore.filteredContacts);
-
+    const router = useRouter(); 
      const Tresponse = computed(()=>contactStore. getsucces);
      //const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
 
 
       watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
   
 
    onMounted(() => { 
@@ -229,6 +234,15 @@
         `
     })
   }
+
+  const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
 
 
   
@@ -459,7 +473,7 @@
        phone,
        Email,
        validationErrors,
-
+      router,
        isEXCELOpen,
        OpenExcel,
        CloseExcel,
@@ -468,7 +482,7 @@
        submitExceldata,
        ContactsExcel,
        token   ,           
-
+ErrorMessage
 
      
       //  paginatedContacts,

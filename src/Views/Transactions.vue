@@ -146,13 +146,14 @@
     import { useTransactionStore } from '../store/TransactionsStore';
     import { ref,  watch, onMounted, computed } from 'vue';
    import { errorState } from '../store/ErrorState'; 
-    
+      import {useRouter } from 'vue-router'
     export default {
       setup() {
         const transactionStore = useTransactionStore();
         const saleStore = useSaleStore();
         const isModalProductsOpen = ref(false); 
         const TRXID = ref('');
+         const router = useRouter(); 
 
         onMounted(() => { 
            let token = localStorage.getItem('token'); 
@@ -160,10 +161,14 @@
         });
 
         watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  }); 
 
 
         const filteredTransactions = computed(() => transactionStore.filterTransactions);
@@ -190,11 +195,18 @@
         .flatMap(transaction => JSON.parse(transaction.transactionproducts));
     });
        
-    
+    const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
        
         
         return {
-
+ErrorMessage,
         openproducts,
           closeModal,
           isModalProductsOpen,

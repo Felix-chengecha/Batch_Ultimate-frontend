@@ -186,7 +186,7 @@
    import { QuillEditor } from '@vueup/vue-quill';
    import '@vueup/vue-quill/dist/vue-quill.snow.css';
    import { errorState } from '../store/ErrorState';
-
+    import {useRouter } from 'vue-router'
   //  import { Vue3Quill } from 'vue3-quill';
   //  import Quill from 'quill'; 
    //fetchContacts  <QuillEditor v-model="content" :options="editorOptions" />
@@ -221,7 +221,7 @@
        const templateBody = ref('');
        const contactstore = usecontactstore();
        const messageStore = useMessageStore();
-
+        const router = useRouter(); 
        const contacts = computed(() => contactstore.filteredContacts);
        const SMStemplates = computed(() => contactstore.getTemplate);
    
@@ -236,11 +236,15 @@
          contactstore.fetchTemplates(token.value); 
          });
          
-   watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+        watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
    
    
        const Usetemplate = (body,email,name) => {
@@ -416,6 +420,16 @@
         textmessage.value = value.explicitOriginalTarget.innerText;
       };
 
+
+      const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
+
       //  const editorOptions = ref({ 
       //   theme: 'snow',
       //   // placeholder: 'Write something amazing...',
@@ -440,7 +454,8 @@
    
        // Return reactive state and functions
        
-       return {
+       return { 
+        ErrorMessage,
          isModalContactsOpen,
          OpenContacts,
          CloseModalContacts,
@@ -453,6 +468,7 @@
          contacts,
          token,
          generateUnique6DigitCode,
+         router,
          // senderids,
       Mode,
       email,

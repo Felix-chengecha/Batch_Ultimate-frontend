@@ -28,8 +28,6 @@ getters: {
     getRoles:(state) => state.Roles,
     getPermissions: (state) => state.Permissions,
 
-
-
     getResponse: (state)=> state.Response,
   },
 
@@ -38,17 +36,27 @@ getters: {
     fetchPersonalDetails(token,userid){     
           axios.getPersonalDet(token,userid)
             .then(response => {
-                this.PersonalDetails = response.data;
+                this.PersonalDetails = response;
             })
             .catch(error => {
                 this.error=error;
             });
         }, 
 
-    fetchBusinessDetails(token){     
+      fetchBusinessDetails(token){     
              axios.getBusinessDet(token)
             .then(response => {
-                this.BusinessDetails = response.data;
+                this.BusinessDetails = response;
+            })
+            .catch(error => {
+                this.error=error;
+            });
+        }, 
+
+      EditBusinessDetails(postdata,token){     
+             axios.EditBusinessDet(postdata,token)
+            .then(response => {
+                this.Response = response;
             })
             .catch(error => {
                 this.error=error;
@@ -58,7 +66,7 @@ getters: {
       fetchAccountDetails(token){     
              axios.getAccountDet(token)
             .then(response => {
-                this.AccountDetails = response.data;
+                this.AccountDetails = response;
             })
             .catch(error => {
                 this.error=error;
@@ -78,7 +86,7 @@ getters: {
       fetchUsers(token){     
              axios.getUsers(token)
             .then(response => {
-                this.Users = response.data;
+                this.Users = response;
             })
             .catch(error => {
                 this.error=error;
@@ -88,17 +96,17 @@ getters: {
       fetchRoles(token){     
              axios.getRoles(token)
             .then(response => {
-                this.Roles = response.data;
+                this.Roles = response;
             })
             .catch(error => {
                 this.error=error;
             });
         },
 
-      fetchPermissions(token){     
-             axios.getPermissions(token)
+      fetchPermissions(Roleid,token){     
+             axios.getPermissions(Roleid,token)
             .then(response => {
-                this.Permissions = response.data;
+                this.Permissions = response;
             })
             .catch(error => {
                 this.error=error;
@@ -107,7 +115,17 @@ getters: {
 
 
 
-      AddnewUser(postData){
+      AddnewUser(postData,token){
+          axios.register( postData)
+            .then(response => {
+              this.Response = response;
+            })
+            .catch(error=>{ 
+              this.error=error;
+            })
+        }, 
+
+      DeleteUserAsync(Userid,token){
           axios.register( postData)
             .then(response => {
               this.Response = response;
@@ -129,17 +147,17 @@ getters: {
             })
         },  
 
-          AddEditPermissions(token,postData){
+      AddEditPermissions(token,postData){
             axios.addEditPermissions(token, postData)
             .then(response => {
-              this.Response = response;
+              this.Response = response.data;
             })
             .catch(error=>{ 
               this.error=error;
             })
         }, 
 
-           AddRoles(token,postData){
+      AddRoles(token,postData){
             axios.addEditRoles(token, postData)
             .then(response => {
               this.Response = response;
@@ -148,7 +166,28 @@ getters: {
               this.error=error;
             })
         }, 
- 
+
+      UpdateOpeningBalance(token,postData){
+        axios.UpdateOpeningBalanceAsync(token, postData)
+        .then(response => {
+          this.Response = response;
+        })
+        .catch(error=>{ 
+          this.error=error;
+        })
+      }, 
+
+
+      OpenCloseAccount(token,postData){
+        axios.OpenCloseAccountAsync(token, postData)
+        .then(response => {
+          this.Response = response;
+        })
+        .catch(error=>{ 
+          this.error=error;
+        })
+      }, 
+
 
  
       

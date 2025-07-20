@@ -277,11 +277,15 @@ export default {
     suppliersstore.getallSupliers();
    });
 
-   watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+  watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+  if(errorState.code === 401){
+    router.push('/login');
+      ErrorMessage(`Errork: 'Session expired logn again'`);
+  }
+      ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+    }
+  });
 
    const AddSupplier =() => { 
     const now = new Date();
@@ -344,7 +348,7 @@ export default {
       suppliersstore.setSearchSupplier(e.target.value);
     }; 
 
-
+      
 
 
   const openModal = () => { 
@@ -364,8 +368,18 @@ export default {
 
   }
 
+    const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
+
    
-    return {
+    return { 
+      ErrorMessage,
       suppliersstore,
       isModalOpen,
       openModal,

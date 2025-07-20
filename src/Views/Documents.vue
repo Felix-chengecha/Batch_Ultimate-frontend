@@ -117,8 +117,8 @@
    import FilePreview   from './FilePreview.vue';
     import {UseDocumentStore} from '../store/DocumentsStore';
     import { computed,ref,onMounted,watch } from 'vue';
-
-
+ import {useRouter } from 'vue-router'
+import { errorState } from '../store/ErrorState';
 export default {
   setup() {
 
@@ -128,7 +128,7 @@ export default {
   const FileName = ref('');
   const selectedFile = ref('');
   const token = ref(''); 
-
+const router = useRouter(); 
   const DocumentList = computed(() => fileStore.getData);  
 
   const documentslist= ref ([
@@ -171,6 +171,14 @@ const downloadFile = async (fileid) => {
   fileStore.download(fileStore.download(fileid,token.value));
 };
 
+ const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
 
 
 const ModalDocOpen= ()=>{
@@ -180,10 +188,21 @@ const ModalDocOpen= ()=>{
 
 const ModalDocClose= ()=>{
   uploadDoc.value = false;
-}
+} 
+
+ watch(() => errorState.message, (newVal) => {
+      if (newVal) {
+    if(errorState.code === 401){
+      router.push('/login');
+        ErrorMessage(`Errork: 'Session expired logn again'`);
+    }
+        ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+      }
+				  });
 
 
     return { 
+      router,
       fileStore,
       previewUrl,
       uploadDoc,
@@ -197,7 +216,8 @@ const ModalDocClose= ()=>{
       FileName,
       downloadFile,
       selectedFile,
-      token
+      token,
+      ErrorMessage
     }
   }
 };

@@ -158,7 +158,7 @@
    import { useMessageStore } from  '../store/MessageStore';
    import {ref, computed , watch,onMounted} from 'vue';
    import { errorState } from '../store/ErrorState';
-
+    import {useRouter } from 'vue-router'
    
    export default {
      setup() {
@@ -178,7 +178,7 @@
     const isLoading = computed(() => sentmessagestore.isLoading);
     const error = computed(() => sentmessagestore.getError);
     const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
- 
+    const router = useRouter(); 
  
    onMounted(()=>{
      sentmessagestore.fetchMessages();
@@ -190,11 +190,15 @@
        return sentmessagestore.filteredMessage.slice(start, start + itemsPerPage);
      }); 
 
-     watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		}); 
+    watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
 		    
 
  
@@ -229,8 +233,18 @@
    const closeModal = () => {
      isModalOpen.value = false;
    };
+
+   const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
        
        return {
+        ErrorMessage,
          data,
          isLoading,
          error,
@@ -251,7 +265,7 @@
        totalPages,
        nextPage,
        prevPage,
- 
+        router
        };
      }
    };

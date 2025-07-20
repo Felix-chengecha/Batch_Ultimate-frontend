@@ -48,10 +48,10 @@
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
           <div class="flex justify-between items-start">
             <div>
-              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Orders</p>
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">No of Users</p>
               <div class="flex items-baseline mt-2">
                 <h3 class="text-2xl font-semibold text-gray-900">{{totalSales}}</h3>
-                <span class="ml-2 text-sm font-medium text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+3.1%</span>
+                <!-- <span class="ml-2 text-sm font-medium text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+3.1%</span> -->
               </div>
             </div>
             <div class="p-3 rounded-lg bg-orange-50 text-orange-500">
@@ -135,6 +135,7 @@
  import {useDashboardStore} from '../store/DashboardStore';
  import { ref, watch, onMounted, computed } from 'vue'; 
  import { errorState } from '../store/ErrorState';
+ import {useRouter } from 'vue-router'
  export default {
    setup() { 
  
@@ -143,6 +144,8 @@
     const graph = computed(() => dashStore.getGraph); 
     const average = computed(() => dashStore.getAverages);
     const recent = computed(()=> dashStore.getRecentsalesData);
+    const router = useRouter();
+
 
     onMounted(() => {  
      let token = localStorage.getItem('token');
@@ -154,11 +157,15 @@
        }
      }); 
 
-      watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+       watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
 
         const DisplayMessage = (icon, message) => {
       Swal.fire({
@@ -175,7 +182,15 @@
         `
       })
     }
-
+    
+      const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
 
     
     const noTransactions = computed(() => average.value.data?.noTransactions ?? 0);
@@ -260,7 +275,9 @@
       availableProducts,
       totalSales,
       totalCash,
-      DisplayMessage
+      DisplayMessage,
+      router,
+      ErrorMessage
       // dataPoints,
       // labels,
       // salesDatat

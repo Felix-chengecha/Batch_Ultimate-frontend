@@ -232,7 +232,7 @@
    import {useCategoryStore} from '../store/categoryStore'
     import { errorState } from '../store/ErrorState';
 
-
+      import {useRouter } from 'vue-router'
    //  
    export default {
      setup() {
@@ -247,7 +247,7 @@
 
       const categ = computed(() => CategoryStore.getData);
       const filteredSupplierSupplies = computed(() => inventorystore.filterSupplierSupplies);
-
+         const router = useRouter();
       const isModalOpen = ref(false);
       const ismodaltransactions= ref(false);
       const ismodalsupplies = ref(false); 
@@ -289,10 +289,14 @@
     const allowedKeys = ["supplierId" ,"supplierName" ,"supplierType", "phone", "businessLicenseNumber", "supplierStatus", "email", "locationName"];
 
        watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
           
 
    watch(LoadedSupplier, (newVal) => {
@@ -407,7 +411,16 @@
           return true;
         // }
 
-        }
+        } 
+
+          const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
 
 
    // const supplierSupplies = (e) => {
@@ -449,7 +462,8 @@
    
       
        
-       return {
+       return { 
+         ErrorMessage,
          Validation,
          DisplayMessage,
          AddnewProduct,
@@ -477,7 +491,7 @@
         PNoItems,
         pcategory,
         filteredSupplierSupplies,
-
+         router,
          categ,
          supStatus,
          supLicense,

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { errorState } from '../src/store/ErrorState'
 import {useRouter } from 'vue-router'
-import Documents from './Views/Documents.vue';
 
 
 const router = useRouter(); 
@@ -27,6 +26,10 @@ apiClient.interceptors.response.use(
     errorState.code = errCode 
 
     if (!error.response) {
+       router.push('/login')
+    }
+    if (errCode === 401 ) { 
+      console.log("12", errCode);
        router.push('/login')
     }
 
@@ -683,8 +686,8 @@ exportReportData(postData){
   //USER ACCOUNT DETAILS
 // ************************************** 
 
-addEditRoles(postData,token) {
-  return apiClient.post('/Notification/AddNotification', postData, {
+addEditRoles(token,postData) {
+  return apiClient.post('/Authentication/AddRole', postData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -696,8 +699,8 @@ addEditRoles(postData,token) {
 },
 
 
-addEditPermissions(postData,token) {
-  return apiClient.post('/Notification/AddNotification', postData, {
+addEditPermissions(token, postData) {
+  return apiClient.post('/Authentication/EditPermissions', postData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -723,8 +726,8 @@ addBusinessDetails(postData,token) {
 
 
 
-getPermissions(token) {
-    return apiClient.get(`/accountdetails/${id}`, {
+getPermissions(Roleid,token) {
+    return apiClient.get(`/Authentication/GetPermissions?searchTerm=${Roleid}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -735,7 +738,7 @@ getPermissions(token) {
 },
 
  getRoles(token) {
-    return apiClient.get(`/accountdetails/${id}`, {
+    return apiClient.get(`/Authentication/GetUserRole`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -744,10 +747,9 @@ getPermissions(token) {
     return response.data;
   });
 },
- 
 
 getUsers(token) {
-    return apiClient.get(`/accountdetails/${id}`, {
+    return apiClient.get(`/Authentication/GetUsers`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -770,7 +772,7 @@ getLogDet(token) {
 },
 
 getAccountDet(token) {
-    return apiClient.get(`/accountdetails/${id}`, {
+    return apiClient.post(`/Account/GetAccounts`, {}, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -781,7 +783,7 @@ getAccountDet(token) {
 },
 
 getBusinessDet(token) {
-    return apiClient.get(`/accountdetails/${id}`, {
+    return apiClient.post(`/Account/GetBusinessDetails`,{},  {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -791,8 +793,41 @@ getBusinessDet(token) {
   });
 },
 
-getPersonalDet(token) {
-    return apiClient.get(`/accountdetails/${id}`, {
+EditBusinessDet(postdata,token) {
+    return apiClient.post(`/Account/EditBusinessDetails`,postdata,  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getPersonalDet(token,userid) {
+    return apiClient.get(`/Authentication/GetUsers?searchTerm=${userid}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+UpdateOpeningBalanceAsync(token,postdata) {
+    return apiClient.post(`/Account/UpdateOpeningBalance`,postdata,  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+OpenCloseAccountAsync(token,postdata) {
+    return apiClient.post(`/Account/OpenCloseAccount`,postdata,  {
     headers: {
       Authorization: `Bearer ${token}`,
     },

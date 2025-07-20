@@ -256,13 +256,13 @@
  import { useSuppliersStore } from '../store/SuppliersStore';
  import {computed, onMounted, watch,ref} from 'vue';
  import { errorState } from '../store/ErrorState';
- 
+ import {useRouter } from 'vue-router'
  export default {
    setup() {
      const suppliersstore = useSuppliersStore();
      const isModalOpen = ref(false); 
      const supplierdata  = computed(()=>suppliersstore.getData);
-
+      const router = useRouter();
     const   pochilaiashara = ref();
     const   TillNo= ref();
     const   paybillaccountNumber= ref();
@@ -296,10 +296,14 @@
     }); 
 
       watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
+					  if (newVal) {
+      if(errorState.code === 401){
+        router.push('/login');
+          ErrorMessage(`Errork: 'Session expired logn again'`);
+      }
+          ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+        }
+      });
 
 
     const AddSupplier =() => {
@@ -375,7 +379,14 @@
     }
 
 
-
+       const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
 
 
 
@@ -399,7 +410,8 @@
        openModal,
        closeModal,
        AddSupplier,
-
+        router,
+        ErrorMessage,
        pochilaiashara,
        TillNo,
        paybillaccountNumber,

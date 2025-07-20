@@ -24,11 +24,10 @@
       ]"
     >
       <!-- Profile -->
-      <div class="w-20 h-10 bg-gray-300 rounded-full overflow-hidden">
-        <img src="https://via.placeholder.com/80x40" alt="Profile" class="w-full h-full object-cover" />
+      <div class="w-30 h-10 bg-gray-300 rounded-full overflow-hidden">
+      <h2 class="ml-4 mt-2 text-lg text-amber-900 font-semibold">{{ BusinessName }}</h2>
       </div>
-      <h2 class="mt-4 text-lg font-semibold">{{ name }}</h2>
-      <p class="text-gray-500 text-sm">{{ email }}</p>
+      <!-- <h2 class="mt-4 text-lg font-semibold">{{ BusinessName }}</h2> -->
 
       <!-- Navigation -->
       <nav class="mt-6 w-full">
@@ -86,58 +85,56 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import { ref, onMounted, computed, watch } from 'vue';
-import { errorState } from '../store/ErrorState';
+import { useAccountStore } from '../store/AccountStore';
 import { useRoute } from 'vue-router';
-import { Useuserstore } from '../store/userstore';
-import { usesenderstore } from '../store/SenderIdStore';
+export default {
+  setup() { 
 
-const route = useRoute();
-const name = ref('');
-const email = ref('');
-const userid = ref('');
-const isSidebarOpen = ref(false); // 👈 for toggling
+    const route = useRoute();
+    const isSidebarOpen = ref(false); 
+    const BusinessName = ref('');
 
-const contUserStore = Useuserstore();
-const senderstore = usesenderstore();
+    const acountStore  = useAccountStore();
+    const data = computed(() => acountStore.getBusinessDetails);  
 
-onMounted(() => {
-  name.value = localStorage.getItem('name');
-  email.value = localStorage.getItem('email');
-  userid.value = localStorage.getItem("userid");
-  const token = localStorage.getItem("token");
-  contUserStore.GetUserDetails(token, userid.value);
-});
+    onMounted(() => {
+      let token = localStorage.getItem("token");
+      acountStore.fetchBusinessDetails(token);
+      BindDetails();
+    });
 
-const role = computed(() => contUserStore.getRole);
-const permissions = computed(() => contUserStore.getPermissions);
+    const BindDetails = () => {
+      data.value.forEach(item => {
+        console.log(item.businessName);
+        BusinessName.value = item.businessName
+      });
+    }
 
-watch(permissions, (newValue) => {
-  filterPermissions(newValue);
-});
+    const toggleSidebar = () => {
+      isSidebarOpen.value = !isSidebarOpen.value;
+    };
 
- watch(() => errorState.message, (newVal) => {
-			 if (newVal) {
-			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-			 }
-		    }) 
-        
+  const activeClass = 'text-orange-500 font-semibold text-md';
+  const defaultClass = 'text-green-600 font-semibold text-md px-4 py-2 hover:bg-gray-100 cursor-pointer';
 
-const perm_Usermgmt = ref([]);
 
-const filterPermissions = (perm) => {
-  const search1 = "user";
-  perm_Usermgmt.value = perm.filter(item =>
-    item.value.toLowerCase().includes(search1.toLowerCase())
-  );
+return {
+  toggleSidebar,
+  BindDetails,
+  activeClass,
+  defaultClass,
+  route,
+  BusinessName
 };
 
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-};
 
-const activeClass = 'text-orange-500 font-semibold text-md';
-const defaultClass = 'text-green-600 font-semibold text-md px-4 py-2 hover:bg-gray-100 cursor-pointer';
+
+}
+
+}
+
+
 </script>
 

@@ -266,6 +266,7 @@
     import {useCategoryStore} from '../store/categoryStore'
     import Swal from 'sweetalert2';
     import axios from '../axios';
+    import {useRouter } from 'vue-router'
     import { ref,onMounted, watch,computed } from 'vue';
     import { errorState } from '../store/ErrorState';
     import { useSuppliersStore } from '../store/SuppliersStore';
@@ -287,6 +288,7 @@
         const supplier = ref('');
         const submitSuccess = ref('');
         const PNoItems = ref('');
+        const router = useRouter(); 
         const isModalOpen = ref(false); 
         const token = ref('your-auth-token'); 
         const suppliersstore = useSuppliersStore();
@@ -300,11 +302,15 @@
         const filteredProducts = computed(() => inventorystore.filterProducts); 
         const supplierdata  = computed(()=>suppliersstore.filterSuppliers);
 
-         watch(() => errorState.message, (newVal) => {
-          if (newVal) {
-            DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-          }
-		    });
+          watch(() => errorState.message, (newVal) => {
+					  if (newVal) {
+				  if(errorState.code === 401){
+					 router.push('/login');
+					   ErrorMessage(`Errork: 'Session expired logn again'`);
+				  }
+					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
+					  }
+				  });
      
 
         watch(() =>  inventorystore.getResponse, (newval) => {
@@ -419,13 +425,21 @@
 
         }
 
-
+    const ErrorMessage = (error) => {
+						 Swal.fire({
+						   icon: 'error',
+						   title: 'Oops...',
+						   text: error,
+						   confirmButtonColor: '#3b82f6',
+						 })
+					    }
     
    
        
         
         return {
-      
+      router,
+      ErrorMessage,
         pname,
         pcost,
         pbuyingprice,
