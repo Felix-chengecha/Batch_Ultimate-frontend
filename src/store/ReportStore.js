@@ -28,36 +28,47 @@ export const useReportStore = defineStore('ReportStore', {
       }
     },
 
-    async ExportReportData(postData){
-      try{
-        this.success = false;
-        this.error = null;
+   async ExportReportData(postData) {
+  try {
+    this.success = false;
+    this.error = null;
 
-        var response = await axios.exportReportData(postData);
+    const format = postData.format?.toLowerCase() || 'pdf';
+    let mimeType = '';
+    let fileExtension = '';
 
-        //create a downloadable file
-        const blob = new Blob([response.data],{type : "application/pdf"});
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
+    if (format === 'pdf') {
+      mimeType = "application/pdf";
+      fileExtension = ".pdf";
+    } else if (format === 'xlsx') {
+      mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      fileExtension = ".xlsx";
+    } else {
+      mimeType = "application/octet-stream";
+      fileExtension = '';
+    }
 
-        link.setAttribute('download',postData.reportType.replace(/\s/g,'')+'.pdf');
+    const response = await axios.exportReportData(postData, mimeType, this.token); // passing token
 
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    const blob = new Blob([response.data], { type: mimeType });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', postData.reportType.replace(/\s/g, '') + fileExtension);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
 
-        window.URL.revokeObjectURL(url);
+    this.success = true;
 
-        this.success = true;
+  } catch (error) {
+    console.error(error);
+    this.error = error.response?.data?.message || error.message;
+    throw error;
+  }
+},
 
-      }catch(error){
-        console.error(error);
-        this.error = error.response?.data?.message || error.message
-        throw error;
-
-      }
-    },
 
     clearReportData() {
       this.reportData = [];
