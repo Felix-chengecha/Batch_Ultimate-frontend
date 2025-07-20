@@ -49,20 +49,20 @@ import UserLogs from '../Views/Account_Views/UserLogs.vue';
   path: '/',
   component :Dashboard,
   redirect:'/home',
-  // meta: { requiresAuth: true },
+  meta: { requiresAuth: true },
    children: [ 
   {
     path: '/home',
     name: 'home',
     component: Home,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
   {
     path: '/inventory',
     name: 'inventory',
     component: Inventory,
-     // meta: { requiresAuth: true }
+     meta: { requiresAuth: true }
   },
 
 
@@ -70,49 +70,49 @@ import UserLogs from '../Views/Account_Views/UserLogs.vue';
     path: '/transactions',
     name: 'transactions',
     component: Transactions,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
   {
     path: '/catalogue',
     name: 'catalogue',
     component: Catalogue,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
   {
     path: '/supplier',
     name: 'supplier',
     component: Supplier,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
   {
     path: '/supplies/:supplierId',
     name: 'supplies',
     component: Supplies,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
   
   {
     path: '/reports',
     name: 'reports',
     component: Reports,            
-      //   meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
   },
 
   {
     path: '/categories',
     name: 'categories',
     component: categories,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
  {
     path: '/Documents',
     name: 'Documents',
     component: Documents,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
   // 
@@ -120,21 +120,21 @@ import UserLogs from '../Views/Account_Views/UserLogs.vue';
     path: '/contacts',
     name: 'contacts',
     component: Contacts,
-    // meta: { requiresAuth: true } 
+    meta: { requiresAuth: true } 
   },
 
   {
     path: '/SendSms',
     name: 'SendSms',
     component: SendSms,
-    // meta: { requiresAuth: true } 
+    meta: { requiresAuth: true } 
   },
 
   {
     path: '/SentMessages',
     name: 'SentMessages',
     component: SentMessages,
-    // meta: { requiresAuth: true } 
+    meta: { requiresAuth: true } 
   },
 
 
@@ -142,7 +142,7 @@ import UserLogs from '../Views/Account_Views/UserLogs.vue';
     path: '/sell',
     name: 'sell',
     component: sale2,
-    // meta: { requiresAuth: true }
+    meta: { requiresAuth: true }
   },
 
 
@@ -151,55 +151,55 @@ import UserLogs from '../Views/Account_Views/UserLogs.vue';
    path: '/Account',
   component :Account,
   redirect:'/Account/PersonalInfor',
-  // meta: { requiresAuth: true },
+   meta: { requiresAuth: true },
    children: [ 
       { 
         path: 'PersonalInfor',
         name: 'PersonalInfor',
         component: PersonalInfor,
-        // meta: { requiresAuth: true }
+        meta: { requiresAuth: true }
       },
 
         { 
         path: 'BusinessInfor',
         name: 'BusinessInfor',
         component: BusinessInfor,
-        // meta: { requiresAuth: true }
+        meta: { requiresAuth: true }
       },
 
         { 
         path: 'Permissions',
         name: 'Permissions',
         component: Permissions,
-        // meta: { requiresAuth: true }
+        meta: { requiresAuth: true }
       },
 
         { 
         path: 'Roles',
         name: 'Roles',
         component: Roles,
-        // meta: { requiresAuth: true }
+         meta: { requiresAuth: true }
       },
 
         { 
         path: 'Teller',
         name: 'Teller',
         component: Teller,
-        // meta: { requiresAuth: true }
+         meta: { requiresAuth: true }
       },
 
       { 
       path: 'UserList',
       name: 'UserList',
       component: UserList,
-      // meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
 
       { 
       path: 'UserLogs',
       name: 'UserLogs',
       component: UserLogs,
-      // meta: { requiresAuth: true }
+       meta: { requiresAuth: true }
     },  
 ]},
 
@@ -227,10 +227,9 @@ router.beforeEach((to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
   const token = localStorage.getItem('token');
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    // Redirect the user to the login page if they're not logged in or have no valid token
   
   if (requiresAuth && (!isLoggedIn || !token)) {
-    next({ name: 'register' });
+    next({ name: 'login' });
   } else {
     next();
   }

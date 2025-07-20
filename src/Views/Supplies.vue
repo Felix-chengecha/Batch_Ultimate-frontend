@@ -230,7 +230,7 @@
    import {UseInventoryStore} from '../store/InventoryStore'
    import { useSuppliersStore } from '../store/SuppliersStore';
    import {useCategoryStore} from '../store/categoryStore'
-
+    import { errorState } from '../store/ErrorState';
 
 
    //  
@@ -287,6 +287,13 @@
     const LoadedSupplier = computed(() => supplieStore.filtersuppliers);
 
     const allowedKeys = ["supplierId" ,"supplierName" ,"supplierType", "phone", "businessLicenseNumber", "supplierStatus", "email", "locationName"];
+
+       watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+          
 
    watch(LoadedSupplier, (newVal) => {
       const tempResult = [];

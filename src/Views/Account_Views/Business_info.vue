@@ -58,13 +58,62 @@
 
 <script>
 import { onMounted, computed, watch, ref } from 'vue';
-import { Useuserstore } from '../../store/userstore';
-import { usesenderstore } from '../../store/SenderIdStore';
-
+import { useAccountStore } from '../../store/AccountStore';
+import Swal from 'sweetalert2'; 
+import { errorState } from '../../store/ErrorState';
 export default {
-  name: "BusinessInformation",
-  setup() {
-    return {};
+  setup() { 
+    const acountStore  = useAccountStore();
+
+
+           const data = computed(() => acountStore.getBusinessDetails);  
+
+      onMounted(()=>{ 
+        let token = localStorage.getItem('token');
+        acountStore.fetchBusinessDetails(token);
+      });
+
+
+
+
+      watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+
+      const ErrorMessage = (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+        confirmButtonColor: '#3b82f6',
+      })
+    }
+    
+     const DisplayMessage = (icon, message) => {
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
+    }
+
+    return {
+
+      data,
+      acountStore,
+      DisplayMessage,
+      ErrorMessage
+    };
   }
 };
 </script>

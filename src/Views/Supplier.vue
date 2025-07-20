@@ -377,8 +377,14 @@
 <script>
 import { useRoute } from 'vue-router';
 import { useSuppliersStore } from '../store/SuppliersStore';
+<<<<<<< HEAD
 import { computed, onMounted, ref } from 'vue';
 import Swal from 'sweetalert2';
+=======
+import {UseInventoryStore} from '../store/InventoryStore'
+import {computed, onMounted, watch, ref} from 'vue';
+import { errorState } from '../store/ErrorState';
+>>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
 
 export default {
   setup() {
@@ -427,8 +433,76 @@ export default {
       return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
+<<<<<<< HEAD
     const supplierSearch = (e) => {
       suppliersstore.setSearchSupplier(searchQuery.value);
+=======
+   watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+
+   const AddSupplier =() => { 
+    const now = new Date();
+
+    // Extract date components
+    const day = ref(now.getDate()); // Day of the month (1-31)
+    const month = ref(now.getMonth() + 1); // Month (0-11, so +1 for 1-12)
+    const year = ref(now.getFullYear()); // Year (e.g., 2024)
+
+    // Extract time components
+    const hour = ref(now.getHours()); // Hour (0-23)
+    const minute = ref(now.getMinutes()); // Minute (0-59)
+    const second = ref(now.getSeconds()); // Second (0-59)
+
+    let SupId = "Sup"+"_"+ month.value + second.value + minute.value + hour.value ;
+
+
+
+
+    const postdata = {
+              supplier: [
+                {
+                  supplierId: SupId,
+                  supplierName: supplierName.value,
+                  supplierType: supplierType.value,
+                  industry: industry.value,
+                  krapin: krapin.value,
+                  businessLicenseNumber: businessLicenseNumber.value,
+                  supplierStatus: true,
+                  remarks: "New supplier added",
+                  createdBy: "chee",
+                  updatedBy: "",
+                  email: email.value,
+                  phone: phone.value,
+                  locationName: locationName.value,
+                  town: town.value,
+                  postal: postal.value,
+                  contractStartDate: contractStartDate.value,
+                  contractEndDate: contractEndDate.value,
+                  contractTerms: contractterms.value,
+                  contractStatus: true,
+                  category: productcategory.value,
+                  unitMeasure: "kg/ltr",
+                  bankName: BankName.value,
+                  bank_AccountNumber: BankaccountNumber.value,
+                  till: TillNo.value,
+                  pochi: pochilaiashara.value,
+                  paybill_BusinessNumber: paybill.value,
+                  paybill_Account: paybillaccountNumber.value
+                }
+            ]
+    }
+      suppliersstore.Addsuplier(postdata);
+      NewsupplierStatus .value =  suppliersstore.success;
+      console.log(NewsupplierStatus);
+   }
+
+
+     const supplierSearch = (e) => {
+      suppliersstore.setSearchSupplier(e.target.value);
+>>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
     }; 
 
     const openModal = (supplier) => {

@@ -8,8 +8,9 @@ import axios from '../axios';
 export const usecontactstore = defineStore('contactstore', {
   state: () => ({
     data: [], // Array to store API data
+    templates:[],
     response:[],
-    error: [], // To store any error that occurs during data fetching
+    error: [], // To store any error that occurs during data fetching 
     success: [], //to store success messages
     Token: localStorage.getItem('token') || '', // Fallback to empty string if no token is found
     searchTerm: '', // Search term from component
@@ -17,6 +18,7 @@ export const usecontactstore = defineStore('contactstore', {
 
   getters: {
     getData: (state) => state.data,
+    getTemplate: (state) => state.templates,
     isLoading: (state) => state.loading,
     getError: (state) => state.error,
     getsucces:(state)=>state.success,
@@ -41,9 +43,9 @@ export const usecontactstore = defineStore('contactstore', {
   },
 
   actions: {
-    fetchContacts() {
+    fetchContacts(token) {
 
-      axios.getcontacts()
+      axios.getcontacts(token)
         .then(response => { 
           console.log(response);
           this.data = response; // Store the API data in state
@@ -56,11 +58,11 @@ export const usecontactstore = defineStore('contactstore', {
         });
     }, 
 
-   fetchTemplates() { 
-    axios.getTemplates()
+   fetchTemplates(token) { 
+    axios.getTemplates(token)
     .then(response => { 
       console.log(response);
-      this.data = response; // Store the API data in state
+      this.templates = response; // Store the API data in state
     })
     .catch(error => {
       this.error = error.response?.data?.message || 'An error occurred while fetching data';
@@ -71,8 +73,8 @@ export const usecontactstore = defineStore('contactstore', {
 }, 
 
      //add new template
-     AddNewTemplate(postData) {
-      axios.addsmsTemplate(postData)
+     AddNewTemplate(postData,token) {
+      axios.addsmsTemplate(postData,token)
       .then((response) => { 
         console.log(response);
         console.log(response.status);
@@ -90,11 +92,9 @@ export const usecontactstore = defineStore('contactstore', {
 
 
     //add new contact group
-    AddNewContacts(postData) { 
-      axios.addcontact(postData)
+    AddNewContacts(postData,token) { 
+      axios.addcontact(postData,token)
         .then((response) => { 
-          console.log(response);
-          console.log(response.status);
           if(response.status == '200'){
             this.success = response.data;
             }

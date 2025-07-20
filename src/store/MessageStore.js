@@ -39,13 +39,11 @@ export const useMessageStore = defineStore('MessageStore', {
   actions: {  
       //fetch all contact groups
       fetchMessages() {
-          axios.getSentMessages() // Use `this.Token`
+          axios.getSentMessages() 
             .then(response => {
-              this.data = response.data.messages; // Store the API data in state
-              // console.log(this.data.messages);
+              this.data = response.data.messages;       
             })
             .catch(error => {
-              // Handle specific error messages
               this.error = error.response?.data?.message || 'An error occurred while fetching data';
             })
             .finally(() => {
@@ -53,14 +51,12 @@ export const useMessageStore = defineStore('MessageStore', {
             });
     },
 
-    SendSms(payload) {
-          axios.SendSms(payload) // Use `this.Token`
+    SendSms(payload,token) {
+          axios.AddNotification(payload,token) 
             .then(response => {
-              this.data = response.data.messages; // Store the API data in state
-              // console.log(this.data.messages);
+              this.data = response.data.messages;     
             })
             .catch(error => {
-              // Handle specific error messages
               this.error = error.response?.data?.message || 'An error occurred while sending sms ';
             })
             .finally(() => {

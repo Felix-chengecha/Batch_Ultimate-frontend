@@ -259,10 +259,9 @@ export default {
            token.value = newValue.token;
            message.value = newValue.message;
             if(status.value == '200') {
-              DisplayMessage("success", "Welcome back!");
               localStorage.setItem('isLoggedIn', true); 
               localStorage.setItem('token', newValue.token);
-
+              DisplayMessage("success", "Welcome back!");
               router.push('/');
             }
             else{

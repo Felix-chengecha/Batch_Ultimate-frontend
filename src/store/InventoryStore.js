@@ -6,9 +6,11 @@ export const UseInventoryStore = defineStore('InventoryStore', {
 state: () => ({
     data: [], 
     loading: false, 
-    error: null,
-    successmsg:null,
-    searchquery : ''
+    Error: null,
+    Response:null,
+    searchquery : '',
+    searchprod:'',
+    searchCateg:''
    }),
 
     // Add any getters if needed
@@ -16,6 +18,7 @@ state: () => ({
     getData: (state) => state.data,
     isLoading: (state) => state.loading,
     getError: (state) => state.error,
+    getResponse: (state)=> state.Response,
 
     // Filter based on the search Term in the store for multiple rows
     filterProducts: (state) => {
@@ -24,9 +27,9 @@ state: () => ({
       }
 
       return state.data.filter(item =>
-        item.productName.toLowerCase().includes(state.searchquery.toLowerCase()) ||
-        item.productDescription.toLowerCase().includes(state.searchquery.toLowerCase()) ||
-        item.productType.toLowerCase().includes(state.searchquery.toLowerCase()) 
+        item.productName.toLowerCase().includes(state.searchquery.toLowerCase()) 
+       // ||item.productDescription.toLowerCase().includes(state.searchquery.toLowerCase()) 
+        //||item.productType.toLowerCase().includes(state.searchquery.toLowerCase()) 
         // item.productCategory.toString().includes(state.searchTerm.toLowerCase()) 
         // item.group.toString().includes(state.searchTerm.toLowerCase())
       );
@@ -39,12 +42,14 @@ state: () => ({
       }
 
       return state.data.filter(item =>
-        item.categoryID === parseInt(state.searchCateg) // Compare both as integers 
+        item.categoryID === state.searchCateg // Compare both as integers 
       ); },
-  },
+    },
 
-  filterSupplierSupplies: (state) =>{
-      
+ 
+
+
+  filterSupplierSupplies: (state) => {
     return state.data.filter(item =>
       item.data.toLowerCase().includes(state.searchSUP.toLowerCase()) 
     );
@@ -54,30 +59,26 @@ state: () => ({
 
     actions: {  
 //fetch all inventory records
-      getallproducts(){     
-            axios.getproduct()
+      getallproducts(token){     
+           axios.getproduct(token)
               .then(response => {
                   this.data = response.data;
-                  // console.log("prods", this.data);
-                  this.loading = false;
+                  // this.loading = false;
               })
               .catch(error => {
-                  this.error=error;
-                  this.loading = false;
-                  // console.log(error);
+                  this.Error=error;
+                  // this.loading = false;
               });
           },
          
       //search product from the inventory
         setSearchProduct(term) {
-          this.searchprod = term;
-          // console.log(term);
+          this.searchquery = term;
         },
 
     //search products of a certain category    
         setSearchCategory(term) {
           this.searchCateg = term;
-          // console.log(term);
         },
  
     //search products from a certain supplier term    
@@ -90,12 +91,10 @@ state: () => ({
         AddnewProduct(postData){
           axios.addproduct( postData)
             .then(response => {
-              this.successmsg = response.data.statusMessage;
-              this.error =false;
+              this.Response = response.data
             })
             .catch(error=>{ 
-              this.successmsg = response.statusMessage;
-              this.error = true;
+              this.Error=error;
             })
         },
     

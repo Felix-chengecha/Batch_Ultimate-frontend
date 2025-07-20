@@ -2,7 +2,15 @@
   <div class="rounded-xl border border-gray-200 bg-white h-full p-4 shadow-sm">
     <!-- Header & Search Controls -->
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+<<<<<<< HEAD
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">My Inventory</h2>
+=======
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Inventory list</h1>
+        <p class="text-sm text-gray-500 mt-1">A list of all inventory</p>
+      </div>
+
+>>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
       <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
         <input 
           v-model="searchQuery" 
@@ -73,7 +81,11 @@
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+<<<<<<< HEAD
             {{ item.supplierId }}
+=======
+            {{ item.supplier?.supplierName  }}
+>>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div class="flex items-center space-x-2">
@@ -202,13 +214,32 @@
             />
           </div>
 
+<<<<<<< HEAD
           <div class="space-y-1">
+=======
+          <!-- <div class="space-y-1">
+>>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
             <label class="block text-sm font-medium text-gray-700">Product Buying Date</label>
             <input 
               v-model="pbuyingdate" 
               type="date" 
               class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
             />
+<<<<<<< HEAD
+=======
+          </div> -->
+           <div class="space-y-1">
+            <label class="block text-sm font-medium text-gray-700">Supplier <span class="text-red-500">*</span></label>
+            <select 
+              v-model="supplier" 
+              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+            >
+              <option value="" disabled selected>Select a Supplier</option>
+              <option v-for="option in supplierdata" :key="option.supplierId" :value="option.supplierId">
+                {{ option.supplierName }}
+              </option>
+            </select>
+>>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
           </div>
 
           <div class="col-span-1 md:col-span-2 space-y-1">
@@ -244,109 +275,195 @@
     </div>
   </div>
 </template>
-
-<script>
-import {UseInventoryStore} from '../store/InventoryStore'
-import {useCategoryStore} from '../store/categoryStore'
-import Swal from 'sweetalert2';
-import axios from '../axios';
-import { ref, onMounted, watch, computed } from 'vue';
-
-export default {
-  setup() {
-    // Form properties 
-    const Pvat = ref('');
-    const punit = ref('');
-    const pname = ref('');
-    const pcost = ref('');
-    const pbuyingprice = ref('');
-    const pbuyingdate = ref('');
-    const pdescription = ref('');
-    const pcategory = ref('');
-    const PNoItems = ref('');
     
-    // UI state
-    const isModalOpen = ref(false); 
-    const currentProduct = ref(null);
-    const searchQuery = ref('');
-   
-    // Store properties
-    const inventorystore = UseInventoryStore();
-    const CategoryStore = useCategoryStore();
+    <script>
+    import {UseInventoryStore} from '../store/InventoryStore'
+    import {useCategoryStore} from '../store/categoryStore'
+    import Swal from 'sweetalert2';
+    import axios from '../axios';
+    import { ref,onMounted, watch,computed } from 'vue';
+    import { errorState } from '../store/ErrorState';
+    import { useSuppliersStore } from '../store/SuppliersStore';
+    export default {
+      setup() {
+  
 
-    const data = computed(() => inventorystore.getData);
-    const categ = computed(() => CategoryStore.getData);
-    const filteredProducts = computed(() => inventorystore.filterProducts);
+        //properties 
+        // const pname   = ref('');
+        // const pcost   = ref('');
+        const Pvat = ref('');
+        const punit = ref('');
+        const pname   = ref('');
+        const pcost   = ref('');
+        const pbuyingprice  = ref('');
+        const pbuyingdate  = ref('');
+        const pdescription  = ref('');
+        const pcategory = ref('');
+        const supplier = ref('');
+        const submitSuccess = ref('');
+        const PNoItems = ref('');
+        const isModalOpen = ref(false); 
+        const token = ref('your-auth-token'); 
+        const suppliersstore = useSuppliersStore();
+       
+        //store  properties
+        const inventorystore  = UseInventoryStore();
+        const CategoryStore  = useCategoryStore();
 
-    // Methods
-    const productSearch = (e) => {
-      inventorystore.setSearchProduct(searchQuery.value);
-    }; 
+        const data = computed(() => inventorystore.getData);
+        const categ = computed(() => CategoryStore.getData);
+        const filteredProducts = computed(() => inventorystore.filterProducts); 
+        const supplierdata  = computed(()=>suppliersstore.filterSuppliers);
 
-    const formatDate = (dateString) => {
-      if (!dateString) return '';
-      const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
-    };
+         watch(() => errorState.message, (newVal) => {
+          if (newVal) {
+            DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+          }
+		    });
+     
 
-    const formatCurrency = (value) => {
-      return parseFloat(value || 0).toFixed(2);
-    };
+        watch(() =>  inventorystore.getResponse, (newval) => {
+            if (newval.status == 200) { 
+               DisplayMessage("success", newval.statusMessage);
+            } 
+            else{
+              DisplayMessage("error", newval.statusMessage);
+            }
 
-    const openModal = (product) => {
-      currentProduct.value = product;
-      if (product) {
-        // Pre-fill form for editing
-        pname.value = product.productName;
-        pdescription.value = product.productDescription;
-        punit.value = product.Weight_Volume;
-        pcategory.value = product.categoryID;
-        pbuyingprice.value = product.buyingPrice;
-        pcost.value = product.sellingPrice;
-        PNoItems.value = product.quantity;
-      } else {
-        // Reset form for new product
-        pname.value = "";
-        pdescription.value = "";
-        punit.value = "";
-        pcategory.value = "";
-        pbuyingprice.value = "";
-        pcost.value = "";
-        PNoItems.value = "";
-        Pvat.value = "";
-        pbuyingdate.value = "";
-      }
-      isModalOpen.value = true;
-    };
+        });
+		    
+        const formatCurrency = (value) => {
+              return parseFloat(value || 0).toFixed(2);
+            };
+ 
+        const productSearch = (e) => {
+        inventorystore.setSearchProduct(e.target.value);
+        }; 
+
+        //add product modal
+        const openModal = () => { 
+          console.log("open")
+          isModalOpen.value = true;
+        };
+        
+        const closeModal = () => {
+          isModalOpen.value = false;
+        };
+
+        //fetch all records on load from the store
+        onMounted(()=>{ 
+           let token = localStorage.getItem('token'); 
+           inventorystore.getallproducts(token);
+           CategoryStore.fetchCategories(token);
+           suppliersstore.getallSupliers()
+        });
     
-    const closeModal = () => {
-      isModalOpen.value = false;
-      currentProduct.value = null;
-    };
 
-    const confirmDelete = (product) => {
-      Swal.fire({
-        title: 'Delete Product?',
-        text: `Are you sure you want to delete "${product.productName}"?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          deleteProduct(product);
+      //add new product to inventory
+       const addinventory = () => {
+        const part1 = pname.value.substring(0, 3);
+        const part2 = pname.value.slice(-3);
+
+         try{  
+          if(!Validation()){
+          return false;
         }
-      });
-    };
+            const postData = {
+                productName: pname.value,
+                productDescription: pdescription.value,
+                Weight_Volume :punit.value,
+                categoryID: pcategory.value,
+                buyingPrice: pbuyingprice.value,
+                sellingPrice: pcost.value,
+                quantity: PNoItems.value,
+                supplier: supplier.value
+              };
+            
+              inventorystore.AddnewProduct(postData); 
 
-    const deleteProduct = async (product) => {
-      try {
-        await inventorystore.deleteProduct(product.productID);
-        DisplayMessage("success", "Product deleted successfully");
-      } catch (error) {
-        DisplayMessage("error", "Failed to delete product");
+         } catch(error){
+          DisplayMessage("Error", error);
+        }
+      }
+
+      const DisplayMessage=(icon,message) => {
+             closeModal();
+          inventorystore.getallproducts();
+               pname.value= "";
+               pdescription.value= "";
+               punit.value= "";
+               pcategory.value= "";
+               pbuyingprice.value= "";
+               pcost.value= "";
+               PNoItems.value= "";
+
+        Swal.fire({
+            position: "top-end",
+            icon: icon,
+            title: message,
+            showConfirmButton: false,
+            timer: 1500
+          });
+       }
+
+      const Validation = () => { 
+
+        let isNumeric = /^\d+$/;
+          if( pname.value.trim() === "" && pdescription.value.trim() === "" && punit.value.trim() === "" &&  pcategory.value.trim() === "" && supplier.value.trim() ==="" && pbuyingprice.value.trim() === ""   &&  pcost.value.trim() === ""   &&  PNoItems.value.trim() === "" ) {
+            DisplayMessage("error", "!!error please fill all the fields");
+            return false;     
+          }
+          else if (!isNumeric.test(pbuyingprice.value) ) {
+            DisplayMessage("error", "!!error buying price should be numeric");
+          return false;  
+         }
+       
+         else if (!isNumeric.test(pcost.value)) {
+           DisplayMessage("error", "!!error product cost should be numeric");
+           return false;  
+          }
+
+         else if(!isNumeric.test(PNoItems.value) ) {
+           DisplayMessage("error", "!!error No of items should be numeric");
+          return false;  
+          }  
+
+        //else{
+          return true;
+        // }
+
+        }
+
+
+    
+   
+       
+        
+        return {
+      
+        pname,
+        pcost,
+        pbuyingprice,
+        pbuyingdate,
+        pdescription,
+        PNoItems,
+        pcategory,
+        supplier,
+        data,
+        Pvat,
+        punit,
+        addinventory,
+        openModal,
+        closeModal,
+        isModalOpen,
+        CategoryStore,
+        categ,
+        productSearch,
+        filteredProducts,
+        formatCurrency,
+        supplierdata
+        // filtereddata
+        };
       }
     };
 

@@ -169,9 +169,9 @@ export const useDashboardStore = defineStore('DashboardStore', () => {
     }
   }
 
-  function getDashboardAverages() {
+  function getDashboardAverages(token) {
     loading.value = true;
-    axios.getDashboardAverages()
+    axios.getDashboardAverages(token)
       .then(response => {
         averages.value = response;
         loading.value = false;
@@ -182,9 +182,9 @@ export const useDashboardStore = defineStore('DashboardStore', () => {
       });
   }
 
-  function getGraphData() {
+  function getGraphData(token) {
     loading.value = true;
-    axios.getGraphData()
+    axios.getGraphData(token)
       .then(response => {
         graph.value = response;
         loading.value = false;
@@ -195,9 +195,9 @@ export const useDashboardStore = defineStore('DashboardStore', () => {
       });
   }
 
-  function getRecentSales() {
+  function getRecentSales(token) {
     loading.value = true;
-    axios.getRecentSalesData()
+    axios.getRecentSalesData(token)
       .then(response => {
         recentSales.value = response;
         loading.value = false;

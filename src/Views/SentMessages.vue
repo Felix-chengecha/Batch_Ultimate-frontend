@@ -156,7 +156,9 @@
    
    <script>
    import { useMessageStore } from  '../store/MessageStore';
-   import {ref, computed , onMounted} from 'vue';
+   import {ref, computed , watch,onMounted} from 'vue';
+   import { errorState } from '../store/ErrorState';
+
    
    export default {
      setup() {
@@ -186,7 +188,15 @@
       const paginatedSentMessages = computed(() => {
        const start = (currentPage.value - 1) * itemsPerPage;
        return sentmessagestore.filteredMessage.slice(start, start + itemsPerPage);
-     });
+     }); 
+
+     watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		}); 
+		    
+
  
  
        const nextPage = () => { 

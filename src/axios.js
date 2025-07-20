@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { errorState } from '../src/store/ErrorState'
 import {useRouter } from 'vue-router'
+import Documents from './Views/Documents.vue';
 
 
 const router = useRouter(); 
@@ -65,29 +66,6 @@ export default {
       });
   },
 
-  //USER ACCOUNT DETAILS
-    getccountdetails(token) {
-      return apiClient.get(`/accountdetails/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      return response.data;
-    });
-  },
-
-  //get user account details   
-  getUserdetails(token,userid) {
-      return apiClient.get(`/UserDetails/${userid}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      return response.data;
-    });
-  },
 
 
 
@@ -95,7 +73,7 @@ export default {
 //-------------------------------------------------
    //Dashboard ENDPOINTS
 //-------------------------------------------------
-  getDashboardAverages() {
+  getDashboardAverages(token) {
     return apiClient.get(`/Dashboard/SalesAverages`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -106,7 +84,7 @@ export default {
   });
 },
 
-getGraphData() {
+getGraphData(token) {
   return apiClient.get(`/Dashboard/Graphdata`, {
   headers: {
     Authorization: `Bearer ${token}`,
@@ -117,7 +95,7 @@ getGraphData() {
 });
 },
 
-getRecentSalesData() {
+getRecentSalesData(token) {
   return apiClient.get(`/Dashboard/RecentSales`, {
   headers: {
     Authorization: `Bearer ${token}`,
@@ -145,6 +123,18 @@ getRecentSalesData() {
     });
   },
   
+//http://localhost:5134/api/Catalogue/GetActiveCatelogue
+
+    getActiveprooducts(token) { 
+      return apiClient.post('/Catalogue/GetActiveCatelogue', {},  {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(response => { 
+        return response;
+      });
+    },
 
     getproduct() { 
       return apiClient.post('/Products/GetProducts', {},  {
@@ -368,7 +358,7 @@ Authorization: `Bearer ${token}`,
 
 
   //get catalogue
-  getcatalogue() {
+  getcatalogue(token) {
     return apiClient.post('/Catalogue/GetCatalogue', {}, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -434,7 +424,7 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
 
 
   //get category
-  getcategory() {
+  getcategory(token) {
     return apiClient.post('/Category/GetCategory',  {},{
       headers: {
         Authorization: `Bearer ${token}`,
@@ -496,73 +486,16 @@ return apiClient.delete(`/deletecategory/${id}`, {
     });
   },
 
-//____________________________________________
-// NotificationS ENDPOINTS 
-//**************************************************
- 
-getcontacts() {
-  return apiClient.get('/Notification/GetContacts',  {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   },
+    //update inventory
+  updateinventory(id, updateData, token) {
+  return apiClient.put(`/updateinventory/${id}`, updateinventory, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
   .then(response => {
     return response.data;
   });
-},
-
-SendSms(postData) { 
-  // console.log(postData);
-
-  return apiClient.post('/Notification/Sendsms', postData, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
-  })
-  .then(response => {
-    return response;
-  });
-},
-
-
-addcontact(postData) { 
-  // console.log(postData);
-
-  return apiClient.post('/Notification/AddContact', postData, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
-  })
-  .then(response => {
-    return response;
-  });
-},
-
-
-
-getSentMessages() {
-  return apiClient.get('/getinventory',  {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   },
-  })
-  .then(response => {
-    return response.data;
-  });
-},
-
-
-
-   //update inventory
-   updateinventory(id, updateData, token) {
-    return apiClient.put(`/updateinventory/${id}`, updateinventory, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      return response.data;
-    });
 },
 
 //delete inventory
@@ -574,6 +507,299 @@ return apiClient.delete(`/deleteinventory/${id}`, {
 });
 },
 
+//____________________________________________
+// NotificationS ENDPOINTS 
+//**************************************************
+ 
+getcontacts(token) {
+  return apiClient.get('/Notification/GetContacts',  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
 
+
+getTemplates(token) {
+  return apiClient.get('/Notification/GetSmsTemplates',  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+//
+
+
+addcontact(postData,token) { 
+  // console.log(postData);
+
+  return apiClient.post('/Notification/AddContact', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+},
+
+addsmsTemplate(postData,token) { 
+  // console.log(postData);
+
+  return apiClient.post('/Notification/AddSmsTemplate', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+}, 
+
+getSentMessages() {
+  return apiClient.get('/getinventory',  {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  })
+  .then(response => {
+    return response.data;
+  });
+}, 
+
+SendSms(postData,token) { 
+  return apiClient.post('/Notification/Sendsms', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+},
+
+
+
+
+AddNotification(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+},
+
+
+//##############################
+// Documents
+//###############################
+
+async uploadFile(formData, token) {
+  return axios.post(
+    'http://localhost:5134/api/Document/AddDocument',
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  );
+},
+
+  // async uploadFile(formData,token) {
+  //   return apiClient.post('/Document/AddDocument', formData,  {
+  //   headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+  // },
+
+    async GetFiles(token) {
+    return apiClient.post('/Document/GetDocuments', {}, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+
+  // important for binary response (PDF) 
+  async getFilePreview(fileId,token) {
+    return apiClient.get(`/Document/preview/${fileId}`, {
+      responseType: 'blob', 
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+  async downloadFile(fileId) {
+    return apiClient.get(`/Document/DownloadDocument/${fileId}`, {
+      responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+  //-------------------------------------------------
+   //Report ENDPOINTS
+//-------------------------------------------------
+  getReportData(postData) {
+    return apiClient.post(`/Reports/Generate`,postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+},
+
+exportReportData(postData){
+  return apiClient.post('/Reports/JasperReports',postData,{
+    headers : {
+      Authorization: `Bearer ${token}`,
+      Accept : "application/pdf",
+    },
+    responseType : 'blob'
+  })
+    .then(response =>{
+      return response;
+    });
+},
+
+// **************************************
+  //USER ACCOUNT DETAILS
+// ************************************** 
+
+addEditRoles(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+},
+
+
+addEditPermissions(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+},
+
+
+addBusinessDetails(postData,token) {
+  return apiClient.post('/Notification/AddNotification', postData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response;
+  });
+
+}, 
+
+
+
+getPermissions(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+ getRoles(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+ 
+
+getUsers(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+
+getLogDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getAccountDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getBusinessDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
+
+getPersonalDet(token) {
+    return apiClient.get(`/accountdetails/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then(response => {
+    return response.data;
+  });
+},
 
 };

@@ -88,6 +88,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
+import { errorState } from '../store/ErrorState';
 import { useRoute } from 'vue-router';
 import { Useuserstore } from '../store/userstore';
 import { usesenderstore } from '../store/SenderIdStore';
@@ -115,6 +116,13 @@ const permissions = computed(() => contUserStore.getPermissions);
 watch(permissions, (newValue) => {
   filterPermissions(newValue);
 });
+
+ watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+        
 
 const perm_Usermgmt = ref([]);
 

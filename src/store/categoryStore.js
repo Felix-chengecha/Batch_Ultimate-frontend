@@ -8,45 +8,41 @@ state: () => ({
 
     loading: false,
     error: null,
-    successmsg:null,
+    Response:null,
     token : localStorage.getItem('token')
   }),
 
 
 
 getters: {
-    // Add any getters if needed
+    // Add any getters if needed 
     getData: (state) => state.data,
     isLoading: (state) => state.loading,
-    getError: (state) => state.error
+    getError: (state) => state.error,
+    getResponse: (state)=> state.Response,
   },
 
    actions: { 
 
-    fetchCategories(){     
+    fetchCategories(token){     
       this.loading = true;
       this.error = null;   
-          axios.getcategory()
+          axios.getcategory(token)
             .then(response => {
-                // this.data.push(response.products.data.data); 
                 this.data = response.data;
-                this.loading = false;
             })
             .catch(error => {
                 this.error=error;
-                this.loading = false;
             });
         },
 
         AddnewCategory(postData){
           axios.addcategories( postData)
             .then(response => {
-              this.successmsg = response.statusMessage;
-              this.error =false;
+              this.Response = response;
             })
             .catch(error=>{ 
-              this.successmsg = response.statusMessage;
-              this.error = true;
+              this.error=error;
             })
         },
     

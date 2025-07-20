@@ -2,118 +2,139 @@
 <template>
   <main class="p-4">
     <!-- Top Buttons and Search -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 sm:space-x-4 mb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-0 sm:space-y-0 sm:space-x-4 mb-4">
       <div class="flex flex-wrap gap-2">
-        <a @click="openModal" class="rounded-md border bg-green-400 px-3 py-1 text-sm text-black shadow-sm focus:outline-none">
-          ADD NEW CONTACT
-        </a>
-        <a @click="OpenExcel" class="rounded-md border bg-blue-400 px-3 py-1 text-sm text-white shadow-sm focus:outline-none">
-          ADD EXCEL
-        </a>
+         <h3 class="text-2xl font-bold text-gray-800">CONTACT LIST </h3>
+        <a @click="OpenExcel" class="rounded-md border bg-blue-400 px-3 py-1 text-sm text-white shadow-sm focus:outline-none"> UPLOAD CONTACTS </a>
       </div>
-      <input type="text" @input="updateSearch" placeholder="Search for...anything" class="w-full sm:w-1/3 rounded-md border-gray-300 py-2 px-4 shadow-sm sm:mt-0 mt-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+      <input type="text" @input="updateSearch" placeholder="Search YOUR CONTACT LIST" class="w-full sm:w-1/3 rounded-md border-gray-300 py-2 px-4 shadow-sm sm:mt-0 mt-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
     </div>
 
-   
-      <div class="text-lg font-medium text-center md:text-left mb-2 md:mb-0">CONTACTS LIST</div>
 
-    <!-- Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <!-- Table Section -->
-      <div class="lg:col-span-2 bg-white rounded shadow overflow-auto">
-        <table class="min-w-full text-sm">
-          <thead class="bg-gray-400 text-gray-900">
-            <tr>
-              <th class="py-2 px-3 text-left">#</th>
-              <th class="px-3 text-left">NAME</th>
-              <th class="px-3 text-left">EMAIL</th>
-              <th class="px-3 text-left">PHONE NO</th>
-              <th class="px-3 text-left">CREATED-BY</th>
-              <th class="px-3 text-left">CREATED-AT</th>
-              <th class="px-3 text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(contact, index) in filteredItems" :key="contact.id"
-                @click="openModalEdit('editmode', contact.name, contact.email, contact.phoneno,contact.status)"
-                :class="{
-                  'bg-blue-100': selectedRow === index,
-                  'hover:bg-gray-100': selectedRow !== index
-                }" class="border-b">
-              <td class="py-2 px-3">{{ index + 1 }}</td>
-              <td class="px-3">{{ contact.username }}</td>
-              <td class="px-3">{{ contact.email }}</td>
-              <td class="px-3">{{ contact.phoneNumber }}</td>
-              <td class="px-3">{{ contact.createdBy }}</td>
-              <td class="px-3">{{ contact.createdOn }}</td>
-              <td class="px-3"><span class="text-green-500">...</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+ <!-- Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="lg:col-span-2 bg-white rounded shadow overflow-auto">
+    <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap w-1/6">NAME</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">EMAIL</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PHONE NO</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CREATED-BY</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CREATED-ON</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
 
-      <!-- Sidebar -->
 
-   
-  
-         <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
+    <tbody class="divide-y divide-gray-200">
+        <tr    v-for="(contact, index) in filteredItems" :key="contact.id" class="hover:bg-gray-50 transition-colors" >
 
-              <!-- Header Row -->
-    <div class="flex flex-col md:flex-row items-center justify-between bg-gray-100 py-2 px-4 rounded mb-3">
-      <div class="flex items-center gap-3">
-        <span class="text-lg">MESSAGE TEMPLATES</span>
-        <a @click="AddTemplate" class="bg-blue-500 text-white px-3 py-2 rounded-md text-sm font-semibold">
-          ADD TEMPLATE
-        </a>
-      </div>
-    </div>
-    
-       <article class="rounded-xl border  border-gray-400">
-        <ul>
-            <!-- <li v-for="(item, index) in recent.data" :key="index"> -->
-        <li>
-            <a href="#" class="block h-full rounded-lg border border-gray-900 p-1 hover:border-pink-600">
-            <span class="font-medium text-gray-700"></span>
-            <p class="mt-1 text-m text-gray-800">  </p>
-          </a>
-        </li>
-      </ul>
-      </article>
-     </div>
-      
-    </div>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-gray-900 max-w-xs truncate">{{ contact.username }}</div>
+            <!-- <div class="text-xs text-gray-800 max-w-xs truncate">{{ item.productDescription }}</div>  -->
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            {{ contact.email }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ contact.phoneNumber }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+              {{ contact.createdBy }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+            {{ formatDate(contact.createdOn) }}
+          </td>
+          <!-- <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+            <span :class="{
+              'px-2 inline-flex text-xs leading-5 font-semibold rounded-full': true,
+              'bg-green-100 text-green-800': item.status === 'In Stock',
+              'bg-yellow-100 text-yellow-800': item.status === 'Low Stock',
+              'bg-red-100 text-red-800': item.status === 'Out of Stock'
+            }">
+              {{ item.status }}
+            </span>
+          </td> -->
+          <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ item.supplierId }}
+          </td> -->
+          <!-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <div class="flex items-center space-x-2">
+              <button 
+                @click="openModal(item)"
+                class="text-blue-600 hover:text-blue-900 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
+                title="Edit"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
+                </svg>
+              </button>
+              <button 
+                @click="confirmDelete(item)"
+                class="text-red-600 hover:text-red-900 p-1.5 rounded-md hover:bg-red-50 transition-colors"
+                title="Delete"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </td> -->
+        </tr>
+        <tr v-if="contactsStr.length === 0">
+          <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+            <div class="flex flex-col items-center justify-center py-8">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <p class="mt-2 text-sm font-medium text-gray-600">No Contact found</p>
+              <p class="text-xs text-gray-500 mt-1">Try adjusting your search or add a new Contact</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
 
-    <!-- Template Modal -->
-    <div v-if="isModalTempOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-      <div class="bg-white w-full max-w-lg p-4 rounded shadow-lg">
+  <!-- Sidebar -->  <!-- Add Contact -->
+  <div class="col-span-1 bg-gray-100 h-auto rounded-lg">
+      <div class="bg-white w-full max-w-md p-4 rounded shadow-lg">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">
-            {{ Mode === 'addmode' ? 'ADD NEW MESSAGE TEMPLATE' : 'EDIT MESSAGE TEMPLATE' }}
-          </h2>
-          <button @click="closeModal" class="bg-black text-white px-2 rounded">x</button>
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">ADD NEW CONTACT</h2>
         </div>
 
         <div class="space-y-4">
           <div>
-            <label class="block text-sm text-black">Text Header</label>
-            <input type="text" v-model="templateHeader" class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+            <label class="block text-sm text-black">NAME</label>
+            <input type="text" v-model="Name"
+                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
           </div>
           <div>
-            <label class="block text-sm text-black">Enter Body</label>
-            <textarea rows="4" v-model="templateBody" class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" placeholder="Type your message here (max 2000 chars)"></textarea>
+            <label class="block text-sm text-black">PHONE NUMBER</label>
+            <input type="text" v-model="phone"
+                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
           </div>
-        </div>
+           <div>
+            <label class="block text-sm text-black">EMAIL ADDRESS</label>
+            <input type="text" v-model="Email"
+                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
+          </div>
 
-        <div class="mt-4 flex justify-end gap-2">
-          <a v-if="Mode === 'addmode'" @click="Submittemplate"
-             class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Submit</a>
-          <div v-else class="flex gap-2">
-            <a @click="Edittemplate" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Edit</a>
-            <a @click="DisableTemplate" class="bg-gray-600 text-white px-4 py-2 rounded">Delete</a>
-          </div>
+          <button 
+            @click="AddContact" 
+            class=" flex items-center justify-center  px-4 py-2.5 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2
+             focus:ring-blue-400 focus:ring-offset-2 transition-colors"> Add Contact
+          </button>
+
+
         </div>
       </div>
     </div>
+</div>
+
 
     <!-- Excel Upload Modal -->
     <div v-if="isEXCELOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
@@ -133,44 +154,20 @@
       </div>
     </div>
 
-    <!-- Add Contact Modal -->
-    <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-      <div class="bg-white w-full max-w-md p-4 rounded shadow-lg">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-700 text-center w-full">ADD NEW CONTACT</h2>
-          <button @click="closeModal" class="bg-black text-white px-2 rounded">x</button>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm text-black">NAME</label>
-            <input type="text" v-model="Name"
-                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
-          </div>
-          <div>
-            <label class="block text-sm text-black">PHONE NUMBER</label>
-            <input type="text" v-model="phone"
-                   class="w-full rounded-lg p-2 text-sm border border-gray-300 shadow-sm focus:ring focus:ring-black focus:border-black" />
-          </div>
-        </div>
-      </div>
-    </div>
+  
 
   </main>
 </template>
  
  <script>
  import { usecontactstore } from '../store/contactstore';
-//  import { useContactGroupstore } from '../store/ContactGroupstore';
  import { ref, computed, onMounted, watch } from 'vue';
  import Swal from 'sweetalert2';
 //  import * as XLSX from 'xlsx';
- 
+ import { errorState } from '../store/ErrorState';
+
  export default { 
- 
-  
    setup() {
-    //  const Token = ref(localStorage.getItem('token'));
      const isModalOpen = ref(false);
      const Mode = ref('addmode');
      const isEXCELOpen   = ref(false);
@@ -184,67 +181,57 @@
      const Email = ref('');
      let currentPage = ref(1);
      const itemsPerPage = 18; 
-     const templateHeader = ref('');
-     const templateBody = ref('');
-
+    
+     const token = ref('');
 
      const contactStore = usecontactstore();
-   //   const groupstore = useContactGroupstore(); 
-     
-   //   const contGroup = computed(() => groupstore.getData);
+
      const contactsStr = computed(() => contactStore.getData);
      const filteredItems = computed(() => contactStore.filteredContacts);
+
      const Tresponse = computed(()=>contactStore. getsucces);
      //const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPerPage));
 
 
-
+      watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
   
 
-   onMounted(() => {
-     contactStore.fetchContacts();
-   //   groupstore.fetchContactGroup();
+   onMounted(() => { 
+    token.value = localStorage.getItem('token');                      
+    contactStore.fetchContacts(token.value);
     });
 
-
-    const AddTemplate = () => {
-      isModalTempOpen.value= true;
-    }
-
-    const Submittemplate = () => {
-
-      if(templateHeader.value == " " || templateHeader.value == undefined){
-       showalertdialog("error", "header is required");
-       return;
-      } 
-     else if(templateBody.value == " " || templateBody.value == undefined){
-       showalertdialog("error", "body no is required");
-       return;
-     } 
+    
   
-     else{
+
+  const formatDate =(dateString)=> {
+    const cleanDateString = dateString.replace(/(\.\d{3})\d+/, '$1');
+    const date = new Date(cleanDateString);
+    return date.toISOString().split('T')[0];
+  }
+
+  const DisplayMessage = (icon, message) => {
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+    })
+  }
 
 
-
-         const data = {
-           contacts:[{
-               header: templateHeader.value,
-               body: templateBody.value,
-               status: 1,
-           }]
-         }
-       try{
-         contactStore.AddNewTemplate(data);
-           contactStore.fetchTemplate(); //reload dataS
-       }
-       catch(error){
-         console.log(error);
-       }
-      }
-     
-
-
-    }
+  
     // const isModalTempOpen
      // paginate filtered items
   //  const paginatedContacts = computed(() => {
@@ -264,40 +251,116 @@
 
      
        // Watch the Tresponse and trigger SweetAlert when the response changes
-   watch(Tresponse, (newValue) => {
-     if (newValue && typeof newValue === 'object') {
-     // SweetAlert for success
-       if (newValue.success) {
-         Swal.fire({
-           position: 'top-end',
-           icon: 'success',
-           // title: 'Contact Group added by successfully',
-           title: newValue.msg,
-           showConfirmButton: false,
-           timer: 2500,
-         });
-       }
-         // SweetAlert for failure
-       else {
-         Swal.fire({
-           position: 'top-end',
-           icon: 'error',
-           title: newValue.msg,
-           // title: 'Failed to add Contact Group',
-           showConfirmButton: false,
-           timer: 2500,
-         });
-       }
-     }
-   });
+
+  //  watch(Tresponse, (newValue) => {
+  //    if (newValue && typeof newValue === 'object') {
+  //    // SweetAlert for success
+  //      if (newValue.success) {
+  //        Swal.fire({
+  //          position: 'top-end',
+  //          icon: 'success',
+  //          // title: 'Contact Group added by successfully',
+  //          title: newValue.msg,
+  //          showConfirmButton: false,
+  //          timer: 2500,
+  //        });
+  //      }
+  //        // SweetAlert for failure
+  //      else {
+  //        Swal.fire({
+  //          position: 'top-end',
+  //          icon: 'error',
+  //          title: newValue.msg,
+  //          // title: 'Failed to add Contact Group',
+  //          showConfirmButton: false,
+  //          timer: 2500,
+  //        });
+  //      }
+  //    }
+  //  });
    
     //function to handle contact list search
-   const updateSearch = (e) => { 
+  
+    const updateSearch = (e) => { 
      currentPage.value = 1;
        contactStore.setSearchTerm(e.target.value);
    };
 
-     //function to handle file upload
+  
+
+ 
+     // Function to add a single contact 
+   const AddContact = () => {   
+      if(Name.value == " " || Name.value == undefined){
+       DisplayMessage("error", "name is required");
+       return;
+      } 
+     else if(phone.value == " " || phone.value == undefined){
+       DisplayMessage("error", "phone no is required");
+       return;
+     } 
+     else if(Email.value == " " || Email.value == undefined){
+       DisplayMessage("error", "Email is required");
+       return;
+     }
+     else{
+    const data = {
+      contact:[{
+          ClientID: generateUnique6DigitCode(),
+          Username: Name.value,
+          PhoneNumber: phone.value,
+          Email: Email.value,
+      }]
+         }
+       try{
+         contactStore.AddNewContacts(data,token.value);
+           closeModal(); 
+           contactStore.fetchContacts(); //reload dataS
+       }
+       catch(error){
+         console.log(error);
+       }
+      }
+     }
+
+ 
+  
+
+    const CloseExcel = () => {
+        isEXCELOpen.value = false;
+     }
+
+
+    const OpenExcel = () => {
+        isEXCELOpen.value = true;
+    }
+     
+
+       //open modal for editing contacts
+     const openModalEdit = (mode, name, email,phoneno, status, group) => { 
+       const stat = status;
+       const statusBoolean = stat === 'A  ctive'; 
+
+       isModalOpen.value = true;
+       Mode.value = mode;
+       Name.value = name,
+       phone.value =phoneno;
+       contactgroup.value =group,
+       Email.value  = email;
+       contactstatus.value =statusBoolean
+       console.log(statusBoolean);
+       }
+
+
+    const  generateUnique6DigitCode =()=>{
+     const timestamp = Date.now().toString();
+     const uniqueNumber = timestamp.slice(-6); 
+     const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); 
+     return randomLetter + uniqueNumber; 
+    }
+
+
+      //function to handle file upload
    const handleFileUpload = (event) => {
        const file = event.target.files[0];
        const reader = new FileReader();
@@ -355,7 +418,7 @@
      });
    }; 
 
-   // submit  or save contact list in excel file
+     // submit  or save contact list in excel file
    const submitExceldata = async () => {
      validateExcel(); // Validate before submission
 
@@ -376,128 +439,22 @@
        }
    } 
 
-     // Function to add a single contact 
-     const AddContact = () => {   
-
-      if(Name.value == " " || Name.value == undefined){
-       showalertdialog("error", "name is required");
-       return;
-      } 
-     else if(phone.value == " " || phone.value == undefined){
-       showalertdialog("error", "phone no is required");
-       return;
-     } 
-     else if(Email.value == " " || Email.value == undefined){
-       showalertdialog("error", "Email is required");
-       return;
-     }
-     else{
-
-
-
-         const data = {
-           contacts:[{
-             clientid: generateUnique6DigitCode(),
-               groupName: contactgroup.value,
-               name: Name.value,
-               mobile: phone.value,
-               email: Email.value,
-               status: 1,
-           }]
-         }
-       try{
-         contactStore.AddNewContacts(data);
-           closeModal(); 
-           contactStore.fetchContacts(); //reload dataS
-       }
-       catch(error){
-         console.log(error);
-       }
-      }
-     }
-
- 
-     
- 
-     const openModal = () => { 
-       Mode.value = "addmode";
-       Name.value = " ",
-       phone.value = " ";
-       contactgroup.value =" ",
-       Email.value  = " ";
-       isModalOpen.value = true;
-     };
-
-     const closeModal = () => {
-       isModalOpen.value = false;
-     };
-
-     //close excel upload modal
-     const CloseExcel = () => {
-        isEXCELOpen.value = false;
-     }
-
-     //open excel upload modal 
-     const OpenExcel = () => {
-        isEXCELOpen.value = true;
-    }
-     
-
-       //open modal for editing contacts
-     const openModalEdit = (mode, name, email,phoneno, status, group) => { 
-       const stat = status;
-       const statusBoolean = stat === 'A  ctive'; 
-
-       isModalOpen.value = true;
-       Mode.value = mode;
-       Name.value = name,
-       phone.value =phoneno;
-       contactgroup.value =group,
-       Email.value  = email;
-       contactstatus.value =statusBoolean
-       console.log(statusBoolean);
-       }
-
-    const  generateUnique6DigitCode =()=>{
-
-     const timestamp = Date.now().toString();
-     const uniqueNumber = timestamp.slice(-6); // Get the last 6 digits
-     const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // Generate a random letter A-Z
-     return randomLetter + uniqueNumber; 
-    }
-
-
-
-     const showalertdialog = (icon,resp) => {
-         Swal.fire({
-           position: "top-end",
-           icon:  icon,
-           title: resp,
-           showConfirmButton: false,
-           timer: 1500
-         });
-   };
  
      return {
        filteredItems,
        updateSearch,
        AddContact,
        generateUnique6DigitCode,
-       openModal,
-       closeModal,
        isModalOpen,
        contactgroup,
        contactsStr,
        isModalTempOpen,
-      //  contGroup ,
        openModalEdit,
        Mode,
-       showalertdialog,
        Tresponse,
        contactstatus,
-       Submittemplate,
-       
-
+       DisplayMessage,
+      formatDate,
        Name,
        phone,
        Email,
@@ -510,7 +467,7 @@
        validateExcel,
        submitExceldata,
        ContactsExcel,
-       AddTemplate,
+       token   ,           
 
 
      

@@ -22,9 +22,9 @@ getters: {
 
    actions: { 
 
-    fetchCatalogue() {
+    fetchCatalogue(token) {
       this.loading = true;
-      axios.getcatalogue()
+      axios.getcatalogue(token)
            .then(response=> {
             this.data = response;
             this.loading = false;

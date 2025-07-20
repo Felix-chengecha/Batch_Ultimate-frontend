@@ -125,46 +125,73 @@
   </div>
 </template>
 
-<script>
-import {useCatalogueStore} from '../store/catalogueStore'
-import { computed, onMounted } from 'vue';
 
-export default {
-  setup() { 
-    const CatalogStore = useCatalogueStore();
-    const data = computed(() => CatalogStore.getData); 
+    
+    
+    
+    <script>
+    import {useCatalogueStore} from '../store/catalogueStore'
+    import Swal from 'sweetalert2'; 
+    import { computed,ref,onMounted,watch } from 'vue';
+    import { errorState } from '../store/ErrorState';
 
-    const formatCurrency = (value) => {
-      return parseFloat(value || 0).toFixed(2);
+    
+    export default {
+      setup() { 
+         const CatalogStore  = useCatalogueStore();
+
+         const filtereddata = CatalogStore .filteredData;
+
+         const data = computed(() => CatalogStore.getData);  
+         
+    watch(() => errorState.message, (newVal) => {
+			 if (newVal) {
+			   ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
+			 }
+		    }) 
+
+      onMounted(()=>{ 
+        let token = localStorage.getItem('token');
+        CatalogStore.fetchCatalogue(token);
+        });
+
+  const DisplayMessage = (icon, message) => {
+      Swal.fire({
+        position: 'center',
+        icon: icon,
+        title: message,
+        showConfirmButton: false,
+        timer: 1500,
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          left top
+          no-repeat
+        `
+      })
+    }
+
+    const ErrorMessage = (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+        confirmButtonColor: '#3b82f6',
+      })
+    } 
+
+            const formatCurrency = (value) => {
+              return parseFloat(value || 0).toFixed(2);
+            };
+
+
+        return {
+          CatalogStore,
+          formatCurrency,
+          data,  
+          DisplayMessage,
+          ErrorMessage
+           }        
+      }
     };
-
-    onMounted(() => {
-      CatalogStore.fetchCatalogue();
-    });
-
-    return {
-      CatalogStore,
-      data,
-      formatCurrency
-    }   
-  }
-};
-</script>
-
-<style>
-/* Custom scrollbar for table */
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
-}
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 10px;
-}
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-</style>
+    </script>

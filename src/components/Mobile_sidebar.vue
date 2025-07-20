@@ -12,68 +12,68 @@
 
       <ul class="space-y-3 mt-8">
         <li>
-          <router-link to="/" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-home mr-3"></i> Dashboard
+          <router-link to="/" @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-home mr-3"></i> Dashboard
           </router-link>
         </li>
         <li>
-          <router-link to="/inventory" class="flex items-center text-white hover:text-gray-300">
+          <router-link to="/inventory" @click.native="closeSidebar"  class="flex items-center text-white hover:text-gray-300">
             <i class="fas fa-box-open mr-3"></i> Inventory
           </router-link>
         </li>
         <li>
-          <router-link to="/catalogue" class="flex items-center text-white hover:text-gray-300">
+          <router-link to="/catalogue" @click.native="closeSidebar"  class="flex items-center text-white hover:text-gray-300">
             <i class="fas fa-box mr-3"></i> Catalogue
           </router-link>
         </li>
         <li>
-          <router-link to="/categories" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-tags mr-3"></i> Categories
+          <router-link to="/categories" @click.native="closeSidebar"  class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-tags mr-3"></i> Categories
           </router-link>
         </li>
         <li>
-          <router-link to="/sell" class="flex items-center text-white hover:text-gray-300">
+          <router-link to="/sell" @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300">
             <i class="fas fa-paper-plane mr-3"></i> Sell
           </router-link>
         </li>
         <li>
-          <router-link to="/transactions" class="flex items-center text-white hover:text-gray-300">
+          <router-link to="/transactions" @click.native="closeSidebar" lass="flex items-center text-white hover:text-gray-300">
             <i class="fas fa-receipt mr-3"></i> Transactions
           </router-link>
         </li>
         <li>
-          <router-link to="/documents" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-file-alt mr-3"></i> Documents
+          <router-link to="/documents" @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-file-alt mr-3"></i> Documents
           </router-link>
         </li>
         <li>
-          <router-link to="/contacts" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-address-book mr-3"></i> Contacts
+          <router-link to="/contacts" @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-address-book mr-3"></i> Contacts
           </router-link>
         </li>
         <li>
-          <router-link to="/SendSms" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-comment-alt mr-3"></i> Send SMS
+          <router-link to="/SendSms" @click.native="closeSidebar"  class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-comment-alt mr-3"></i> Send SMS
           </router-link>
         </li>
         <li>
-          <router-link to="/SentMessages" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-paper-plane mr-3"></i> Sent Messages
+          <router-link to="/SentMessages"  @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300 " >
+            <i   class="fas fa-paper-plane mr-3"></i> Sent Messages
           </router-link>
         </li>
         <li>
-          <router-link to="/reports" class="flex items-center text-white hover:text-gray-300">
+          <router-link to="/reports" @click.native="closeSidebar"  class="flex items-center text-white hover:text-gray-300">
             <i class="fas fa-chart-line mr-3"></i> Reports
           </router-link>
         </li>
         <li>
-          <router-link to="/Supplier" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-truck mr-3"></i> Suppliers
+          <router-link to="/Supplier" @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-truck mr-3"></i> Suppliers
           </router-link>
         </li>
         <li>
-          <router-link to="/account" class="flex items-center text-white hover:text-gray-300">
-            <i class="fas fa-address-book mr-3"></i> My Account
+          <router-link to="/account" @click.native="closeSidebar" class="flex items-center text-white hover:text-gray-300">
+            <i  class="fas fa-address-book mr-3"></i> My Account
           </router-link>
         </li>
       </ul>
