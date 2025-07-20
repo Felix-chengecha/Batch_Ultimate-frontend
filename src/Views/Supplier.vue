@@ -377,14 +377,9 @@
 <script>
 import { useRoute } from 'vue-router';
 import { useSuppliersStore } from '../store/SuppliersStore';
-<<<<<<< HEAD
-import { computed, onMounted, ref } from 'vue';
-import Swal from 'sweetalert2';
-=======
 import {UseInventoryStore} from '../store/InventoryStore'
 import {computed, onMounted, watch, ref} from 'vue';
 import { errorState } from '../store/ErrorState';
->>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
 
 export default {
   setup() {
@@ -433,10 +428,6 @@ export default {
       return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
-<<<<<<< HEAD
-    const supplierSearch = (e) => {
-      suppliersstore.setSearchSupplier(searchQuery.value);
-=======
    watch(() => errorState.message, (newVal) => {
 			 if (newVal) {
 			   DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
@@ -502,7 +493,6 @@ export default {
 
      const supplierSearch = (e) => {
       suppliersstore.setSearchSupplier(e.target.value);
->>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
     }; 
 
     const openModal = (supplier) => {

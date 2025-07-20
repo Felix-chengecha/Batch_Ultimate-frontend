@@ -2,15 +2,11 @@
   <div class="rounded-xl border border-gray-200 bg-white h-full p-4 shadow-sm">
     <!-- Header & Search Controls -->
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-<<<<<<< HEAD
-      <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">My Inventory</h2>
-=======
       <div>
         <h1 class="text-2xl font-bold text-gray-800">Inventory list</h1>
         <p class="text-sm text-gray-500 mt-1">A list of all inventory</p>
       </div>
 
->>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
       <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
         <input 
           v-model="searchQuery" 
@@ -81,11 +77,7 @@
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-<<<<<<< HEAD
-            {{ item.supplierId }}
-=======
             {{ item.supplier?.supplierName  }}
->>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div class="flex items-center space-x-2">
@@ -214,19 +206,13 @@
             />
           </div>
 
-<<<<<<< HEAD
-          <div class="space-y-1">
-=======
           <!-- <div class="space-y-1">
->>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
             <label class="block text-sm font-medium text-gray-700">Product Buying Date</label>
             <input 
               v-model="pbuyingdate" 
               type="date" 
               class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
             />
-<<<<<<< HEAD
-=======
           </div> -->
            <div class="space-y-1">
             <label class="block text-sm font-medium text-gray-700">Supplier <span class="text-red-500">*</span></label>
@@ -239,7 +225,6 @@
                 {{ option.supplierName }}
               </option>
             </select>
->>>>>>> a11e5c03aaba628dbb20773938f2da07d8175859
           </div>
 
           <div class="col-span-1 md:col-span-2 space-y-1">
@@ -276,203 +261,146 @@
   </div>
 </template>
     
-    <script>
-    import {UseInventoryStore} from '../store/InventoryStore'
-    import {useCategoryStore} from '../store/categoryStore'
-    import Swal from 'sweetalert2';
-    import axios from '../axios';
-    import { ref,onMounted, watch,computed } from 'vue';
-    import { errorState } from '../store/ErrorState';
-    import { useSuppliersStore } from '../store/SuppliersStore';
-    export default {
-      setup() {
-  
+   <script>
+import {UseInventoryStore} from '../store/InventoryStore'
+import {useCategoryStore} from '../store/categoryStore'
+import Swal from 'sweetalert2';
+import axios from '../axios';
+import { ref,onMounted, watch,computed } from 'vue';
+import { errorState } from '../store/ErrorState';
+import { useSuppliersStore } from '../store/SuppliersStore';
 
-        //properties 
-        // const pname   = ref('');
-        // const pcost   = ref('');
-        const Pvat = ref('');
-        const punit = ref('');
-        const pname   = ref('');
-        const pcost   = ref('');
-        const pbuyingprice  = ref('');
-        const pbuyingdate  = ref('');
-        const pdescription  = ref('');
-        const pcategory = ref('');
-        const supplier = ref('');
-        const submitSuccess = ref('');
-        const PNoItems = ref('');
-        const isModalOpen = ref(false); 
-        const token = ref('your-auth-token'); 
-        const suppliersstore = useSuppliersStore();
-       
-        //store  properties
-        const inventorystore  = UseInventoryStore();
-        const CategoryStore  = useCategoryStore();
+export default {
+  setup() {
+    //properties 
+    const Pvat = ref('');
+    const punit = ref('');
+    const pname = ref('');
+    const pcost = ref('');
+    const pbuyingprice = ref('');
+    const pbuyingdate = ref('');
+    const pdescription = ref('');
+    const pcategory = ref('');
+    const supplier = ref('');
+    const submitSuccess = ref('');
+    const PNoItems = ref('');
+    const isModalOpen = ref(false); 
+    const token = ref('your-auth-token'); 
+    const suppliersstore = useSuppliersStore();
+    const searchQuery = ref('');
+    const currentProduct = ref(null);
 
-        const data = computed(() => inventorystore.getData);
-        const categ = computed(() => CategoryStore.getData);
-        const filteredProducts = computed(() => inventorystore.filterProducts); 
-        const supplierdata  = computed(()=>suppliersstore.filterSuppliers);
+    //store properties
+    const inventorystore = UseInventoryStore();
+    const CategoryStore = useCategoryStore();
 
-         watch(() => errorState.message, (newVal) => {
-          if (newVal) {
-            DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-          }
-		    });
-     
+    const data = computed(() => inventorystore.getData);
+    const categ = computed(() => CategoryStore.getData);
+    const filteredProducts = computed(() => inventorystore.filterProducts); 
+    const supplierdata = computed(() => suppliersstore.filterSuppliers);
 
-        watch(() =>  inventorystore.getResponse, (newval) => {
-            if (newval.status == 200) { 
-               DisplayMessage("success", newval.statusMessage);
-            } 
-            else{
-              DisplayMessage("error", newval.statusMessage);
-            }
+    watch(() => errorState.message, (newVal) => {
+      if (newVal) {
+        DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
+      }
+    });
 
-        });
-		    
-        const formatCurrency = (value) => {
-              return parseFloat(value || 0).toFixed(2);
-            };
- 
-        const productSearch = (e) => {
-        inventorystore.setSearchProduct(e.target.value);
-        }; 
+    watch(() => inventorystore.getResponse, (newval) => {
+      if (newval.status == 200) { 
+        DisplayMessage("success", newval.statusMessage);
+      } 
+      else {
+        DisplayMessage("error", newval.statusMessage);
+      }
+    });
 
-        //add product modal
-        const openModal = () => { 
-          console.log("open")
-          isModalOpen.value = true;
-        };
-        
-        const closeModal = () => {
-          isModalOpen.value = false;
-        };
+    const formatCurrency = (value) => {
+      return parseFloat(value || 0).toFixed(2);
+    };
 
-        //fetch all records on load from the store
-        onMounted(()=>{ 
-           let token = localStorage.getItem('token'); 
-           inventorystore.getallproducts(token);
-           CategoryStore.fetchCategories(token);
-           suppliersstore.getallSupliers()
-        });
+    const productSearch = (e) => {
+      inventorystore.setSearchProduct(e.target.value);
+    }; 
+
+    const openModal = (product) => { 
+      currentProduct.value = product;
+      if (product) {
+        // Populate fields if editing
+        pname.value = product.productName;
+        pdescription.value = product.productDescription;
+        punit.value = product.Weight_Volume;
+        pcategory.value = product.categoryID;
+        pbuyingprice.value = product.buyingPrice;
+        pcost.value = product.sellingPrice;
+        PNoItems.value = product.quantity;
+        supplier.value = product.supplier?.supplierId;
+      } else {
+        // Reset fields if adding new
+        pname.value = '';
+        pdescription.value = '';
+        punit.value = '';
+        pcategory.value = '';
+        pbuyingprice.value = '';
+        pcost.value = '';
+        PNoItems.value = '';
+        supplier.value = '';
+      }
+      isModalOpen.value = true;
+    };
     
+    const closeModal = () => {
+      isModalOpen.value = false;
+    };
 
-      //add new product to inventory
-       const addinventory = () => {
-        const part1 = pname.value.substring(0, 3);
-        const part2 = pname.value.slice(-3);
+    const confirmDelete = (product) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          inventorystore.deleteProduct(product.productID);
+          Swal.fire(
+            'Deleted!',
+            'Your product has been deleted.',
+            'success'
+          )
+        }
+      })
+    };
 
-         try{  
-          if(!Validation()){
+    //add new product to inventory
+    const addinventory = () => {
+      try {  
+        if(!Validation()) {
           return false;
         }
-            const postData = {
-                productName: pname.value,
-                productDescription: pdescription.value,
-                Weight_Volume :punit.value,
-                categoryID: pcategory.value,
-                buyingPrice: pbuyingprice.value,
-                sellingPrice: pcost.value,
-                quantity: PNoItems.value,
-                supplier: supplier.value
-              };
-            
-              inventorystore.AddnewProduct(postData); 
-
-         } catch(error){
-          DisplayMessage("Error", error);
-        }
-      }
-
-      const DisplayMessage=(icon,message) => {
-             closeModal();
-          inventorystore.getallproducts();
-               pname.value= "";
-               pdescription.value= "";
-               punit.value= "";
-               pcategory.value= "";
-               pbuyingprice.value= "";
-               pcost.value= "";
-               PNoItems.value= "";
-
-        Swal.fire({
-            position: "top-end",
-            icon: icon,
-            title: message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-       }
-
-      const Validation = () => { 
-
-        let isNumeric = /^\d+$/;
-          if( pname.value.trim() === "" && pdescription.value.trim() === "" && punit.value.trim() === "" &&  pcategory.value.trim() === "" && supplier.value.trim() ==="" && pbuyingprice.value.trim() === ""   &&  pcost.value.trim() === ""   &&  PNoItems.value.trim() === "" ) {
-            DisplayMessage("error", "!!error please fill all the fields");
-            return false;     
-          }
-          else if (!isNumeric.test(pbuyingprice.value) ) {
-            DisplayMessage("error", "!!error buying price should be numeric");
-          return false;  
-         }
-       
-         else if (!isNumeric.test(pcost.value)) {
-           DisplayMessage("error", "!!error product cost should be numeric");
-           return false;  
-          }
-
-         else if(!isNumeric.test(PNoItems.value) ) {
-           DisplayMessage("error", "!!error No of items should be numeric");
-          return false;  
-          }  
-
-        //else{
-          return true;
-        // }
-
-        }
-
-
-    
-   
-       
-        
-        return {
-      
-        pname,
-        pcost,
-        pbuyingprice,
-        pbuyingdate,
-        pdescription,
-        PNoItems,
-        pcategory,
-        supplier,
-        data,
-        Pvat,
-        punit,
-        addinventory,
-        openModal,
-        closeModal,
-        isModalOpen,
-        CategoryStore,
-        categ,
-        productSearch,
-        filteredProducts,
-        formatCurrency,
-        supplierdata
-        // filtereddata
+        const postData = {
+          productName: pname.value,
+          productDescription: pdescription.value,
+          Weight_Volume: punit.value,
+          categoryID: pcategory.value,
+          buyingPrice: pbuyingprice.value,
+          sellingPrice: pcost.value,
+          quantity: PNoItems.value,
+          supplier: supplier.value
         };
+        
+        inventorystore.AddnewProduct(postData); 
+      } catch(error) {
+        DisplayMessage("Error", error);
       }
-    };
+    }
 
     const updateProduct = () => {
       try {  
-        if (!Validation()) {
+        if(!Validation()) {
           return false;
         }
-        
         const postData = {
           productID: currentProduct.value.productID,
           productName: pname.value,
@@ -482,53 +410,18 @@
           buyingPrice: pbuyingprice.value,
           sellingPrice: pcost.value,
           quantity: PNoItems.value,
-          supplier: "0197b829-6d97-7540-9ab2-89913ebf9742"
+          supplier: supplier.value
         };
         
         inventorystore.updateProduct(postData);
-        setTimeout(() => {
-          DisplayMessage("success", "Product updated successfully");
-        }, 2000); 
-
       } catch(error) {
-        DisplayMessage("error", error);
-      }
-    };
-
-    //add new product to inventory
-    const addinventory = () => {
-      const part1 = pname.value.substring(0, 3);
-      const part2 = pname.value.slice(-3);
-
-      try {  
-        if (!Validation()) {
-          return false;
-        }
-        
-        const postData = {
-          productName: pname.value,
-          productDescription: pdescription.value,
-          Weight_Volume: punit.value,
-          categoryID: pcategory.value,
-          buyingPrice: pbuyingprice.value,
-          sellingPrice: pcost.value,
-          quantity: PNoItems.value,
-          supplier: "0197b829-6d97-7540-9ab2-89913ebf9742"
-        };
-        
-        inventorystore.AddnewProduct(postData);
-        setTimeout(() => {
-          DisplayMessage("success", inventorystore.successmsg)
-        }, 2000); 
-
-      } catch(error) {
-        DisplayMessage("error", error);
+        DisplayMessage("Error", error);
       }
     }
 
     const DisplayMessage = (icon, message) => {
       closeModal();
-      inventorystore.getallproducts();
+      inventorystore.getallproducts(token.value);
       pname.value = "";
       pdescription.value = "";
       punit.value = "";
@@ -547,34 +440,35 @@
     }
 
     const Validation = () => { 
-      if (pname.value.trim() === "" || 
-          pcategory.value.trim() === "" || 
-          pbuyingprice.value.trim() === "" || 
-          pcost.value.trim() === "" || 
-          PNoItems.value.trim() === "") {
-        DisplayMessage("error", "Please fill all required fields");
+      let isNumeric = /^\d+$/;
+      if(pname.value.trim() === "" || pdescription.value.trim() === "" || punit.value.trim() === "" || 
+         pcategory.value.trim() === "" || supplier.value.trim() === "" || pbuyingprice.value.trim() === "" || 
+         pcost.value.trim() === "" || PNoItems.value.trim() === "") {
+        DisplayMessage("error", "!!error please fill all the fields");
         return false;     
       }
-      else if (isNaN(pbuyingprice.value)) {
-        DisplayMessage("error", "Buying price should be numeric");
+      else if(!isNumeric.test(pbuyingprice.value)) {
+        DisplayMessage("error", "!!error buying price should be numeric");
         return false;  
       }
-      else if (isNaN(pcost.value)) {
-        DisplayMessage("error", "Product cost should be numeric");
+      else if(!isNumeric.test(pcost.value)) {
+        DisplayMessage("error", "!!error product cost should be numeric");
         return false;  
       }
-      else if (isNaN(PNoItems.value)) {
-        DisplayMessage("error", "No of items should be numeric");
+      else if(!isNumeric.test(PNoItems.value)) {
+        DisplayMessage("error", "!!error No of items should be numeric");
         return false;  
       }  
 
       return true;
     }
 
-    // Lifecycle hooks
-    onMounted(() => {
-      inventorystore.getallproducts();
-      CategoryStore.fetchCategories();
+    //fetch all records on load from the store
+    onMounted(() => { 
+      let token = localStorage.getItem('token'); 
+      inventorystore.getallproducts(token);
+      CategoryStore.fetchCategories(token);
+      suppliersstore.getallSupliers();
     });
 
     return {
@@ -585,6 +479,7 @@
       pdescription,
       PNoItems,
       pcategory,
+      supplier,
       data,
       Pvat,
       punit,
@@ -600,12 +495,13 @@
       categ,
       productSearch,
       filteredProducts,
-      formatDate,
-      formatCurrency
+      formatCurrency,
+      supplierdata
     };
   }
 };
 </script>
+
 
 <style>
 /* Custom scrollbar for modal */
