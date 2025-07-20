@@ -491,39 +491,67 @@ export default {
       }
     };
 
-    const handleExport = () => {
+    const handleExport = async() => {
       if (filteredData.value.length === 0) {
         Swal.fire({
           icon: 'warning',
-          title: 'No Data to Export',
+          title: 'No Data to Print',
           text: 'Please generate a report first.',
           confirmButtonColor: '#3b82f6',
         });
-        return;
+        return false;
+      }else{
+
+        //Get Parameters Dynamically
+
+
+        //Define RequestData
+        var requestData = {
+          reportType : reportType.value,
+          format : "xlsx",
+          parameters : {
+          }
+        }
+        // Set parameters based on report type
+        if (reportType.value === "Sales Report") {
+          requestData.parameters = {
+            fromDate: fromDate.value,
+            toDate: toDate.value
+          };
+        } else if (reportType.value === "Product Report") {
+          requestData.parameters = {
+            productType: productType.value
+          };
+        } else if (reportType.value === "Customer Report") {
+          requestData.parameters = {
+            customerName: customerName.value
+          };
+        } else if (reportType.value === "Stock Alert Report") {
+          requestData.parameters = {
+            lowStockThreshold: lowStockThreshold.value,
+            format : requestData.format
+          };
+        }
+
+        //pass request to backend
+        try{
+          const response = await ReportStore.ExportReportData(requestData);
+          alert("Your report has been generated and downloaded successfully.");
+          return true;
+        }catch(error){
+          Swal.fire({
+            icon: 'error',
+            title: 'Download Failed',
+            text: error.message || 'An error occurred while downloading the report.',
+            confirmButtonColor: '#e11d48'
+          });
+
+          return false;
+        }
+        
+
+
       }
-      
-      // CSV export implementation
-      const headers = Object.keys(filteredData.value[0]);
-      const csvContent = [
-        headers.join(','),
-        ...filteredData.value.map(row => 
-          headers.map(field => 
-            `"${String(row[field] || '').replace(/"/g, '""')}"`
-          ).join(',')
-        )
-      ].join('\n');
-      
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      
-      link.setAttribute('href', url);
-      link.setAttribute('download', `${reportType.value.replace(' ', '_')}_${new Date().toISOString().slice(0, 10)}.csv`);
-      link.style.visibility = 'hidden';
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     };
 
     const resetFilters = () => {
@@ -610,3 +638,4 @@ input:focus, select:focus, button:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
 }
 </style>
+

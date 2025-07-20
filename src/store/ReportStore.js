@@ -33,15 +33,32 @@ export const useReportStore = defineStore('ReportStore', {
         this.success = false;
         this.error = null;
 
-        var response = await axios.exportReportData(postData);
+        
+        const format = postData.format?.toLowerCase() || 'pdf';
+        let mimeType = '';
+        let fileExtension = '';
+
+        if(format === 'pdf'){
+          mimeType = "application/pdf";
+          fileExtension = ".pdf";
+        }else if(format === 'xlsx'){
+          mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+           fileExtension = ".xlsx";
+        }else{
+          mimeType = "application/octet-stream"
+          fileExtension ='';
+        }
+
+        var response = await axios.exportReportData(postData,mimeType);
+
 
         //create a downloadable file
-        const blob = new Blob([response.data],{type : "application/pdf"});
+        const blob = new Blob([response.data],{type : mimeType});
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
 
-        link.setAttribute('download',postData.reportType.replace(/\s/g,'')+'.pdf');
+        link.setAttribute('download',postData.reportType.replace(/\s/g,'')+ fileExtension);
 
         document.body.appendChild(link);
         link.click();
@@ -58,6 +75,8 @@ export const useReportStore = defineStore('ReportStore', {
 
       }
     },
+
+
 
     clearReportData() {
       this.reportData = [];

@@ -143,11 +143,11 @@ getRecentSalesData() {
   });
 },
 
-exportReportData(postData){
+exportReportData(postData,mimeType){
   return apiClient.post('/Reports/JasperReports',postData,{
     headers : {
       Authorization: `Bearer ${token}`,
-      Accept : "application/pdf",
+      Accept : mimeType,
     },
     responseType : 'blob'
   })
