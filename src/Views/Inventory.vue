@@ -69,11 +69,11 @@
           <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
             <span :class="{
               'px-2 inline-flex text-xs leading-5 font-semibold rounded-full': true,
-              'bg-green-100 text-green-800': item.status === 'In Stock',
-              'bg-yellow-100 text-yellow-800': item.status === 'Low Stock',
-              'bg-red-100 text-red-800': item.status === 'Out of Stock'
+              'bg-green-100 text-green-800': item.status === true && item.quantity > 10 ,
+              'bg-yellow-100 text-yellow-800': item.status === true && item.quantity < 10,
+              'bg-red-100 text-red-800': item.status === false
             }">
-              {{ item.status }}
+              {{ item.status === false ? 'Out Of Stock' : item.quantity < 10 ? 'LowStock' : "InStock" }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -143,22 +143,37 @@
             <label class="block text-sm font-medium text-gray-700">Product Name <span class="text-red-500">*</span></label>
             <input 
               v-model="pname" 
-              type="text" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
+              :ref="fieldRefs.pname"
+              @input="validateForm"
+              type="text"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.pname ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-400 focus:border-blue-400 '
+               ]"
             />
+            <p v-if="errors.pname" class="text-sm text-red-600">{{ errors.pname }}</p>
           </div>
 
           <div class="space-y-1">
             <label class="block text-sm font-medium text-gray-700">Product Category <span class="text-red-500">*</span></label>
             <select 
               v-model="pcategory" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+               :ref="fieldRefs.pcategory"
+              @change="validateForm"
+              type="text"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.pcategory ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-400 focus:border-blue-400 '
+               ]"
             >
               <option value="" disabled selected>Select a category</option>
               <option v-for="option in categ" :key="option.categoryID" :value="option.categoryID">
                 {{ option.categoryName }}
               </option>
             </select>
+
+            <p v-if="errors.pcategory" class="text-sm text-red-600">{{ errors.pcategory }}</p>
+
           </div>
 
           <div class="space-y-1">
@@ -166,8 +181,14 @@
             <input 
               v-model="PNoItems" 
               type="number" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
+               :ref="fieldRefs.PNoItems"
+              @input="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.PNoItems ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-400 focus:border-blue-400 '
+               ]"
             />
+            <p v-if="errors.PNoItems" class="text-sm text-red-600">{{ errors.PNoItems }}</p>
           </div>
 
           <div class="space-y-1">
@@ -175,7 +196,12 @@
             <input 
               v-model="punit" 
               type="text" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
+              :ref="fieldRefs.punit"
+              @input="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.punit ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-400 focus:border-blue-400 '
+               ]"
             />
           </div>
 
@@ -184,8 +210,14 @@
             <input 
               v-model="Pvat" 
               type="number" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
+              :ref="fieldRefs.Pvat"
+              @input="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.Pvat ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-400 focus:border-blue-400 '
+               ]"
             />
+            <p v-if="errors.Pvat" class="text-sm text-red-600">{{ errors.Pvat }}</p>
           </div>
 
           <div class="space-y-1">
@@ -193,8 +225,14 @@
             <input 
               v-model="pcost" 
               type="number" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
+              :ref="fieldRefs.pcost"
+              @input="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.pcost ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-400 focus:border-blue-400 '
+               ]"
             />
+            <p v-if="errors.pcost" class="text-sm text-red-600">{{ errors.pcost }}</p>
           </div>
 
           <div class="space-y-1">
@@ -202,8 +240,14 @@
             <input 
               v-model="pbuyingprice" 
               type="number" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
+              :ref="fieldRefs.pbuyingprice"
+              @input="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.pbuyingprice ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-100 focus:border-blue-100 '
+               ]"
             />
+            <p v-if="errors.pbuyingprice" class="text-sm text-red-600">{{ errors.pbuyingprice }}</p>
           </div>
 
           <!-- <div class="space-y-1">
@@ -218,13 +262,19 @@
             <label class="block text-sm font-medium text-gray-700">Supplier <span class="text-red-500">*</span></label>
             <select 
               v-model="supplier" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+              :ref="fieldRefs.supplier"
+              @change="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.supplier ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-100 focus:border-blue-100 '
+               ]"
             >
               <option value="" disabled selected>Select a Supplier</option>
               <option v-for="option in supplierdata" :key="option.supplierId" :value="option.supplierId">
                 {{ option.supplierName }}
               </option>
             </select>
+            <p v-if="errors.supplier" class="text-sm text-red-600">{{ errors.supplier }}</p>
           </div>
 
           <div class="col-span-1 md:col-span-2 space-y-1">
@@ -232,10 +282,18 @@
             <textarea 
               v-model="pdescription" 
               rows="3" 
-              class="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+              :ref="fieldRefs.pdescription"
+              @input="validateForm"
+               :class="[
+                'w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 transition-all',
+                errors.pdescription ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-400 focus:ring-blue-100 focus:border-blue-100 '
+               ]"
               placeholder="Max 500 characters"
               maxlength="500"
             ></textarea>
+
+            <p v-if="errors.pdescription" class="text-sm text-red-600">{{ errors.pdescription }}</p>
+
             <div class="text-xs text-gray-500 text-right">
               {{ pdescription.length }}/500
             </div>
@@ -251,6 +309,7 @@
           </button>
           <button 
             @click="currentProduct ? updateProduct() : addinventory()" 
+            :disabled="!isFormValid"
             class="px-4 py-2.5 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors"
           >
             {{ currentProduct ? 'Update Product' : 'Add Product' }}
@@ -266,7 +325,7 @@ import {UseInventoryStore} from '../store/InventoryStore'
 import {useCategoryStore} from '../store/categoryStore'
 import Swal from 'sweetalert2';
 import axios from '../axios';
-import { ref,onMounted, watch,computed } from 'vue';
+import { ref,onMounted, watch,computed,nextTick } from 'vue';
 import { errorState } from '../store/ErrorState';
 import { useSuppliersStore } from '../store/SuppliersStore';
 
@@ -290,6 +349,8 @@ export default {
     const searchQuery = ref('');
     const currentProduct = ref(null);
 
+    const errors = ref({});
+
     //store properties
     const inventorystore = UseInventoryStore();
     const CategoryStore = useCategoryStore();
@@ -298,6 +359,18 @@ export default {
     const categ = computed(() => CategoryStore.getData);
     const filteredProducts = computed(() => inventorystore.filterProducts); 
     const supplierdata = computed(() => suppliersstore.filterSuppliers);
+
+    const fieldRefs = {
+      pname: ref(null),
+      pdescription: ref(null),
+      punit: ref(null),
+      pcategory: ref(null),
+      pbuyingprice: ref(null),
+      pcost: ref(null),
+      Pvat: ref(null),
+      PNoItems: ref(null),
+      supplier: ref(null)
+    };
 
     watch(() => errorState.message, (newVal) => {
       if (newVal) {
@@ -376,7 +449,7 @@ export default {
     //add new product to inventory
     const addinventory = () => {
       try {  
-        if(!Validation()) {
+        if(!validateForm()) {
           return false;
         }
         const postData = {
@@ -398,7 +471,7 @@ export default {
 
     const updateProduct = () => {
       try {  
-        if(!Validation()) {
+        if(!validateForm()) {
           return false;
         }
         const postData = {
@@ -439,7 +512,7 @@ export default {
       });
     }
 
-    const Validation = () => { 
+    /*const Validation = () => { 
       let isNumeric = /^\d+$/;
       if(pname.value.trim() === "" || pdescription.value.trim() === "" || punit.value.trim() === "" || 
          pcategory.value.trim() === "" || supplier.value.trim() === "" || pbuyingprice.value.trim() === "" || 
@@ -461,7 +534,47 @@ export default {
       }  
 
       return true;
+    }*/
+
+    const validateForm = async () => {
+  const isNumeric = /^\d+$/;
+  const newErrors = {};
+
+  if (!String(pname.value || '').trim()) newErrors.pname = "Product name is required";
+  if (!String(pdescription.value || '').trim()) newErrors.pdescription = "Description is required";
+  if (!String(punit.value || '').trim()) newErrors.punit = "Weight/Volume is required";
+  if (!String(pcategory.value || '').trim()) newErrors.pcategory = "Category is required";
+  if (!String(supplier.value || '').trim()) newErrors.supplier = "Supplier is required";
+  if (!String(pbuyingprice.value || '').trim()) newErrors.pbuyingprice = "Buying price is required";
+  if (!String(pcost.value || '').trim()) newErrors.pcost = "Selling price is required";
+  if (!String(PNoItems.value || '').trim()) newErrors.PNoItems = "No of items is required";
+  if (!String(Pvat.value || '').trim()) newErrors.Pvat = "please pass VAT";
+
+  if (pbuyingprice.value && !isNumeric.test(String(pbuyingprice.value))) newErrors.pbuyingprice = "Buying price must be numeric";
+  if (pcost.value && !isNumeric.test(String(pcost.value))) newErrors.pcost = "Selling price must be numeric";
+  if (PNoItems.value && !isNumeric.test(String(PNoItems.value))) newErrors.PNoItems = "No of items must be numeric";
+  if (PNoItems.value && !isNumeric.test(String(Pvat.value))) newErrors.Pvat = "VAT must be numeric";
+
+  errors.value = newErrors;
+
+  //check if there are errors present
+  if(Object.keys(newErrors).length > 0){
+    await nextTick();
+    const firstKey = Object.keys(newErrors)[0]
+    const el = fieldRefs[firstKey]?.value;
+    if(el && typeof el.ScrollIntoView === 'function'){
+      el.ScrollIntoView({behaviour : 'smooth',block : 'center'})
+      el.focus;
     }
+    return false;
+  }
+
+return true;
+};
+
+const isFormValid = computed(() => Object.keys(errors.value).length === 0);
+
+
 
     //fetch all records on load from the store
     onMounted(() => { 
@@ -496,7 +609,11 @@ export default {
       productSearch,
       filteredProducts,
       formatCurrency,
-      supplierdata
+      supplierdata,
+      fieldRefs,
+      errors,
+      validateForm,
+      isFormValid
     };
   }
 };
