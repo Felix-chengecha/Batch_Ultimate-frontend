@@ -60,7 +60,7 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
             <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-              {{ item.productType }}
+              {{ item.categoryName }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
@@ -77,7 +77,7 @@
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.supplier?.supplierName  }}
+            {{ item.supplierName  }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div class="flex items-center space-x-2">
