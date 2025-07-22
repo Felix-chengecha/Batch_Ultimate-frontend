@@ -52,10 +52,10 @@
             <div class="text-sm font-medium text-gray-900 max-w-xs truncate">{{ item.productName }}</div>
             <!-- <div class="text-sm text-gray-800 max-w-xs truncate">{{ item.productDescription }}</div>  -->
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
             ${{ formatCurrency(item.sellingPrice) }}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
             ${{ formatCurrency(item.buyingPrice) }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
@@ -63,7 +63,7 @@
               {{ item.categoryName }}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono hidden sm:table-cell">
             {{ item.quantity }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
@@ -87,9 +87,9 @@
               class="flex items-center space-x-1 text-blue-600 hover:text-blue-900 px-2 py-1 rounded-md hover:bg-blue-50 transition-colors border border-blue-100"
               title="Edit"
             >
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-            </svg>
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
               <span class="text-xs font-medium">Edit</span>
             </button>
 
