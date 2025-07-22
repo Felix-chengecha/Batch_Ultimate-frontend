@@ -535,7 +535,7 @@ export default {
         //Define RequestData
         var requestData = {
           reportType : reportType.value,
-          format : "pdf",
+          format : "xlsx",
           parameters : {
           }
         }

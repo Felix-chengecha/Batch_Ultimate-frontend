@@ -32,7 +32,7 @@
     <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
       <thead class="bg-gray-50">
         <tr>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap w-1/6">Product</th>
+          <th scope="col" class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap w-1/6">Product</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
@@ -50,7 +50,7 @@
         >
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="text-sm font-medium text-gray-900 max-w-xs truncate">{{ item.productName }}</div>
-            <div class="text-xs text-gray-800 max-w-xs truncate">{{ item.productDescription }}</div> 
+            <!-- <div class="text-sm text-gray-800 max-w-xs truncate">{{ item.productDescription }}</div>  -->
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
             ${{ formatCurrency(item.sellingPrice) }}
@@ -80,27 +80,36 @@
             {{ item.supplierName  }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <div class="flex items-center space-x-2">
-              <button 
-                @click="openModal(item)"
-                class="text-blue-600 hover:text-blue-900 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
-                title="Edit"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
-                </svg>
-              </button>
-              <button 
-                @click="confirmDelete(item)"
-                class="text-red-600 hover:text-red-900 p-1.5 rounded-md hover:bg-red-50 transition-colors"
-                title="Delete"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          </td>
+          <div class="flex items-center justify-end space-x-2">
+            <!-- Edit Button -->
+            <button 
+              @click="openModal(item)"
+              class="flex items-center space-x-1 text-blue-600 hover:text-blue-900 px-2 py-1 rounded-md hover:bg-blue-50 transition-colors border border-blue-100"
+              title="Edit"
+            >
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+            </svg>
+              <span class="text-xs font-medium">Edit</span>
+            </button>
+
+            <!-- Delete Button -->
+            <button 
+              @click="confirmDelete(item)"
+              class="flex items-center space-x-1 text-red-600 hover:text-red-900 px-2 py-1 rounded-md hover:bg-red-50 transition-colors border border-red-100"
+              title="Delete"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862
+                        a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4
+                        a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span class="text-xs font-medium">Delete</span>
+            </button>
+          </div>
+        </td>
+
         </tr>
         <tr v-if="filteredProducts.length === 0">
           <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
@@ -401,12 +410,13 @@ export default {
         // Populate fields if editing
         pname.value = product.productName;
         pdescription.value = product.productDescription;
-        punit.value = product.Weight_Volume;
+        punit.value = product.weight_Volume;
         pcategory.value = product.categoryID;
         pbuyingprice.value = product.buyingPrice;
         pcost.value = product.sellingPrice;
         PNoItems.value = product.quantity;
-        supplier.value = product.supplier?.supplierId;
+        supplier.value = product.supplierId;
+        Pvat.value = 16.00
       } else {
         // Reset fields if adding new
         pname.value = '';

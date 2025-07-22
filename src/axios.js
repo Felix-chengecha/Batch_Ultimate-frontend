@@ -147,17 +147,30 @@ getRecentSalesData(token) {
       });
     },
 
-  //update product
-  updateproduct(id, updateData, token) {
-        return apiClient.put(`/updateproduct/${id}`, updateData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then(response => {
-          return response.data;
-        });
+     updateproduct(postData) { 
+    // console.log(postData);
+
+    return apiClient.post('/Products/EditProducts', postData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      return response;
+    });
   },
+
+  //update product
+  // updateproduct(id, updateData, token) {
+  //       return apiClient.put(`/updateproduct/${id}`, updateData, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then(response => {
+  //         return response.data;
+  //       });
+  // },
 
   //delete product
   deleteproduct(id, token) {
