@@ -346,8 +346,7 @@
     </div>
   </div>
 </template>
-<<<<<<< HEAD
-   <script>
+   <!-- <script>
    import {useCategoryStore} from '../store/categoryStore'
    import Swal from 'sweetalert2';
    import { computed,ref,onMounted,watch } from 'vue';
@@ -375,19 +374,29 @@
        
       const closeModal = () => {
          isModalOpen.value = false;
-       }
-=======
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
+       } -->
 
 <script>
 import { useCategoryStore } from '../store/categoryStore'
 import Swal from 'sweetalert2'
 import { computed, ref, onMounted, watch } from 'vue'
 
+  import {useRouter } from 'vue-router'
+  import { errorState } from '../store/ErrorState';
+
+
 export default {
   setup() {
     const CategoryStore = useCategoryStore()
     const data = computed(() => CategoryStore.getData)
+
+     const Cname   = ref('');
+       const Ccode   = ref('');
+       const CNoItems  = ref('');
+       const Cdescription  = ref('');
+      const router = useRouter();
+      const filtereddata = CategoryStore .filteredData;
+
     
     // Form state
     const formData = ref({
@@ -405,9 +414,10 @@ export default {
     const sortField = ref('createdOn')
     const sortDirection = ref('desc')
     const currentPage = ref(1)
-    const itemsPerPage = ref(3)
+    const itemsPerPage = ref(3) 
 
-<<<<<<< HEAD
+    
+
 
         watch(() => errorState.message, (newVal) => {
 					  if (newVal) {
@@ -419,11 +429,7 @@ export default {
 					  }
 				  });
 
-        const generateCategoryCode = (categoryName) => {
-            const prefix = categoryName.slice(0, 2).toUpperCase();
-            const randomPart = Math.random().toString(36).substring(2, 5).toUpperCase(); // 3 random chars
-            return (prefix + randomPart).padEnd(5, 'X'); // Ensures it's 5 letters even if input is short
-          }
+ 
 
 
       const formatDate =(dateString)=> {
@@ -487,11 +493,9 @@ export default {
             `
             })
         }
-=======
     // Computed properties
     const filteredCategories = computed(() => {
       let result = [...data.value]
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
       
       // Apply search filter
       if (searchQuery.value) {
@@ -657,11 +661,6 @@ export default {
       }
     }
 
-    const formatDate = (dateString) => {
-      if (!dateString) return ''
-      const options = { year: 'numeric', month: 'short', day: 'numeric' }
-      return new Date(dateString).toLocaleDateString(undefined, options)
-    }
 
     const showToast = (icon, message) => {
       Swal.fire({
@@ -708,16 +707,6 @@ export default {
       confirmDelete,
       sortBy,
       formatDate,
-<<<<<<< HEAD
-      generateCategoryCode,
-      DisplayMessage,
-      router,
-      ErrorMessage
-       };
-     }
-   };
-   </script>
-=======
       isSubmitting
     }
   }
@@ -751,4 +740,3 @@ export default {
   }
 }
 </style>
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764

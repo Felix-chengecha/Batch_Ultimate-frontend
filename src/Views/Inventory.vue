@@ -26,69 +26,6 @@
       </div>
     </div>
 
-<<<<<<< HEAD
-    <!-- Responsive Table Container -->
-   <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-  <div class="overflow-x-auto"> 
-
- 
-    <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
-      <thead class="bg-gray-50">
-        <tr>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap w-1/6">Product</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Stock</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Status</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        <tr 
-          v-for="(item, index) in filteredProducts" 
-          :key="index"
-          class="hover:bg-gray-50 transition-colors"
-        >
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm font-medium text-gray-900 max-w-xs truncate">{{ item.productName }}</div>
-            <div class="text-xs text-gray-800 max-w-xs truncate">{{ item.productDescription }}</div> 
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            ${{ formatCurrency(item.sellingPrice) }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            ${{ formatCurrency(item.buyingPrice) }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-              {{ item.productType }}
-            </span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
-            {{ item.quantity }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-            <span :class="{
-              'px-2 inline-flex text-xs leading-5 font-semibold rounded-full': true,
-              'bg-green-100 text-green-800': item.status === 'In Stock',
-              'bg-yellow-100 text-yellow-800': item.status === 'Low Stock',
-              'bg-red-100 text-red-800': item.status === 'Out of Stock'
-            }">
-              {{ item.status }}
-            </span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ item.supplier?.supplierName  }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <div class="flex items-center space-x-2">
-              <button  v-if="can('editproducts')"
-                @click="openModal(item)"
-                class="text-blue-600 hover:text-blue-900 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
-                title="Edit"
-=======
        <!-- Responsive Table Container -->
     <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
       <div class="overflow-x-auto">
@@ -98,7 +35,6 @@
               <!-- <th scope="col"
                 class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap cursor-pointer"
                 @click="handleSort('productID')"
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
               >
                 <div class="flex items-center">
                   ID
@@ -547,7 +483,6 @@
   <!-- </div> -->
 </template>
     
-<<<<<<< HEAD
     <script>
     import {UseInventoryStore} from '../store/InventoryStore'
     import {useCategoryStore} from '../store/categoryStore'
@@ -580,39 +515,6 @@
         const token = ref('your-auth-token'); 
         const suppliersstore = useSuppliersStore();
        
-        //store  properties
-        const inventorystore  = UseInventoryStore();
-        const CategoryStore  = useCategoryStore();
-=======
-   <script>
-import {UseInventoryStore} from '../store/InventoryStore'
-import {useCategoryStore} from '../store/categoryStore'
-import Swal from 'sweetalert2';
-import axios from '../axios';
-import { ref,onMounted, watch,computed,nextTick } from 'vue';
-import { errorState } from '../store/ErrorState';
-import { useSuppliersStore } from '../store/SuppliersStore';
-
-export default {
-  setup() {
-    //properties 
-    const Pvat = ref('');
-    const punit = ref('');
-    const pname = ref('');
-    const pcost = ref('');
-    const pbuyingprice = ref('');
-    const pbuyingdate = ref('');
-    const pdescription = ref('');
-    const pcategory = ref('');
-    const supplier = ref('');
-    const submitSuccess = ref('');
-    const PNoItems = ref('');
-    const isModalOpen = ref(false); 
-    const token = ref('your-auth-token'); 
-    const suppliersstore = useSuppliersStore();
-    const searchQuery = ref('');
-    const currentProduct = ref(null);
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
 
     const currentPage = ref(1)
     const itemsPerPage = ref(5)
@@ -620,27 +522,6 @@ export default {
     const sortField = ref('');
     const sortDirection = ref('asc');
 
-<<<<<<< HEAD
-          watch(() => errorState.message, (newVal) => {
-					  if (newVal) {
-				  if(errorState.code === 401){
-					 router.push('/login');
-					   ErrorMessage(`Errork: 'Session expired logn again'`);
-				  }
-					   ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
-					  }
-				  });
-     
-
-        watch(() =>  inventorystore.getResponse, (newval) => {
-            if (newval.status == 200) { 
-               DisplayMessage("success", newval.statusMessage);
-            } 
-            else{
-              DisplayMessage("error", newval.statusMessage);
-            }
-
-=======
     const errors = ref({});
 
     //store properties
@@ -672,7 +553,6 @@ export default {
             if(valA > valB) return 1 * direction;
             return 0;
           }
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
         });
       }
       return result;
@@ -684,21 +564,6 @@ export default {
       return filteredProducts.value.slice(start,end);
     }) 
 
-<<<<<<< HEAD
-        //fetch all records on load from the store
-        onMounted(()=>{ 
-           let token = localStorage.getItem('token'); 
-
-          const { can } = usePermission('Transactions');
-
-
-
-          console.log(can);
-           inventorystore.getallproducts(token);
-           CategoryStore.fetchCategories(token);
-           suppliersstore.getallSupliers()
-        });
-=======
     const totalPages = computed(()=>{
       return Math.ceil(filteredProducts.value.length/itemsPerPage.value);
     })
@@ -724,7 +589,6 @@ export default {
       }
       currentPage = 1;
     }
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
     
 
     const fieldRefs = {
@@ -820,108 +684,6 @@ export default {
         if(!validateForm()) {
           return false;
         }
-<<<<<<< HEAD
-            const postData = {
-                productName: pname.value,
-                productDescription: pdescription.value,
-                Weight_Volume :punit.value,
-                categoryID: pcategory.value,
-                buyingPrice: pbuyingprice.value,
-                sellingPrice: pcost.value,
-                quantity: PNoItems.value,
-                supplier: supplier.value
-              };
-            
-              inventorystore.AddnewProduct(postData); 
-
-         } catch(error){
-          DisplayMessage("Error", error);
-        }
-      }
-
-      const DisplayMessage=(icon,message) => {
-             closeModal();
-          inventorystore.getallproducts();
-               pname.value= "";
-               pdescription.value= "";
-               punit.value= "";
-               pcategory.value= "";
-               pbuyingprice.value= "";
-               pcost.value= "";
-               PNoItems.value= "";
-
-        Swal.fire({
-            position: "top-end",
-            icon: icon,
-            title: message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-       }
-
-      const Validation = () => { 
-
-        let isNumeric = /^\d+$/;
-          if( pname.value.trim() === "" && pdescription.value.trim() === "" && punit.value.trim() === "" &&  pcategory.value.trim() === "" && supplier.value.trim() ==="" && pbuyingprice.value.trim() === ""   &&  pcost.value.trim() === ""   &&  PNoItems.value.trim() === "" ) {
-            DisplayMessage("error", "!!error please fill all the fields");
-            return false;     
-          }
-          else if (!isNumeric.test(pbuyingprice.value) ) {
-            DisplayMessage("error", "!!error buying price should be numeric");
-          return false;  
-         }
-       
-         else if (!isNumeric.test(pcost.value)) {
-           DisplayMessage("error", "!!error product cost should be numeric");
-           return false;  
-          }
-
-         else if(!isNumeric.test(PNoItems.value) ) {
-           DisplayMessage("error", "!!error No of items should be numeric");
-          return false;  
-          }  
-
-        //else{
-          return true;
-        // }
-
-        }
-
-    const ErrorMessage = (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error,
-          confirmButtonColor: '#3b82f6',
-        })
-					    }
-        return {
-      router,
-      ErrorMessage,
-        pname,
-        pcost,
-        pbuyingprice,
-        pbuyingdate,
-        pdescription,
-        PNoItems,
-        pcategory,
-        supplier,
-        data,
-        Pvat,
-        punit,
-        addinventory,
-        openModal,
-        closeModal,
-        isModalOpen,
-        CategoryStore,
-        categ,
-        productSearch,
-        filteredProducts,
-        formatCurrency,
-        supplierdata,
-        // can
-        // filtereddata
-=======
         const postData = {
           productName: pname.value,
           productDescription: pdescription.value,
@@ -931,7 +693,6 @@ export default {
           sellingPrice: pcost.value,
           quantity: PNoItems.value,
           supplier: supplier.value
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
         };
         
         inventorystore.AddnewProduct(postData); 

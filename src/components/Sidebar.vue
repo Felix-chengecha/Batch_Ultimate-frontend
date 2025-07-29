@@ -177,17 +177,17 @@
 <script setup>
 import { useDashboardStore } from '../store/DashboardStore'
 import { ref, computed } from 'vue'
-import {
-  HomeIcon,
-  CubeIcon,
-  CurrencyDollarIcon,
-  DocumentTextIcon,
-  ChartBarIcon,
-  TruckIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  ChevronDownIcon
-} from '@heroicons/vue/24/outline'
+// import {
+//   HomeIcon,
+//   CubeIcon,
+//   CurrencyDollarIcon,
+//   DocumentTextIcon,
+//   ChartBarIcon,
+//   TruckIcon,
+//   UserCircleIcon,
+//   Cog6ToothIcon,
+//   ChevronDownIcon
+// } from '@heroicons/vue/24/outline'
 
 const dashboardstore = useDashboardStore()
 const showSidebar = computed(() => dashboardstore.filterLargeScreen)

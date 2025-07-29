@@ -617,7 +617,6 @@ export default {
       return filteredSupplierData.value.slice(start, end);
     });
 
-<<<<<<< HEAD
   watch(() => errorState.message, (newVal) => {
 					  if (newVal) {
   if(errorState.code === 401){
@@ -627,11 +626,6 @@ export default {
       ErrorMessage(`Errork: ${errorState.code} - ${newVal}`);
     }
   });
-=======
-    const totalPages = computed(() => {
-      return Math.ceil(filteredSupplierData.value.length / itemsPerPage.value);
-    });
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
 
     const visiblePages = computed(() => {
       const range = 2;
@@ -668,56 +662,6 @@ export default {
       currentPage.value = 1;
     };
 
-<<<<<<< HEAD
-
-    const postdata = {
-              supplier: [
-                {
-                  supplierId: SupId,
-                  supplierName: supplierName.value,
-                  supplierType: supplierType.value,
-                  industry: industry.value,
-                  krapin: krapin.value,
-                  businessLicenseNumber: businessLicenseNumber.value,
-                  supplierStatus: true,
-                  remarks: "New supplier added",
-                  createdBy: "chee",
-                  updatedBy: "",
-                  email: email.value,
-                  phone: phone.value,
-                  locationName: locationName.value,
-                  town: town.value,
-                  postal: postal.value,
-                  contractStartDate: contractStartDate.value,
-                  contractEndDate: contractEndDate.value,
-                  contractTerms: contractterms.value,
-                  contractStatus: true,
-                  category: productcategory.value,
-                  unitMeasure: "kg/ltr",
-                  bankName: BankName.value,
-                  bank_AccountNumber: BankaccountNumber.value,
-                  till: TillNo.value,
-                  pochi: pochilaiashara.value,
-                  paybill_BusinessNumber: paybill.value,
-                  paybill_Account: paybillaccountNumber.value
-                }
-            ]
-    }
-      suppliersstore.Addsuplier(postdata);
-      NewsupplierStatus .value =  suppliersstore.success;
-      console.log(NewsupplierStatus);
-   }
-
-
-     const supplierSearch = (e) => {
-      suppliersstore.setSearchSupplier(e.target.value);
-    }; 
-
-      
-
-
-  const openModal = () => { 
-=======
     const openModal = (supplier) => {
       currentSupplier.value = supplier;
       if (supplier) {
@@ -771,7 +715,6 @@ export default {
           paybillaccountNumber: ''
         };
       }
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
       isModalOpen.value = true;
     };
 
@@ -860,24 +803,8 @@ export default {
       });
     };
 
-<<<<<<< HEAD
-    const ErrorMessage = (error) => {
-						 Swal.fire({
-						   icon: 'error',
-						   title: 'Oops...',
-						   text: error,
-						   confirmButtonColor: '#3b82f6',
-						 })
-					    }
-
-   
-    return { 
-      ErrorMessage,
-      suppliersstore,
-=======
     return {
       // State
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
       isModalOpen,
       currentSupplier,
       searchQuery,
@@ -947,9 +874,9 @@ export default {
 }
 
 /* Scrollable modal content */
-.max-h-[90vh] {
+/* .max-h-[90vh] {
   max-height: 90vh;
-}
+} */
 
 .overflow-y-auto {
   overflow-y: auto;

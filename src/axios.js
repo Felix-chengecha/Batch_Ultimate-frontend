@@ -230,18 +230,6 @@ getRecentSalesData(token) {
       });
     },
 
-<<<<<<< HEAD
-  //update product
-  updateproduct(id, updateData, token) {
-        return apiClient.put(`/updateproduct/${id}`, updateData, {
-          // headers: {
-          //   Authorization: `Bearer ${token}`,
-          // },
-        })
-        .then(response => {
-          return response.data;
-        });
-=======
      updateproduct(postData) { 
     // console.log(postData);
 
@@ -253,7 +241,6 @@ getRecentSalesData(token) {
     .then(response => {
       return response;
     });
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
   },
 
   //update product
@@ -320,18 +307,6 @@ getRecentSalesData(token) {
 
 
  //update supplier
-<<<<<<< HEAD
- updatesupplier(id, updateData, token) {
-  return apiClient.put(`/updatesupplier/${id}`, updateData, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
-  })
-  .then(response => {
-    return response.data;
-  });
-},
-=======
 //  updatesupplier(id, updateData, token) {
 //   return apiClient.put(`/updatesupplier/${id}`, updateData, {
 //     headers: {
@@ -342,7 +317,6 @@ getRecentSalesData(token) {
 //     return response.data;
 //   });
 // },
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
 
 //delete supplier
   deletesupplier(id, token) {
@@ -806,13 +780,8 @@ async uploadFile(formData, token) {
 exportReportData(postData,mimeType){
   return apiClient.post('/Reports/JasperReports',postData,{
     headers : {
-<<<<<<< HEAD
-      // Authorization: `Bearer ${token}`,
-      Accept : "application/pdf",
-=======
       Authorization: `Bearer ${token}`,
       Accept : mimeType,
->>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
     },
     responseType : 'blob'
   })

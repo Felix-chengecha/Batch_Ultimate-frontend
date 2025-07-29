@@ -64,12 +64,12 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDashboardStore } from '../store/DashboardStore'
-import { 
-  Bars3Icon,
-  ChevronDownIcon,
-  UserCircleIcon,
-  ArrowRightOnRectangleIcon 
-} from '@heroicons/vue/24/outline'
+// import { 
+//   Bars3Icon,
+//   ChevronDownIcon,
+//   UserCircleIcon,
+//   ArrowRightOnRectangleIcon 
+// } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const dashboardstore = useDashboardStore()
