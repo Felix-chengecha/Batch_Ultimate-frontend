@@ -97,6 +97,16 @@ state: () => ({
               this.Error=error;
             })
         },
+        //update product in inventory
+        updateProduct(postData){
+          axios.updateproduct( postData)
+            .then(response => {
+              this.Response = response.data
+            })
+            .catch(error=>{ 
+              this.Error=error;
+            })
+        },
     
 
     },

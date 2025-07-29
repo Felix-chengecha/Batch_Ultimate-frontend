@@ -45,6 +45,16 @@ getters: {
               this.error=error;
             })
         },
+
+         updateCategory(postData){
+          axios.editCategories( postData)
+            .then(response => {
+              this.Response = response;
+            })
+            .catch(error=>{ 
+              this.error=error;
+            })
+        },
     
        
       setSearchquery(query) {

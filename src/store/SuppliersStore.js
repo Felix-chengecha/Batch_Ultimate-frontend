@@ -64,6 +64,15 @@ getters: {
         .catch(error => {
          this.error=error;
      });
+   }, 
+    updateSupplier(postdata) {
+      axios.updatesupplier(postdata)
+        .then(response => {
+           this.success = "Supplier Edited successfully";
+        })
+        .catch(error => {
+         this.error=error;
+     });
    }   
 
    

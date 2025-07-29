@@ -2,7 +2,7 @@
 [
 
    { "label": "TEST", 
-     "url": "http://localhost:5134/api" 
+     "url": "https://localhost:7231/api" 
    },
    { 
     "label": "LIVE",

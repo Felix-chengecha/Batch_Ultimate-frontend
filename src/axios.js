@@ -7,7 +7,7 @@ import {useRouter } from 'vue-router'
 
 const router = useRouter(); 
 
-let dynamicBaseURL = 'http://localhost:5134/api/' 
+let dynamicBaseURL = 'https://localhost:7231/api/' 
 
 
 
@@ -230,6 +230,7 @@ getRecentSalesData(token) {
       });
     },
 
+<<<<<<< HEAD
   //update product
   updateproduct(id, updateData, token) {
         return apiClient.put(`/updateproduct/${id}`, updateData, {
@@ -240,7 +241,32 @@ getRecentSalesData(token) {
         .then(response => {
           return response.data;
         });
+=======
+     updateproduct(postData) { 
+    // console.log(postData);
+
+    return apiClient.post('/Products/EditProducts', postData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      return response;
+    });
+>>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
   },
+
+  //update product
+  // updateproduct(id, updateData, token) {
+  //       return apiClient.put(`/updateproduct/${id}`, updateData, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then(response => {
+  //         return response.data;
+  //       });
+  // },
 
   //delete product
   deleteproduct(id, token) {
@@ -268,6 +294,17 @@ getRecentSalesData(token) {
     });
   },
 
+  updatesupplier(postData) {
+    return apiClient.post('/Suppliers/EditSupplier', postData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      return response;
+    });
+  },
+
 
  //get all supplier
   getsupplier() { //token
@@ -283,6 +320,7 @@ getRecentSalesData(token) {
 
 
  //update supplier
+<<<<<<< HEAD
  updatesupplier(id, updateData, token) {
   return apiClient.put(`/updatesupplier/${id}`, updateData, {
     // headers: {
@@ -293,6 +331,18 @@ getRecentSalesData(token) {
     return response.data;
   });
 },
+=======
+//  updatesupplier(id, updateData, token) {
+//   return apiClient.put(`/updatesupplier/${id}`, updateData, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   })
+//   .then(response => {
+//     return response.data;
+//   });
+// },
+>>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
 
 //delete supplier
   deletesupplier(id, token) {
@@ -497,6 +547,16 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
       // headers: {
       //   Authorization: `Bearer ${token}`,
       // },
+    })
+    .then(response => { 
+      return response.data;
+    });
+  },
+  editCategories(postData) { 
+    return apiClient.post(`/Category/EditCategory`, postData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     .then(response => { 
       return response.data;
@@ -743,11 +803,16 @@ async uploadFile(formData, token) {
   });
 },
 
-exportReportData(postData){
+exportReportData(postData,mimeType){
   return apiClient.post('/Reports/JasperReports',postData,{
     headers : {
+<<<<<<< HEAD
       // Authorization: `Bearer ${token}`,
       Accept : "application/pdf",
+=======
+      Authorization: `Bearer ${token}`,
+      Accept : mimeType,
+>>>>>>> 476a4ae0531a523a991dbeeb49c39dbb1ccb3764
     },
     responseType : 'blob'
   })

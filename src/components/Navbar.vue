@@ -1,116 +1,153 @@
 <template>
-<div>
-  <header class="bg-slate-800">
-
-  <div class="relative flex h-16  w-full justify-start gap-x-4 ">
-    <div class="relative flex items-center h-16 space-x-4">
-      <img src="../assets/logo.jpeg" alt="Image Description" class="w-16 h-14" />
-      <i @click="toggleSidebar" class="fa-solid fa-bars text-gray-600 text-sm"></i>
-      <h1 class="text-2xl  font-semibold text-white">Ultimate POS</h1>
-     </div>
-
-      <div class="justify-end md:justify-between items-center absolute right-0 mt-3">  
-        <div class="relative ml-auto">
-          <div @click="toggleDropdown" class="inline-flex items-center cursor-pointer overflow-hidden">
-            <span class="text-md font-semibold text-white">felix</span>
-            <span :class="{'rotate-180': isOpen}" class="shrink-0 transition-transform duration-300 text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
-            </span>
+  <header class="bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <!-- Left side - Logo and menu toggle -->
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0">
+            <img src="../assets/logo.jpeg" alt="Company Logo" class="h-10 w-10 rounded-full object-cover">
           </div>
-   
-          <transition name="fade">
-            <div v-if="isOpen" class="absolute right-0 z-10 mt-2 w-56 rounded-md border border-gray-100 bg-white shadow-lg" role="menu">
-              <div class="p-2">
-                <div class="flex items-center space-x-2">
-                  <a @click="details" class="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700" role="menuitem">Account Details </a>
-                  <i class="fas fa-flag text-black text-1xl"></i>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                <a @click="logout" class="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700" role="menuitem">Logout</a>
-                <i class="fas fa-sign-out-alt text-black text-1xl"></i>
-                </div>
+          <button @click="toggleSidebar" class="rounded-md p-1 text-gray-300 hover:bg-slate-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
+            <span class="sr-only">Toggle sidebar</span>
+            <Bars3Icon class="h-6 w-6" />
+          </button>
+          <h1 class="text-xl font-bold text-white hidden md:block">Ultimate POS</h1>
+        </div>
+
+        <!-- Right side - User dropdown -->
+        <div class="relative ml-4">
+          <div>
+            <button @click="toggleDropdown" class="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-800" id="user-menu-button">
+              <span class="sr-only">Open user menu</span>
+              <div class="flex items-center">
+                <span class="ml-3 text-sm font-medium text-white">felix</span>
+                <ChevronDownIcon :class="{'rotate-180': isOpen}" class="ml-1 h-4 w-4 text-white transition-transform duration-200" />
               </div>
+              <div class="relative ml-2 h-8 w-8 rounded-full bg-slate-600 flex items-center justify-center">
+                <span class="text-sm font-medium text-white">F</span>
+                <span class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-slate-800"></span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Dropdown menu -->
+          <transition
+            enter-active-class="transition ease-out duration-100"
+            enter-from-class="transform opacity-0 scale-95"
+            enter-to-class="transform opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-75"
+            leave-from-class="transform opacity-100 scale-100"
+            leave-to-class="transform opacity-0 scale-95"
+          >
+            <div v-if="isOpen" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
+              <div class="px-4 py-3 border-b border-gray-100">
+                <p class="text-sm font-medium">Signed in as</p>
+                <p class="truncate text-sm text-gray-600">felix@example.com</p>
+              </div>
+              <a @click="details" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                <UserCircleIcon class="mr-3 h-5 w-5 text-gray-500" />
+                Account Details
+              </a>
+              <a @click="logout" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                <ArrowRightOnRectangleIcon class="mr-3 h-5 w-5 text-gray-500" />
+                Logout
+              </a>
             </div>
           </transition>
         </div>
       </div>
+    </div>
+  </header>
+</template>
 
-</div>
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useDashboardStore } from '../store/DashboardStore'
+import { 
+  Bars3Icon,
+  ChevronDownIcon,
+  UserCircleIcon,
+  ArrowRightOnRectangleIcon 
+} from '@heroicons/vue/24/outline'
 
-     </header>
-   </div>
-   
-   </template>
-   
-   <script>
-   import { reactive } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-   import { useDashboardStore } from '../store/DashboardStore';
-   import { ref,onMounted, watch,computed } from 'vue';
-   export default {
-    setup(){
-  
-      const isOpen =  ref(false);
-      const dashboardstore = useDashboardStore();
-     const route = useRoute();
-       const router = useRouter();
+const router = useRouter()
+const dashboardstore = useDashboardStore()
+const isOpen = ref(false)
 
+const toggleSidebar = () => {
+  dashboardstore.toggleResponsiveSidebar()
+}
 
-      const toggleSidebar = ()=> {
-       dashboardstore.toggleResponsiveSidebar();
-      }
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value
+}
 
-      const  toggleDropdown = () => {
-         isOpen.value = !isOpen.value;
-       }
+const closeDropdown = () => {
+  isOpen.value = false
+}
 
-       const closeDropdown = () => {
-         isOpen.value = false;
-       }
-
-       const handleClickOutside = (event)=> {
-         if (!this.$el.contains(event.target)) {
-           closeDropdown();
-         }
-       }
-
-      const logout= ()=> {
-        // $router.push('/login');
-              router.push('/login');
-        localStorage.removeItem('token');
-        localStorage.removeItem('isLoggedIn');
-    }
-    
-  
-
-
-    return {
-
-      isOpen,
-      logout,
-      handleClickOutside,
-      closeDropdown,
-      toggleDropdown,
-      toggleSidebar
-
-    }
-   }
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.relative')) {
+    closeDropdown()
   }
-   </script>
-   
-   <style scoped>
-   @import 'node_modules/@fortawesome/fontawesome-free/css/all.css';
+}
 
-   .fade-enter-active, .fade-leave-active {
-     transition: opacity 0.3s;
-   }
-   .fade-enter, .fade-leave-to {
-     opacity: 0;
-   }
-   </style>
-   
+const logout = () => {
+  router.push('/login')
+  localStorage.removeItem('token')
+  localStorage.removeItem('isLoggedIn')
+}
 
-  
-   
+const details = () => {
+  router.push('/account')
+  closeDropdown()
+}
+
+// Add event listeners for click outside
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+</script>
+
+<style scoped>
+/* Custom scrollbar for dropdown */
+.dropdown-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.dropdown-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* Animation for status dot */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+</style>
