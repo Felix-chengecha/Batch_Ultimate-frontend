@@ -23,7 +23,7 @@
             </div>
           </div>
           <button
-            @click="openModal"
+            @click="openModal(null)"
             class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -63,6 +63,24 @@
                   {{ sortDirection === 'asc' ? '↑' : '↓' }}
                 </span>
               </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortBy('createdOn')">
+                Created By
+                <span v-if="sortField === 'createdBy'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+               <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortBy('createdOn')">
+                Updated On
+                <span v-if="sortField === 'updatedOn'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortBy('createdOn')">
+                Updated By
+                <span v-if="sortField === 'updatedBy'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
               <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -93,6 +111,15 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ formatDate(item.createdOn) }}
+              </td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ formatDate(item.createdBy) }}
+              </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ formatDate(item.updatedOn) }}
+              </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ formatDate(item.updatedBy) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex items-center justify-end space-x-2">
@@ -354,7 +381,7 @@ export default {
       
       // Apply search filter
       if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
+        const query = searchQuery.value.toLowerCase()   
         result = result.filter(item => 
           item.categoryName.toLowerCase().includes(query) ||
           item.categoryCode.toLowerCase().includes(query) ||
@@ -466,6 +493,7 @@ export default {
         }
         
         if (currentCategory.value) {
+
           await CategoryStore.updateCategory({
             ...payload,
             categoryID: currentCategory.value.categoryID

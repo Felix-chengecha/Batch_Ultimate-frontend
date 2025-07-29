@@ -37,24 +37,81 @@
       </div>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="p-8 flex justify-center items-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    </div>
+
     <!-- Table Section -->
-    <div class="overflow-hidden">
+    <div v-else class="overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Start Date</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">End Date</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Status</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <!-- Sortable Headers -->
+              <th 
+                scope="col" 
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                @click="handleSort('supplierId')"
+              >
+                ID
+                <span v-if="sortField === 'supplierId'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                scope="col" 
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                @click="handleSort('supplierName')"
+              >
+                Supplier
+                <span v-if="sortField === 'supplierName'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                scope="col" 
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                @click="handleSort('supplierType')"
+              >
+                Type
+                <span v-if="sortField === 'supplierType'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Contact
+              </th>
+              <th 
+                scope="col" 
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell cursor-pointer hover:bg-gray-100"
+                @click="handleSort('contractStartDate')"
+              >
+                Start Date
+                <span v-if="sortField === 'contractStartDate'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th 
+                scope="col" 
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell cursor-pointer hover:bg-gray-100"
+                @click="handleSort('contractEndDate')"
+              >
+                End Date
+                <span v-if="sortField === 'contractEndDate'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                Status
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="(item, index) in supplierdata" :key="index" class="hover:bg-gray-50 transition-colors">
+            <tr v-for="(item, index) in paginatedSuppliers" :key="index" class="hover:bg-gray-50 transition-colors">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">{{ item.supplierId }}</span>
               </td>
@@ -91,8 +148,8 @@
                     class="text-blue-600 hover:text-blue-900 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
                     title="Edit"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                     </svg>
                   </button>
                   <router-link 
@@ -108,7 +165,8 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="supplierdata.length === 0">
+            
+            <tr v-if="paginatedSuppliers.length === 0">
               <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
                 <div class="flex flex-col items-center justify-center py-8">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,6 +179,98 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="filteredSupplierData.length > 0" class="px-6 py-5 border-t border-gray-200 flex items-center justify-between">
+        <div class="flex flex-1 justify-between sm:hidden">
+          <button 
+            @click="currentPage = Math.max(1, currentPage - 1)"
+            :disabled="currentPage === 1"
+            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Previous
+          </button>
+          <button 
+            @click="currentPage = Math.min(totalPages, currentPage + 1)"
+            :disabled="currentPage === totalPages"
+            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </div>
+        
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm text-gray-700">
+              Showing <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span>
+              to <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, filteredSupplierData.length) }}</span>
+              of <span class="font-medium">{{ filteredSupplierData.length }}</span> results
+            </p>
+          </div>
+          
+          <div>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <button
+                @click="currentPage = 1"
+                :disabled="currentPage === 1"
+                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span class="sr-only">First</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              
+              <button
+                @click="currentPage = Math.max(1, currentPage - 1)"
+                :disabled="currentPage === 1"
+                class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span class="sr-only">Previous</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              
+              <template v-for="page in visiblePages" :key="page">
+                <button
+                  @click="currentPage = page"
+                  :class="[
+                    'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                    page === currentPage 
+                      ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' 
+                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                  ]"
+                >
+                  {{ page }}
+                </button>
+              </template>
+              
+              <button
+                @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                :disabled="currentPage === totalPages"
+                class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span class="sr-only">Next</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              
+              <button
+                @click="currentPage = totalPages"
+                :disabled="currentPage === totalPages"
+                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span class="sr-only">Last</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -153,7 +303,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Supplier Name *</label>
                 <input 
-                  v-model="supplierName" 
+                  v-model="formData.supplierName" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                   required
@@ -162,7 +312,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Supplier Type *</label>
                 <input 
-                  v-model="supplierType" 
+                  v-model="formData.supplierType" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                   required
@@ -171,7 +321,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
                 <input 
-                  v-model="industry" 
+                  v-model="formData.industry" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -179,7 +329,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">KRA PIN</label>
                 <input 
-                  v-model="krapin" 
+                  v-model="formData.krapin" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -187,7 +337,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Business License</label>
                 <input 
-                  v-model="businessLicenseNumber" 
+                  v-model="formData.businessLicenseNumber" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -195,7 +345,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select
-                  v-model="supplierStatus"
+                  v-model="formData.supplierStatus"
                   class="w-full border border-gray-300 rounded-md p-2 text-sm bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
                 >
                   <option :value="true">Active</option>
@@ -212,7 +362,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
                 <input 
-                  v-model="fullname" 
+                  v-model="formData.fullname" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -220,7 +370,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input 
-                  v-model="email" 
+                  v-model="formData.email" 
                   type="email" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -228,7 +378,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
                 <input 
-                  v-model="phone" 
+                  v-model="formData.phone" 
                   type="tel" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                   required
@@ -244,7 +394,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Location Name</label>
                 <input 
-                  v-model="locationName" 
+                  v-model="formData.locationName" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -252,7 +402,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Town</label>
                 <input 
-                  v-model="town" 
+                  v-model="formData.town" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -260,7 +410,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
                 <input 
-                  v-model="postal" 
+                  v-model="formData.postal" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -275,7 +425,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                 <input 
-                  v-model="contractStartDate" 
+                  v-model="formData.contractStartDate" 
                   type="date" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -283,7 +433,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
                 <input 
-                  v-model="contractEndDate" 
+                  v-model="formData.contractEndDate" 
                   type="date" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -291,7 +441,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Contract Terms</label>
                 <input 
-                  v-model="contractterms" 
+                  v-model="formData.contractterms" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -306,7 +456,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
                 <input 
-                  v-model="BankName" 
+                  v-model="formData.BankName" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -314,7 +464,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
                 <input 
-                  v-model="BankaccountNumber" 
+                  v-model="formData.BankaccountNumber" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -322,7 +472,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
                 <input 
-                  v-model="BankBrach" 
+                  v-model="formData.BankBrach" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -330,7 +480,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Paybill Number</label>
                 <input 
-                  v-model="paybill" 
+                  v-model="formData.paybill" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -338,7 +488,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Paybill Account</label>
                 <input 
-                  v-model="paybillaccountNumber" 
+                  v-model="formData.paybillaccountNumber" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -346,7 +496,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Till Number</label>
                 <input 
-                  v-model="TillNo" 
+                  v-model="formData.TillNo" 
                   type="text" 
                   class="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all" 
                 />
@@ -363,7 +513,7 @@
             Cancel
           </button>
           <button 
-            @click="currentSupplier ? updateSupplier() : AddSupplier()" 
+            @click="handleSaveSupplier" 
             class="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors"
           >
             {{ currentSupplier ? 'Update Supplier' : 'Add Supplier' }}
@@ -377,113 +527,187 @@
 <script>
 import { useRoute } from 'vue-router';
 import { useSuppliersStore } from '../store/SuppliersStore';
-import {UseInventoryStore} from '../store/InventoryStore'
-import {computed, onMounted, watch, ref} from 'vue';
+import { computed, onMounted, watch, ref } from 'vue';
 import { errorState } from '../store/ErrorState';
 import Swal from 'sweetalert2';
 
 export default {
   setup() {
-    const router = useRoute();
     const suppliersstore = useSuppliersStore();
-    const isModalOpen = ref(false); 
+    const isModalOpen = ref(false);
     const currentSupplier = ref(null);
     const searchQuery = ref('');
+    const isLoading = ref(false);
+    
+    // Sorting and pagination
+    const sortField = ref('supplierId');
+    const sortDirection = ref('asc');
+    const currentPage = ref(1);
+    const itemsPerPage = ref(10);
 
-    // Form fields
-    const pochilaiashara = ref('');
-    const TillNo = ref('');
-    const paybillaccountNumber = ref('');
-    const paybill = ref('');
-    const BankaccountNumber = ref('');
-    const BankBrach = ref('');
-    const BankName = ref('');
-    const contractStartDate = ref('');
-    const contractEndDate = ref('');
-    const contractterms = ref('');
-    const locationName = ref('');
-    const town = ref('');
-    const postal = ref('');
-    const phone = ref('');
-    const email = ref('');
-    const fullname = ref('');
-    const category = ref('');
-    const COname = ref('');
-    const industry = ref('');
-    const supplierType = ref('');
-    const supplierStatus = ref(true);
-    const supplierName = ref('');
-    const businessLicenseNumber = ref('');
-    const krapin = ref('');
-    const NewsupplierStatus = ref('');
-
-    const supplierdata = computed(() => suppliersstore.filterSuppliers);
-
-    onMounted(() => {
-      suppliersstore.getallSupliers();
+    // Form data
+    const formData = ref({
+      supplierName: '',
+      supplierType: '',
+      industry: '',
+      krapin: '',
+      businessLicenseNumber: '',
+      supplierStatus: true,
+      fullname: '',
+      email: '',
+      phone: '',
+      locationName: '',
+      town: '',
+      postal: '',
+      contractStartDate: '',
+      contractEndDate: '',
+      contractterms: '',
+      BankName: '',
+      BankaccountNumber: '',
+      BankBrach: '',
+      TillNo: '',
+      paybill: '',
+      paybillaccountNumber: ''
     });
 
+    onMounted(async () => {
+      try {
+        isLoading.value = true;
+        await suppliersstore.getallSupliers();
+      } catch (error) {
+        showError('Failed to load suppliers', error);
+      } finally {
+        isLoading.value = false;
+      }
+    });
+
+    // Computed properties
+    const supplierdata = computed(() => suppliersstore.filterSuppliers);
+    
+    const filteredSupplierData = computed(() => {
+      let result = [...supplierdata.value];
+      
+      // Apply sorting
+      if (sortField.value) {
+        result.sort((a, b) => {
+          const field = sortField.value;
+          const direction = sortDirection.value === 'asc' ? 1 : -1;
+          
+          // Handle different data types for proper sorting
+          if (field === 'contractStartDate' || field === 'contractEndDate') {
+            const dateA = new Date(a[field]);
+            const dateB = new Date(b[field]);
+            return (dateA - dateB) * direction;
+          } else if (typeof a[field] === 'string') {
+            return a[field].localeCompare(b[field]) * direction;
+          } else {
+            if (a[field] < b[field]) return -1 * direction;
+            if (a[field] > b[field]) return 1 * direction;
+            return 0;
+          }
+        });
+      }
+      
+      return result;
+    });
+
+    const paginatedSuppliers = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return filteredSupplierData.value.slice(start, end);
+    });
+
+    const totalPages = computed(() => {
+      return Math.ceil(filteredSupplierData.value.length / itemsPerPage.value);
+    });
+
+    const visiblePages = computed(() => {
+      const range = 2;
+      const start = Math.max(1, currentPage.value - range);
+      const end = Math.min(totalPages.value, currentPage.value + range);
+
+      const pages = [];
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      return pages;
+    });
+
+    // Methods
     const formatDate = (dateString) => {
       if (!dateString) return '';
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
-    watch(() => errorState.message, (newVal) => {
-      if (newVal) {
-        DisplayMessage(`Error: ${errorState.code} - ${newVal}`)
-      }
-    }) 
+    const supplierSearch = () => {
+      suppliersstore.setSearchSupplier(searchQuery.value);
+      currentPage.value = 1;
+    };
 
-    const supplierSearch = (e) => {
-      suppliersstore.setSearchSupplier(e.target.value);
-    }; 
+    const handleSort = (field) => {
+      if (sortField.value === field) {
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField.value = field;
+        sortDirection.value = 'asc';
+      }
+      currentPage.value = 1;
+    };
 
     const openModal = (supplier) => {
       currentSupplier.value = supplier;
       if (supplier) {
         // Pre-fill form for editing
-        supplierName.value = supplier.supplierName;
-        supplierType.value = supplier.supplierType;
-        industry.value = supplier.industry;
-        krapin.value = supplier.krapin;
-        businessLicenseNumber.value = supplier.businessLicenseNumber;
-        supplierStatus.value = supplier.supplierStatus;
-        email.value = supplier.email;
-        phone.value = supplier.phone;
-        locationName.value = supplier.locationName;
-        town.value = supplier.town;
-        postal.value = supplier.postal;
-        contractStartDate.value = supplier.contractStartDate;
-        contractEndDate.value = supplier.contractEndDate;
-        contractterms.value = supplier.contractTerms;
-        BankName.value = supplier.bankName;
-        BankaccountNumber.value = supplier.bank_AccountNumber;
-        TillNo.value = supplier.till;
-        paybill.value = supplier.paybill_BusinessNumber;
-        paybillaccountNumber.value = supplier.paybill_Account;
+        formData.value = {
+          supplierName: supplier.supplierName,
+          supplierType: supplier.supplierType,
+          industry: supplier.industry,
+          krapin: supplier.krapin,
+          businessLicenseNumber: supplier.businessLicenseNumber,
+          supplierStatus: supplier.supplierStatus,
+          // fullname : supplier.name
+          email: supplier.email,
+          phone: supplier.phone,
+          locationName: supplier.locationName,
+          town: supplier.town,
+          postal: supplier.postal,
+          contractStartDate: supplier.contractStartDate,
+          contractEndDate: supplier.contractEndDate,
+          contractterms: supplier.contractTerms,
+          BankName: supplier.bankName,
+          BankaccountNumber: supplier.bank_AccountNumber,
+          BankBrach: '',
+          TillNo: supplier.till,
+          paybill: supplier.paybill_BusinessNumber,
+          paybillaccountNumber: supplier.paybill_Account
+        };
       } else {
         // Reset form for new supplier
-        supplierName.value = '';
-        supplierType.value = '';
-        industry.value = '';
-        krapin.value = '';
-        businessLicenseNumber.value = '';
-        supplierStatus.value = true;
-        email.value = '';
-        phone.value = '';
-        locationName.value = '';
-        town.value = '';
-        postal.value = '';
-        contractStartDate.value = '';
-        contractEndDate.value = '';
-        contractterms.value = '';
-        BankName.value = '';
-        BankaccountNumber.value = '';
-        BankBrach.value = '';
-        TillNo.value = '';
-        paybill.value = '';
-        paybillaccountNumber.value = '';
+        formData.value = {
+          supplierName: '',
+          supplierType: '',
+          industry: '',
+          krapin: '',
+          businessLicenseNumber: '',
+          supplierStatus: true,
+          fullname: '',
+          email: '',
+          phone: '',
+          locationName: '',
+          town: '',
+          postal: '',
+          contractStartDate: '',
+          contractEndDate: '',
+          contractterms: '',
+          BankName: '',
+          BankaccountNumber: '',
+          BankBrach: '',
+          TillNo: '',
+          paybill: '',
+          paybillaccountNumber: ''
+        };
       }
       isModalOpen.value = true;
     };
@@ -502,153 +726,109 @@ export default {
       return "Sup_" + month + second + minute + hour;
     };
 
-    const AddSupplier = () => { 
-      const supplierId = generateSupplierId();
+    const handleSaveSupplier = async () => {
+      try {
+        if (!formData.value.supplierName || !formData.value.supplierType || !formData.value.phone) {
+          showError('Validation Error', 'Please fill in all required fields');
+          return;
+        }
 
-      const postdata = {
-        supplier: [{
-          supplierId: supplierId,
-          supplierName: supplierName.value,
-          supplierType: supplierType.value,
-          industry: industry.value,
-          krapin: krapin.value,
-          businessLicenseNumber: businessLicenseNumber.value,
-          supplierStatus: supplierStatus.value,
-          remarks: supplierStatus.value ? "New supplier added" : "Supplier added as inactive",
-          createdBy: "chee",
-          updatedBy: "",
-          email: email.value,
-          phone: phone.value,
-          locationName: locationName.value,
-          town: town.value,
-          postal: postal.value,
-          contractStartDate: contractStartDate.value,
-          contractEndDate: contractEndDate.value,
-          contractTerms: contractterms.value,
-          contractStatus: supplierStatus.value,
-          category: category.value,
-          unitMeasure: "kg/ltr",
-          bankName: BankName.value,
-          bank_AccountNumber: BankaccountNumber.value,
-          till: TillNo.value,
-          pochi: pochilaiashara.value,
-          paybill_BusinessNumber: paybill.value,
-          paybill_Account: paybillaccountNumber.value
-        }]
-      };
+        const supplierData = {
+          supplier: [{
+            supplierId: currentSupplier.value ? currentSupplier.value.supplierId : generateSupplierId(),
+            supplierName: formData.value.supplierName,
+            supplierType: formData.value.supplierType,
+            industry: formData.value.industry,
+            krapin: formData.value.krapin,
+            businessLicenseNumber: formData.value.businessLicenseNumber,
+            supplierStatus: formData.value.supplierStatus,
+            remarks: formData.value.supplierStatus ? "Active supplier" : "Inactive supplier",
+            createdBy: "system",
+            updatedBy: currentSupplier.value ? "system" : "",
+            email: formData.value.email,
+            phone: formData.value.phone,
+            locationName: formData.value.locationName,
+            town: formData.value.town,
+            postal: formData.value.postal,
+            contractStartDate: formData.value.contractStartDate,
+            contractEndDate: formData.value.contractEndDate,
+            contractTerms: formData.value.contractterms,
+            contractStatus: formData.value.supplierStatus,
+            bankName: formData.value.BankName,
+            bank_AccountNumber: formData.value.BankaccountNumber,
+            till: formData.value.TillNo,
+            paybill_BusinessNumber: formData.value.paybill,
+            paybill_Account: formData.value.paybillaccountNumber
+          }]
+        };
 
-      suppliersstore.Addsuplier(postdata);
-      NewsupplierStatus.value = suppliersstore.success;
-      
+        if (currentSupplier.value) {
+          await suppliersstore.updateSupplier(supplierData);
+          showSuccess('Supplier updated successfully');
+        } else {
+          await suppliersstore.Addsuplier(supplierData);
+          showSuccess('Supplier added successfully');
+        }
+
+        closeModal();
+        await suppliersstore.getallSupliers();
+      } catch (error) {
+        showError('Failed to save supplier', error);
+      }
+    };
+
+    const showSuccess = (message) => {
       Swal.fire({
         position: 'top-end',
         icon: 'success',
-        title: 'Supplier added successfully',
-        showConfirmButton: false,
-        timer: 1500
-      });
-
-      closeModal();
-      suppliersstore.getallSupliers();
-    };
-
-    const updateSupplier = () => {
-      const postdata = {
-        supplier: [{
-          supplierId: currentSupplier.value.supplierId,
-          supplierName: supplierName.value,
-          supplierType: supplierType.value,
-          industry: industry.value,
-          krapin: krapin.value,
-          businessLicenseNumber: businessLicenseNumber.value,
-          supplierStatus: supplierStatus.value,
-          remarks: "Supplier details updated",
-          updatedBy: "chee",
-          email: email.value,
-          phone: phone.value,
-          locationName: locationName.value,
-          town: town.value,
-          postal: postal.value,
-          contractStartDate: contractStartDate.value,
-          contractEndDate: contractEndDate.value,
-          contractTerms: contractterms.value,
-          contractStatus: supplierStatus.value,
-          category: category.value,
-          bankName: BankName.value,
-          bank_AccountNumber: BankaccountNumber.value,
-          till: TillNo.value,
-          paybill_BusinessNumber: paybill.value,
-          paybill_Account: paybillaccountNumber.value
-        }]
-      };
-
-      suppliersstore.updateSupplier(postdata);
-      
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Supplier updated successfully',
-        showConfirmButton: false,
-        timer: 1500
-      });
-
-      closeModal();
-      suppliersstore.getallSupliers();
-    };
-
-    const DisplayMessage = (icon, message) => {
-      Swal.fire({
-        position: 'top-end',
-        icon: icon,
         title: message,
         showConfirmButton: false,
         timer: 1500
       });
     };
 
+    const showError = (title, error) => {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: title,
+        text: error.message || error,
+        showConfirmButton: true
+      });
+    };
+
     return {
-      suppliersstore,
+      // State
       isModalOpen,
       currentSupplier,
       searchQuery,
+      isLoading,
+      sortField,
+      sortDirection,
+      currentPage,
+      itemsPerPage,
+      formData,
+      
+      // Computed
+      supplierdata,
+      filteredSupplierData,
+      paginatedSuppliers,
+      totalPages,
+      visiblePages,
+      
+      // Methods
+      formatDate,
+      supplierSearch,
+      handleSort,
       openModal,
       closeModal,
-      AddSupplier,
-      updateSupplier,
-      supplierSearch,
-      formatDate,
-      pochilaiashara,
-      TillNo,
-      paybillaccountNumber,
-      paybill,
-      BankaccountNumber,
-      BankBrach,
-      BankName,
-      contractStartDate,
-      contractEndDate,
-      contractterms,
-      locationName,
-      town,
-      postal,
-      phone,
-      fullname,
-      email,
-      category,
-      COname,
-      industry,
-      supplierType,
-      supplierStatus,
-      supplierName,
-      businessLicenseNumber,
-      krapin,
-      NewsupplierStatus,
-      supplierdata
+      handleSaveSupplier
     };
   }
 };
 </script>
 
-<style>
+<style scoped>
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
@@ -664,5 +844,41 @@ export default {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Smooth transitions for hover effects */
+.hover-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Ensure table cells don't wrap unnecessarily */
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+/* Modal transitions */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+/* Scrollable modal content */
+.max-h-[90vh] {
+  max-height: 90vh;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+/* Focus styles for better accessibility */
+input:focus, select:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
 }
 </style>

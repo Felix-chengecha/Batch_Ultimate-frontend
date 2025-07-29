@@ -198,6 +198,17 @@ getRecentSalesData(token) {
     });
   },
 
+  updatesupplier(postData) {
+    return apiClient.post('/Suppliers/EditSupplier', postData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      return response;
+    });
+  },
+
 
  //get all supplier
   getsupplier() { //token
@@ -213,16 +224,16 @@ getRecentSalesData(token) {
 
 
  //update supplier
- updatesupplier(id, updateData, token) {
-  return apiClient.put(`/updatesupplier/${id}`, updateData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  .then(response => {
-    return response.data;
-  });
-},
+//  updatesupplier(id, updateData, token) {
+//   return apiClient.put(`/updatesupplier/${id}`, updateData, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   })
+//   .then(response => {
+//     return response.data;
+//   });
+// },
 
 //delete supplier
   deletesupplier(id, token) {
@@ -426,6 +437,16 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
   //Add Categories
   addcategories(postData) { 
     return apiClient.post(`/Category/AddCategory`, postData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => { 
+      return response.data;
+    });
+  },
+  editCategories(postData) { 
+    return apiClient.post(`/Category/EditCategory`, postData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
