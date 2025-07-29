@@ -373,7 +373,7 @@ export default {
     const sortField = ref('createdOn')
     const sortDirection = ref('desc')
     const currentPage = ref(1)
-    const itemsPerPage = ref(10)
+    const itemsPerPage = ref(3)
 
     // Computed properties
     const filteredCategories = computed(() => {

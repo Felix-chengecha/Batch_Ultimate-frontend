@@ -1,189 +1,241 @@
 <template>
-<div   v-if="showSidebar"  class="flex h-full flex-col justify-between border-e bg-slate-800   w-64">
-    <div class="px-6 py-1">
+  <aside 
+    v-if="showSidebar"
+    class="flex h-full flex-col justify-between border-e bg-slate-800 w-64 transition-all duration-300 ease-in-out"
+  >
+    <div class="px-4 py-4">
+      <!-- Logo/Branding -->
+      <!-- <div class="mb-8 flex items-center justify-center rounded-lg bg-slate-700 p-3">
+        <img src="../assets/logo.jpeg" alt="Logo" class="h-8 w-8 rounded-full">
+        <h1 class="ml-2 text-lg font-bold text-white">Ultimate POS</h1>
+      </div> -->
 
-    <ul class="space-y-1 mt-3">
-        <li>
-            <router-link to="/" class="flex items-center text-white text-1xl font-semibold rounded-lg hover:text-white">
-              <i class="fas fa-home text-white text-1xl mr-2"></i>
-              DASHBOARD
-            </router-link>
-          </li>
+      <!-- Navigation Menu -->
+      <nav class="space-y-1">
+        <!-- Dashboard -->
+        <router-link 
+          to="/" 
+          class="group flex items-center rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          active-class="bg-slate-700"
+        >
+          <HomeIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+          <span class="ml-3">Dashboard</span>
+        </router-link>
 
-      <!-- PRODUCTS SECTION -->
-      <li class="group">
-        <div @click="toggleMenu('Products')" class="flex cursor-pointer  rounded-lg text-white mt-10">
-            <i class="fas fa-box-open text-white text-1xl mr-3"></i>
-              <span class="text-1xl font-semibold mr-12  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Products</span>
-            <span :class="{ 'rotate-180': openMenu === 'Products' }">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-            </span>
-          </div>
-
-    <ul  v-show="openMenu === 'Products'" class="mt-2 space-y-1 px-4">
-      <li>
-        <router-link to="/inventory" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"> Inventory</router-link>
-      </li>
-      <li>
-        <router-link to="/catalogue" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"> catalogue</router-link>
-      </li>
-      <li>
-        <router-link to="/categories" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">  categories</router-link>
-      </li>
-    </ul>
-      </li>
-  
-     <!--TRANSACTION SECTION  -->
-     <li>
-         <div @click="toggleMenu('Transactions')" class="flex cursor-pointer  rounded-lg text-white mt-10">
-           <i class="fas fa-paper-plane text-white text-1xl mr-3"></i>
-              <span class="text-1xl font-semibold mr-12  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Transactions</span>
-            <span :class="{ 'rotate-180': openMenu === 'Transactions' }">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-            </span>
-          </div>
-
-         <ul v-show="openMenu === 'Transactions'" class="mt-2 space-y-1 px-4">
-          <li>
-            <router-link to ='/sell' class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Sell</router-link>
-          </li>
-          <li>
-            <router-link to = '/transactions' class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"> Transaction list</router-link>
-          </li>
-        </ul>
-     </li>
-  
-    <!-- Documents Section -->
-     <li>
-       <div @click="toggleMenu('Documents')" class="flex cursor-pointer  rounded-lg text-white mt-10">
-           <i class="fas fa-file-alt text-white text-1xl mr-3"></i>
-              <span class="text-1xl font-semibold mr-20  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Documents</span>
-            <span :class="{ 'rotate-180': openMenu === 'Documents' }">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-            </span>
-          </div>
-
-      <ul v-show="openMenu === 'Documents'"  class="mt-2 space-y-1 px-4"> 
-       
-        <li>
-          <router-link to ="/Documents"  href="#" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"> All Documents </router-link>
-        </li>
-      </ul>
-     </li>
-
-     <!-- NOTIFICATION SECTION -->
-     <li>
-            <div @click="toggleMenu('Notifications')" class="flex cursor-pointer  rounded-lg text-white mt-10">
-            <i class="fas fa-bell text-white text-1xl mr-3"></i>
-              <span class="text-1xl font-semibold mr-12  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Notifications</span>
-            <span :class="{ 'rotate-180': openMenu === 'Notifications' }">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-            </span>
-          </div>
-
-          <ul v-show="openMenu === 'Notifications'"  class="mt-2 space-y-1 px-4"> 
-            <li>
-              <router-link to="/contacts" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Contacts </router-link>
-            </li>
-            <li>
-              <router-link to="/SendSms" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Send sms </router-link>
-            </li>
-            <li>
-              <router-link to="/SentMessages" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Sent Messages </router-link>
-            </li>
-        
+        <!-- Products Section -->
+        <div class="group relative">
+          <button 
+            @click="toggleMenu('Products')"
+            class="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          >
+            <div class="flex items-center">
+              <CubeIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+              <span class="ml-3">Products</span>
+            </div>
+            <ChevronDownIcon 
+              :class="[
+                'h-4 w-4 transform transition-transform duration-200',
+                openMenu === 'Products' ? 'rotate-180' : ''
+              ]" 
+            />
+          </button>
           
-          </ul>
-     </li>
+          <transition
+            enter-active-class="transition ease-out duration-100"
+            enter-from-class="transform opacity-0 scale-95"
+            enter-to-class="transform opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-75"
+            leave-from-class="transform opacity-100 scale-100"
+            leave-to-class="transform opacity-0 scale-95"
+          >
+            <div 
+              v-show="openMenu === 'Products'"
+              class="ml-8 mt-1 space-y-1 overflow-hidden rounded-lg bg-slate-700/50"
+            >
+              <router-link 
+                to="/inventory"
+                class="block px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                active-class="bg-slate-600 text-white"
+              >
+                Inventory
+              </router-link>
+              <router-link 
+                to="/catalogue"
+                class="block px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                active-class="bg-slate-600 text-white"
+              >
+                Catalogue
+              </router-link>
+              <router-link 
+                to="/categories"
+                class="block px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                active-class="bg-slate-600 text-white"
+              >
+                Categories
+              </router-link>
+            </div>
+          </transition>
+        </div>
 
-   
-     <!-- REPORTS SECTION -->
-    <li>
-        <details class="group [&_summary::-webkit-details-marker]:hidden mt-10">
-          <summary class="flex cursor-pointer items-center justify-between rounded-lg  text-white">
-            <i class="fas fa-file-alt text-1xl mr-3"></i>
+        <!-- Transactions Section -->
+        <div class="group relative">
+          <button 
+            @click="toggleMenu('Transactions')"
+            class="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          >
+            <div class="flex items-center">
+              <CurrencyDollarIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+              <span class="ml-3">Transactions</span>
+            </div>
+            <ChevronDownIcon 
+              :class="[
+                'h-4 w-4 transform transition-transform duration-200',
+                openMenu === 'Transactions' ? 'rotate-180' : ''
+              ]" 
+            />
+          </button>
+          
+          <transition name="dropdown">
+            <div 
+              v-show="openMenu === 'Transactions'"
+              class="ml-8 mt-1 space-y-1 overflow-hidden rounded-lg bg-slate-700/50"
+            >
+              <router-link 
+                to="/sell"
+                class="block px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                active-class="bg-slate-600 text-white"
+              >
+                Sell
+              </router-link>
+              <router-link 
+                to="/transactions"
+                class="block px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                active-class="bg-slate-600 text-white"
+              >
+                Transaction List
+              </router-link>
+            </div>
+          </transition>
+        </div>
 
-             <router-link to="/reports"class="text-1xl font-semibold mr-24  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Reports</router-link>
+        <!-- Other sections follow the same pattern -->
+        <!-- Documents -->
+        <router-link 
+          to="/documents" 
+          class="group flex items-center rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          active-class="bg-slate-700"
+        >
+          <DocumentTextIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+          <span class="ml-3">Documents</span>
+        </router-link>
 
-      </summary>
-      </details>
-     </li>
+        <!-- Reports -->
+        <router-link 
+          to="/reports" 
+          class="group flex items-center rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          active-class="bg-slate-700"
+        >
+          <ChartBarIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+          <span class="ml-3">Reports</span>
+        </router-link>
 
-    
+        <!-- Suppliers -->
+        <router-link 
+          to="/suppliers" 
+          class="group flex items-center rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          active-class="bg-slate-700"
+        >
+          <TruckIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+          <span class="ml-3">Suppliers</span>
+        </router-link>
 
+        <!-- My Account -->
+        <router-link 
+          to="/account" 
+          class="group flex items-center rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          active-class="bg-slate-700"
+        >
+          <UserCircleIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+          <span class="ml-3">My Account</span>
+        </router-link>
+      </nav>
+    </div>
 
+    <!-- Footer/Settings -->
+    <div class="border-t border-slate-700 p-4">
+      <router-link 
+        to="/settings" 
+        class="group flex items-center rounded-lg px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+      >
+        <Cog6ToothIcon class="h-5 w-5 text-slate-300 group-hover:text-white" />
+        <span class="ml-3">Settings</span>
+      </router-link>
+    </div>
+  </aside>
+</template>
 
+<script setup>
+import { useDashboardStore } from '../store/DashboardStore'
+import { ref, computed } from 'vue'
+import {
+  HomeIcon,
+  CubeIcon,
+  CurrencyDollarIcon,
+  DocumentTextIcon,
+  ChartBarIcon,
+  TruckIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+  ChevronDownIcon
+} from '@heroicons/vue/24/outline'
 
- <!-- SUPPLIERS SECTION -->
-     <li>
-        <details class="group [&_summary::-webkit-details-marker]:hidden mt-10">
-          <summary
-            class="flex cursor-pointer items-center justify-between rounded-lg  text-white">
-            <i class="fas fa-truck text-white text-1xl"></i>
+const dashboardstore = useDashboardStore()
+const showSidebar = computed(() => dashboardstore.filterLargeScreen)
+const openMenu = ref(null)
 
-            <router-link to="/Supplier" class="text-1xl font-semibold mr-20  rounded-lg   hover:bg-gray-100 hover:text-gray-700 ">Suppliers</router-link>
-          </summary>
-        </details>
-     </li> 
+const toggleMenu = (menu) => {
+  openMenu.value = openMenu.value === menu ? null : menu
+}
+</script>
 
-      <!-- MYACCOUNT SECTION -->
-     <li>
-      <details class="group [&_summary::-webkit-details-marker]:hidden mt-10">
-        <summary
-          class="flex cursor-pointer items-center justify-between rounded-lg  text-white">
-          <i class="fas fa-address-book text-white text-1xl"></i>
-          <router-link to="/account" class="text-1xl font-semibold mr-20  rounded-lg  
-           hover:bg-gray-100 hover:text-gray-700 ">My Account</router-link>
-        </summary>
-      </details>
-     </li>
+<style scoped>
+/* Custom transitions */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 
+/* Active link styling */
+.router-link-active:not(.active-class) {
+  @apply bg-slate-700 text-white;
+}
 
-     
-         
-  </ul>
-  
-</div>
-  
-  
+/* Smooth hover transitions */
+.router-link {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
 
+/* Scrollbar styling for submenus */
+.scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #1f2937;
+}
 
-  </div> 
-  
-  
-   </template>
-   
-   <script setup>
-   import { useDashboardStore } from '../store/DashboardStore';
-   import { ref,computed,watch } from 'vue';
-  
-      const dashboardstore = useDashboardStore();
-      const showSidebar = computed(() => dashboardstore.filterLargeScreen);
-      const openMenu = ref(null);
+.scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
 
-      const toggleMenu = (menu) => {
-        openMenu.value = openMenu.value === menu ? null : menu;
-      };
-      
-     watch(showSidebar, (newVal, oldVal) => {
-        if (newVal) {
-          console.log(newVal, "sidebar")
-         }
-        });
-  
-   </script>
-   
-   <style scoped>
-   /* Add additional styles if necessary */
-   @import 'node_modules/@fortawesome/fontawesome-free/css/all.css';
-   </style>
-   
+.scroll-area::-webkit-scrollbar-track {
+  background: #1f2937;
+}
 
+.scroll-area::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 3px;
+}
+</style>
