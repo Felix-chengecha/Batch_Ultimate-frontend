@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import {Useuserstore} from '../store/userstore';
 import Home from '../Views/Home.vue'
 import  Inventory from '../Views/Inventory.vue'
 import Transactions from '../Views/Transactions.vue'
@@ -27,6 +28,8 @@ import Roles from '../Views/Account_Views/Roles.vue';
 import Teller from '../Views/Account_Views/Teller.vue';
 import UserList from '../Views/Account_Views/UserList.vue';
 import UserLogs from '../Views/Account_Views/UserLogs.vue';
+
+// import {refreshToken} from '../Services/usePermission'
 
 
 
@@ -203,18 +206,11 @@ import UserLogs from '../Views/Account_Views/UserLogs.vue';
     },  
 ]},
 
-// A list of  account semi views End
 
-  //  {
-  //   path: '/Test_view',
-  //   name: 'Test_view',
-  //   component: Test_view,
-  //   // meta: { requiresAuth: true }
-  // },
 
 ]}
 
-]  ///
+]  
 
 const router = createRouter({
   history: createWebHistory(),
@@ -224,11 +220,21 @@ const router = createRouter({
 
 //navigation guard to check if the user is logged in and has a valid token
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
-  const token = localStorage.getItem('token');
+  const userStore = Useuserstore();
+    let token = userStore.token; 
+    let isLoggedIn = userStore.IsLoggedIn
+
+    if(!token){
+      token = localStorage.getItem('accessToken');
+      isLoggedIn = true;
+    }
+
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   
-  if (requiresAuth && (!isLoggedIn || !token)) {
+  if (requiresAuth && (!isLoggedIn || !token)) { 
+    // refreshToken();
+    userStore.refreshToken();
     next({ name: 'login' });
   } else {
     next();

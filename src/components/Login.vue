@@ -218,6 +218,7 @@ import links from '../assets/Enviroment.json';
 import backgroundImageLeft from '../assets/bgLogin.jpg'
 import backgroundImageRight from '../assets/bgLogin.jpg'
 import { errorState } from '../store/ErrorState';
+import { useAccountStore } from '../store/AccountStore'
 
 export default {
   components: {
@@ -240,60 +241,92 @@ export default {
      const emailError = ref('')
     const passwordError = ref('')
     const envError = ref('')
+    const userPermissions  = ref();
 
 
 
     const LoginUserStore = Useuserstore();
 
+     const permissionStore = useAccountStore();
+
     const Loginresponse = computed(() => LoginUserStore.getAllDetails); 
 
+
+
+     const  loginuser = async (event) => {
+        if(validateDetails()){
+            event.preventDefault();   
+
+            const authdata = { email: email.value, password: password.value, env: enviroment.value };
+              
+            try {  
+                LoginUserStore.LoginUser(authdata);
+            } 
+            catch(error) {
+              ErrorMessage(error)
+            }
+         }
+      }  
 
     watch(() => errorState.message, (newVal) => {
       if (newVal) {
         ErrorMessage(`Error: ${errorState.code} - ${newVal}`)
       }
-    })
-          
-      watch(Loginresponse, (newValue) => {
-           status.value = newValue.status;
-           token.value = newValue.token;
-           message.value = newValue.message;
-            if(status.value == '200') {
-              localStorage.setItem('isLoggedIn', true); 
-              localStorage.setItem('token', newValue.token);
-              localStorage.setItem('userid', newValue.userID);
-              localStorage.setItem('username', newValue.username);
+    }) 
 
-              DisplayMessage("success", "Welcome back!");
-              router.push('/');
-            }
-            else{
-              const errorMsg =  message.value || 'Login failed. Please try again.'
-            ErrorMessage(errorMsg)
-            }
-        }); 
+    watch(userPermissions.value, (newValue) => { 
+      console.log("dtuser", userPermissions);
+
+      console.log("dtuser2", userPermissions.value);
+
+      console.log("dtuser3",newValue);
 
 
- 
-  const showRegister =()=>{
-     router.push('/register')
-  }  
-
-
- const  loginuser = async (event) => {
-   if(validateDetails()){
-      event.preventDefault();   
-
-       const authdata = { email: email.value, password: password.value, env: enviroment.value };
+    });
         
-      try {  
-          LoginUserStore.LoginUser(authdata);
-       } 
-       catch(error) {
-         ErrorMessage(error)
-       }
-    }
-  }
+    watch(Loginresponse, (newValue) => {
+      status.value = newValue.status;
+      token.value = newValue.token;
+      message.value = newValue.message;
+        if(status.value == '200') { 
+
+           permissionStore.fetchPermissions(newValue.role);
+           userPermissions.value = computed(() => permissionStore.getPermissions);
+
+           console.log("permissions", userPermissions.value);
+
+          localStorage.setItem('isLoggedIn', true); 
+          localStorage.setItem('token', newValue.token);
+          localStorage.setItem('userid', newValue.userId);
+          localStorage.setItem('username', newValue.username);
+
+          DisplayMessage("success", "Welcome back!");
+          router.push('/');
+        }
+        else{
+          const errorMsg =  message.value || 'Login failed. Please try again.'
+        ErrorMessage(errorMsg)
+        }
+    }); 
+
+
+  const pulldetails = (userid) => { 
+    // const token = LoginUserStore.token; 
+    // const userId = computed(() => LoginUserStore.getuserId); 
+        // permissionStore.fetchPersonalDetails();
+        // const details = computed(() => permissionStore.getPersonalDetails);
+        // const roleID = computed(() => details.value[0]?.role || '');
+        // console.log("dets",details.value[0]);
+        // console.log("roles",roleID.value)
+        // for(let i = 0 ; i<details.value[0].length; i++){
+        //   let roleidd = details[i].role;
+        //   console.log("looped", roleidd);
+        // }
+        // const allperms = computed(() => permissionStore.getPermissions);
+        // console.log("allpermisions2", allperms.value);
+        // return allperms.value;
+  } 
+
 
   
     const validateDetails = () => {
@@ -331,41 +364,36 @@ export default {
       return isValid
     }  
 
-      const DisplayMessage = (icon, message) => {
-      Swal.fire({
-        position: 'center',
-        icon: icon,
-        title: message,
-        showConfirmButton: false,
-        timer: 1500,
-        backdrop: `
-          rgba(0,0,123,0.4)
-          url("/images/nyan-cat.gif")
-          left top
-          no-repeat
-        `
-      })
-    }
+  const DisplayMessage = (icon, message) => {
+    Swal.fire({
+      position: 'center',
+      icon: icon,
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("/images/nyan-cat.gif")
+        left top
+        no-repeat
+      `
+    })
+  }
 
-    const ErrorMessage = (error) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error,
-        confirmButtonColor: '#3b82f6',
-      })
-    }
-
-
-      const clearError = (field) => {
-      if (field === 'email') emailError.value = ''
-      if (field === 'password') passwordError.value = ''
-    }
+  const ErrorMessage = (error) => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error,
+      confirmButtonColor: '#3b82f6',
+    })
+  }
 
 
-
-    
- 
+  const clearError = (field) => {
+    if (field === 'email') emailError.value = ''
+    if (field === 'password') passwordError.value = ''
+  }
 
   const toggleDropdown = () => {
     isOpen.value = !isOpen.value
@@ -391,14 +419,19 @@ export default {
     });
   })
 
-  onBeforeUnmount(() => {
-    document.removeEventListener('click', handleClickOutside)
-  })
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', handleClickOutside)
+    })
+
+   const showRegister =()=>{
+        router.push('/register')
+      }  
 
 
 
 
     return {
+      pulldetails,
       email,
       password,
       showRegister,
@@ -421,6 +454,13 @@ export default {
       message,
       clearError,
       errorState,
+      permissionStore,
+      userPermissions
+
+      // res1,
+      // res2,
+      // res3,
+      // res4
      
     };
   }

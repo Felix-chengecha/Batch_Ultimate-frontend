@@ -28,7 +28,9 @@
 
     <!-- Responsive Table Container -->
    <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto"> 
+
+ 
     <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
       <thead class="bg-gray-50">
         <tr>
@@ -81,7 +83,7 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div class="flex items-center space-x-2">
-              <button 
+              <button  v-if="can('editproducts')"
                 @click="openModal(item)"
                 class="text-blue-600 hover:text-blue-900 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
                 title="Edit"
@@ -265,7 +267,7 @@
     import {UseInventoryStore} from '../store/InventoryStore'
     import {useCategoryStore} from '../store/categoryStore'
     import Swal from 'sweetalert2';
-    import axios from '../axios';
+    import { usePermission } from '../Services/usePermission'
     import {useRouter } from 'vue-router'
     import { ref,onMounted, watch,computed } from 'vue';
     import { errorState } from '../store/ErrorState';
@@ -344,6 +346,12 @@
         //fetch all records on load from the store
         onMounted(()=>{ 
            let token = localStorage.getItem('token'); 
+
+          const { can } = usePermission('Transactions');
+
+
+
+          console.log(can);
            inventorystore.getallproducts(token);
            CategoryStore.fetchCategories(token);
            suppliersstore.getallSupliers()
@@ -426,17 +434,13 @@
         }
 
     const ErrorMessage = (error) => {
-						 Swal.fire({
-						   icon: 'error',
-						   title: 'Oops...',
-						   text: error,
-						   confirmButtonColor: '#3b82f6',
-						 })
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error,
+          confirmButtonColor: '#3b82f6',
+        })
 					    }
-    
-   
-       
-        
         return {
       router,
       ErrorMessage,
@@ -460,7 +464,8 @@
         productSearch,
         filteredProducts,
         formatCurrency,
-        supplierdata
+        supplierdata,
+        // can
         // filtereddata
         };
       }

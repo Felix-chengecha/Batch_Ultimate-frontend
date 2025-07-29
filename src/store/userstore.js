@@ -1,39 +1,27 @@
 import { defineStore } from 'pinia';
 import axios from '../axios';
 
+
 export const Useuserstore = defineStore('userstore', {
   state: () => ({ 
     AllDetails:[],  
-    // permissions: [], 
-    // details: [], 
-    // name:'',
-    // email:'',
-    // userid:'',
-    // phone:'',
-    // role:[],
-    // error: [], 
-    // success: '', 
-
+   
+    name: '',
     status:'',
-    statusMessage:'',
     token:'',
+    userId:'',
+    // role:'',
+    statusMessage:'',
+    IsLoggedIn: false,
     
   }),
 
   getters: { 
-    // getPermissions: (state) => state.permissions,
-    // getDetails: (state) => state.details,
-    // getRole:(state) => state.role,
-    // getname:(state) => state.name,
-    // getemail:(state) => state.email,
-    // getuserid:(state) => state.userid,
-    // getphone:(state) => state.phone,
-    // getError:(state) => state.error,
-    // getsucces:(state)=>state.success,
-
     getAllDetails: (state) => state.AllDetails,
+    getname:(state) => state.name,
+    getuserId:(state) => state.userId,
     getStatus:(state) => state.status,
-    getMessage:(state) => state.statusMessage,
+    getIsLoggedIn:(state) => state.IsLoggedIn,
     getToken:(state) => state.token,
   },
 
@@ -41,68 +29,35 @@ export const Useuserstore = defineStore('userstore', {
 
     async LoginUser(ldata) {
       try { 
- 
         const response = await axios.ulogin(ldata);
-        this.AllDetails = response; 
-        // return response; 
+          this.AllDetails = response; 
+           if (this.AllDetails) {
+            this.name = response.name;
+            this.token = response.token;
+            this.status = response.status;
+            this.role = response.role;
+            this.userId = response.userId;
+            this.IsLoggedIn = true
+           }
       } catch (error) {
         this.error = error;
-        this.success = false;
-        throw error; 
       }
-    },
+    },  
 
-    UserDetails(){
-        if (this.AllDetails) {
-
-             this.name = this.AllDetails.details.name || [];
-             this.userid = this.AllDetails.details.user_id || "";
-             this.email = this.AllDetails.details.email || "";
-             this.phone = this.AllDetails.details.phone || " ";
-
-             this.token = this.AllDetails.token || "";
-             this.success = this.AllDetails.success  || [];
-
-             
-
-        }
-    },
-
-  //  GetUserDetails(token,userid){
-  //    axios.getUserdetails(token,userid)
-  //     .then((response)=> {
-
-  //       this.permissions = response.permissions;
-  //       this.role = response.roles[0];
-
-  //       // console.log("permiss", this.permissions);
-  //       console.log("rrroles", this.role);
-  //       // return response;
-
-        
-  //     })
-  //     .catch((error)=>{
-  //       this.error = error.response;   
-  //     })
-  //   },
-
-
-    GetToken(postData) {
-      if (!this.Token) {
-        this.error = 'Authentication token not found';
-        return;
+    async refreshToken(){
+      try {
+        const response = await axios.refreshToken();
+          this.AllDetails = response; 
+          console.log("ehee", response);
+           if (this.AllDetails) { 
+            this.token = response.token.result;
+            console.log("refresh",this.token);
+          }
+      } catch (error){
+        this.error = error;
       }
-      axios.generateToken(postData)
-      .then((response)=>{
-         this.data = response.data;
-      })
-      .catch((error)=>{
-        this.error = error.response;   
-      })
-    }
-
-
-
+    } 
+   
   }
 })
 

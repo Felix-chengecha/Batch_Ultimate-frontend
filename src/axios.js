@@ -1,5 +1,7 @@
 import axios from 'axios';
+import { ref, computed } from 'vue';
 import { errorState } from '../src/store/ErrorState'
+import {Useuserstore} from '../src/store/userstore';
 import {useRouter } from 'vue-router'
 
 
@@ -7,16 +9,28 @@ const router = useRouter();
 
 let dynamicBaseURL = 'http://localhost:5134/api/' 
 
-let token = localStorage.getItem('token');
+
 
 const apiClient = axios.create({
-  baseURL: dynamicBaseURL, //'http://localhost:5134/api/',
+  baseURL: dynamicBaseURL, 
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
 });
 
+//attach token automatically refreshToken
+apiClient.interceptors.request.use(config => {
+  const userStore = Useuserstore();
+  const token = userStore.token; 
+  localStorage.setItem('accessToken', token);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+//capture token 401 status
 apiClient.interceptors.response.use(
   response => response,
   error => {
@@ -24,18 +38,60 @@ apiClient.interceptors.response.use(
     const errCode = error.response?.status || null
     errorState.message = errMsg
     errorState.code = errCode 
-
-    if (!error.response) {
+    if (!error.response) { 
        router.push('/login')
     }
-    if (errCode === 401 ) { 
-      console.log("12", errCode);
-       router.push('/login')
+    if (errCode === 401 ) {   
+    // const userStore = Useuserstore();
+      // userStore.refreshToken();
+      //  const token = userStore.token; 
+      //  if(!token){
+      //  router.push('/login')
+      //  }            
+      console.log(errCode);
     }
-
     return Promise.reject(error)
   }
 )
+
+// apiClient.interceptors.response.use(
+//   response => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     const errCode = error.response?.status;
+    
+//     if (errCode === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+      
+//       try {
+//         const userStore = Useuserstore();
+
+
+//         let newToken = localStorage.getItem('accessToken');
+//         //await userStore.refreshToken();
+//         //const newToken = userStore.token;
+        
+//         if (newToken) {
+//           console.log("newt", newToken);
+//           originalRequest.headers.Authorization = `Bearer ${newToken}`;
+//           return apiClient(originalRequest); // Retry the original request
+//         }
+//       } catch (refreshError) {
+//         console.log('Refresh token failed:', refreshError);
+//         // window.location.href = '/login';
+//         return Promise.reject(refreshError);
+//       }
+//     }
+    
+//     // For other errors or if refresh didn't work
+//     if (!error.response || errCode === 401) {
+//         console.log('another error:' );
+//       // window.location.href = '/login';
+//     }
+    
+//     return Promise.reject(error);
+//   }
+// );
 
 
 
@@ -69,6 +125,30 @@ export default {
       });
   },
 
+//logout
+    logout() {
+    return apiClient.get(`/Authentication/logout`, {}, { 
+    //   headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
+    })
+  .then(response => {
+    return response;
+  });
+},
+
+//refresh token
+   async refreshToken() {
+    return apiClient.post(`/Authentication/refresh-token`, {}, { 
+    //   headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
+    })
+  .then(response => {
+    return response;
+  });
+},
+
 
 
 
@@ -78,9 +158,9 @@ export default {
 //-------------------------------------------------
   getDashboardAverages(token) {
     return apiClient.get(`/Dashboard/SalesAverages`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -89,9 +169,9 @@ export default {
 
 getGraphData(token) {
   return apiClient.get(`/Dashboard/Graphdata`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 })
 .then(response => {
   return response;
@@ -100,9 +180,9 @@ getGraphData(token) {
 
 getRecentSalesData(token) {
   return apiClient.get(`/Dashboard/RecentSales`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 })
 .then(response => {
   return response;
@@ -117,9 +197,9 @@ getRecentSalesData(token) {
     // console.log(postData);
 
     return apiClient.post('/Products/AddProducts', postData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response;
@@ -130,9 +210,9 @@ getRecentSalesData(token) {
 
     getActiveprooducts(token) { 
       return apiClient.post('/Catalogue/GetActiveCatelogue', {},  {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
       })
       .then(response => { 
         return response;
@@ -141,9 +221,9 @@ getRecentSalesData(token) {
 
     getproduct() { 
       return apiClient.post('/Products/GetProducts', {},  {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
       })
       .then(response => { 
         return response;
@@ -153,9 +233,9 @@ getRecentSalesData(token) {
   //update product
   updateproduct(id, updateData, token) {
         return apiClient.put(`/updateproduct/${id}`, updateData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         })
         .then(response => {
           return response.data;
@@ -165,9 +245,9 @@ getRecentSalesData(token) {
   //delete product
   deleteproduct(id, token) {
     return apiClient.delete(`/deleteproduct/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     });
   },
 
@@ -179,9 +259,9 @@ getRecentSalesData(token) {
 //add supplier
   addsupplier(postData) {
     return apiClient.post('/Suppliers/AddSupplier', postData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response;
@@ -192,9 +272,9 @@ getRecentSalesData(token) {
  //get all supplier
   getsupplier() { //token
     return apiClient.post('/Suppliers/GetSuppliers', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
      })
      .then(response => {
       return response.data;
@@ -205,9 +285,9 @@ getRecentSalesData(token) {
  //update supplier
  updatesupplier(id, updateData, token) {
   return apiClient.put(`/updatesupplier/${id}`, updateData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -217,9 +297,9 @@ getRecentSalesData(token) {
 //delete supplier
   deletesupplier(id, token) {
   return apiClient.delete(`/deletesupplier/${id}`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
   });
   },
 
@@ -258,9 +338,9 @@ getsupplies() { //token
 //update supplier
 updatesupplies(id, updateData, token) {
 return apiClient.put(`/updatesupplier/${id}`, updateData, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 })
 .then(response => {
   return response.data;
@@ -270,9 +350,9 @@ return apiClient.put(`/updatesupplier/${id}`, updateData, {
 //delete supplies
 deletesupplies(id, token) {
 return apiClient.delete(`/deletesupplier/${id}`, {
-headers: {
-  Authorization: `Bearer ${token}`,
-},
+// headers: {
+//   Authorization: `Bearer ${token}`,
+// },
 });
 },
 
@@ -293,13 +373,11 @@ getSupplierTransactions(id){
 
   
 //Add transactions
-//	 http://localhost:5134/api/Transactions/AddSales'
-// return apiClient.post('/Ultimate/AddProducts', postData, {  addtransaction
 addtransaction(postData) {
   return apiClient.post('/Transactions/AddSales', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -309,9 +387,9 @@ addtransaction(postData) {
 // get one Transaction
 getTransactions() {
   return apiClient.post('/Transactions/GetTransactions', {}, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -323,9 +401,9 @@ getTransactions() {
 //update transactions
 updateTransaction(id, updateData, token) {
 return apiClient.put(`/updateTransaction/${id}`, updateData, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 })
 .then(response => {
   return response.data;
@@ -335,9 +413,9 @@ return apiClient.put(`/updateTransaction/${id}`, updateData, {
 //delete transactions
 deletetransaction(id, token) {
 return apiClient.delete(`/deletetransaction/${id}`, {
-headers: {
-Authorization: `Bearer ${token}`,
-},
+// headers: {
+// Authorization: `Bearer ${token}`,
+// },
 });
 },
 
@@ -350,9 +428,9 @@ Authorization: `Bearer ${token}`,
   //Add catalogue
   addcatalogue(postData, token) {
     return apiClient.post('/addcatalogue', postData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -363,9 +441,9 @@ Authorization: `Bearer ${token}`,
   //get catalogue
   getcatalogue(token) {
     return apiClient.post('/Catalogue/GetCatalogue', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -374,9 +452,9 @@ Authorization: `Bearer ${token}`,
 
    getActivecatalogue() {
     return apiClient.post('Catalogue/GetActiveCatelogue', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -388,9 +466,9 @@ Authorization: `Bearer ${token}`,
    //update catalogue
    updatecatalogue(id, updateData, token) {
     return apiClient.put(`/updatecategory/${id}`, updatecatalogue, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -403,9 +481,9 @@ Authorization: `Bearer ${token}`,
 //delete catalogue
 deletecatalogue(id, token) {
 return apiClient.delete(`/deletecatalogue/${id}`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 });
 },
 
@@ -416,9 +494,9 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
   //Add Categories
   addcategories(postData) { 
     return apiClient.post(`/Category/AddCategory`, postData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => { 
       return response.data;
@@ -429,9 +507,9 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
   //get category
   getcategory(token) {
     return apiClient.post('/Category/GetCategory',  {},{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => { 
       return response;
@@ -441,9 +519,9 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
    //update category
    updatecategory(id, updateData, token) {
     return apiClient.put(`/updatecategory/${id}`, updateData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -453,9 +531,9 @@ return apiClient.delete(`/deletecatalogue/${id}`, {
 //delete category
 deletecategory(id, token) {
 return apiClient.delete(`/deletecategory/${id}`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 });
 },
 
@@ -467,9 +545,9 @@ return apiClient.delete(`/deletecategory/${id}`, {
   //Add inventory
   addinventory(postData) {
     return apiClient.post('/addinventory', postData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -480,9 +558,9 @@ return apiClient.delete(`/deletecategory/${id}`, {
   //get inventory 
   getinventory() {
     return apiClient.get('/getinventory',  {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
     .then(response => {
       return response.data;
@@ -492,9 +570,9 @@ return apiClient.delete(`/deletecategory/${id}`, {
     //update inventory
   updateinventory(id, updateData, token) {
   return apiClient.put(`/updateinventory/${id}`, updateinventory, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -504,9 +582,9 @@ return apiClient.delete(`/deletecategory/${id}`, {
 //delete inventory
 deleteinventory(id, token) {
 return apiClient.delete(`/deleteinventory/${id}`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
 });
 },
 
@@ -516,9 +594,9 @@ return apiClient.delete(`/deleteinventory/${id}`, {
  
 getcontacts(token) {
   return apiClient.get('/Notification/GetContacts',  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -528,9 +606,9 @@ getcontacts(token) {
 
 getTemplates(token) {
   return apiClient.get('/Notification/GetSmsTemplates',  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -540,12 +618,10 @@ getTemplates(token) {
 
 
 addcontact(postData,token) { 
-  // console.log(postData);
-
   return apiClient.post('/Notification/AddContact', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -553,12 +629,10 @@ addcontact(postData,token) {
 },
 
 addsmsTemplate(postData,token) { 
-  // console.log(postData);
-
   return apiClient.post('/Notification/AddSmsTemplate', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -578,9 +652,9 @@ getSentMessages() {
 
 SendSms(postData,token) { 
   return apiClient.post('/Notification/Sendsms', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -592,9 +666,9 @@ SendSms(postData,token) {
 
 AddNotification(postData,token) {
   return apiClient.post('/Notification/AddNotification', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -629,9 +703,9 @@ async uploadFile(formData, token) {
 
     async GetFiles(token) {
     return apiClient.post('/Document/GetDocuments', {}, {
-    headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    // headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
     });
   },
 
@@ -640,18 +714,18 @@ async uploadFile(formData, token) {
   async getFilePreview(fileId,token) {
     return apiClient.get(`/Document/preview/${fileId}`, {
       responseType: 'blob', 
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     });
   },
 
   async downloadFile(fileId) {
     return apiClient.get(`/Document/DownloadDocument/${fileId}`, {
       responseType: 'blob',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     });
   },
 
@@ -660,9 +734,9 @@ async uploadFile(formData, token) {
 //-------------------------------------------------
   getReportData(postData) {
     return apiClient.post(`/Reports/Generate`,postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -672,7 +746,7 @@ async uploadFile(formData, token) {
 exportReportData(postData){
   return apiClient.post('/Reports/JasperReports',postData,{
     headers : {
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
       Accept : "application/pdf",
     },
     responseType : 'blob'
@@ -688,9 +762,9 @@ exportReportData(postData){
 
 addEditRoles(token,postData) {
   return apiClient.post('/Authentication/AddRole', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -701,9 +775,9 @@ addEditRoles(token,postData) {
 
 addEditPermissions(token, postData) {
   return apiClient.post('/Authentication/EditPermissions', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -714,9 +788,9 @@ addEditPermissions(token, postData) {
 
 addBusinessDetails(postData,token) {
   return apiClient.post('/Notification/AddNotification', postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response;
@@ -726,11 +800,11 @@ addBusinessDetails(postData,token) {
 
 
 
-getPermissions(Roleid,token) {
+getPermissions(Roleid) {
     return apiClient.get(`/Authentication/GetPermissions?searchTerm=${Roleid}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -739,9 +813,9 @@ getPermissions(Roleid,token) {
 
  getRoles(token) {
     return apiClient.get(`/Authentication/GetUserRole`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -750,9 +824,9 @@ getPermissions(Roleid,token) {
 
 getUsers(token) {
     return apiClient.get(`/Authentication/GetUsers`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -762,9 +836,9 @@ getUsers(token) {
 
 getLogDet(token) {
     return apiClient.get(`/accountdetails/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -773,9 +847,9 @@ getLogDet(token) {
 
 getAccountDet(token) {
     return apiClient.post(`/Account/GetAccounts`, {}, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -784,9 +858,9 @@ getAccountDet(token) {
 
 getBusinessDet(token) {
     return apiClient.post(`/Account/GetBusinessDetails`,{},  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -795,20 +869,20 @@ getBusinessDet(token) {
 
 EditBusinessDet(postdata,token) {
     return apiClient.post(`/Account/EditBusinessDetails`,postdata,  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
   });
 },
 
-getPersonalDet(token,userid) {
+getPersonalDet(userid) {
     return apiClient.get(`/Authentication/GetUsers?searchTerm=${userid}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -817,9 +891,9 @@ getPersonalDet(token,userid) {
 
 UpdateOpeningBalanceAsync(token,postdata) {
     return apiClient.post(`/Account/UpdateOpeningBalance`,postdata,  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;
@@ -828,9 +902,9 @@ UpdateOpeningBalanceAsync(token,postdata) {
 
 OpenCloseAccountAsync(token,postdata) {
     return apiClient.post(`/Account/OpenCloseAccount`,postdata,  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   })
   .then(response => {
     return response.data;

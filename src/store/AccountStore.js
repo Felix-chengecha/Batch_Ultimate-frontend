@@ -4,14 +4,14 @@ import axios from '../axios';
 
 export const useAccountStore = defineStore('AccountStore', {
 state: () => ({
-    PersonalDetails: [], // Array to store API data
+    PersonalDetails: {}, // Array to store API data
     BusinessDetails:[],
     AccountDetails:[],
     LogDetails:[],
     Users:[],
     Roles:[],
     Permissions:[],
-
+    roleid:'',
     Response:null,
     token : localStorage.getItem('token')
   }),
@@ -27,16 +27,17 @@ getters: {
     getUsers: (state) => state.Users,
     getRoles:(state) => state.Roles,
     getPermissions: (state) => state.Permissions,
-
+    getrole:(state) => state.roleid,
     getResponse: (state)=> state.Response,
   },
 
    actions: { 
 
-    fetchPersonalDetails(token,userid){     
-          axios.getPersonalDet(token,userid)
-            .then(response => {
+ async fetchPersonalDetails(userid) {     
+          axios.getPersonalDet(userid)
+            .then(response => { 
                 this.PersonalDetails = response;
+                // console.log("RESDP", response[0]);
             })
             .catch(error => {
                 this.error=error;
@@ -103,10 +104,11 @@ getters: {
             });
         },
 
-      fetchPermissions(Roleid,token){     
-             axios.getPermissions(Roleid,token)
+    async  fetchPermissions(Roleid){     
+             axios.getPermissions(Roleid)
             .then(response => {
                 this.Permissions = response;
+
             })
             .catch(error => {
                 this.error=error;
@@ -189,9 +191,7 @@ getters: {
       }, 
 
 
- 
-      
-       
+     
       setSearchquery(query) {
           this.searchquery.push(query);
       }    
